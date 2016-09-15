@@ -1,0 +1,28 @@
+# -*- encoding: utf-8 -*-
+Gem::Specification.new do |s|
+  s.name = 'consumer'
+  s.version = '0.0.0.0'
+  s.summary = 'Consumer library that maintains a long running subscription to an event stream'
+  s.description = ' '
+
+  s.authors = ['The Eventide Project']
+  s.email = 'opensource@eventide-project.org'
+  s.homepage = 'https://github.com/eventide-project/consumer'
+  s.licenses = ['MIT']
+
+  s.require_paths = ['lib']
+  s.files = Dir.glob('{lib}/**/*')
+  s.platform = Gem::Platform::RUBY
+  s.required_ruby_version = '>= 2.2.3'
+
+  s.bindir = 'bin'
+
+  s.add_runtime_dependency 'ntl-actor'
+
+  s.add_runtime_dependency 'telemetry'
+  s.add_runtime_dependency 'telemetry-logger'
+  s.add_runtime_dependency 'initializer'
+
+  s.add_development_dependency 'event_store-messaging'
+  s.add_development_dependency 'test_bench'
+end
