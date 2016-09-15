@@ -11,7 +11,7 @@ module Consumer
     module Queue
       module Substitute
         def self.build
-          SizedQueue.new 1
+          ::SizedQueue.new 1
         end
       end
     end

@@ -23,6 +23,20 @@ module Consumer
         end
       end
 
+      module Position
+        module Stream
+          def self.example
+            1
+          end
+        end
+
+        module Category
+          def self.example
+            11
+          end
+        end
+      end
+
       module Type
         def self.example
           'SomeEvent'
