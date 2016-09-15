@@ -21,10 +21,11 @@ class SomeConsumer
   # particular consumer class should be configured here as well.
   def configure
     # Configure a PostgreSQL subscription
-    EventStream::Postgres::Read.configure self, category: :some_stream, delay_milliseconds: 1000
+    EventStream::Postgres::Read.configure self, stream_name: stream_name, category: category, delay_milliseconds: 1000
 
     # Configure an EventStore subscription
-    EventStore::Messaging::Subscription.configure self, "$ce-someStream", attr_name: :subscription
+    stream_name = EventStore::Messaging::StreamName.get stream_name: stream_name, category: category
+    EventStore::Messaging::Subscription.configure self, stream_name, attr_name: :subscription
   end
 
   # Errors are handled by this method. If omitted, the default action when an
@@ -44,7 +45,7 @@ The consumer can be started directly or through [process-host](https://github.co
 #### Starting a Consumer Directly
 
 ```ruby
-SomeConsumer.start
+SomeConsumer.start category: :some_category
 ```
 
 #### Starting via ProcessHost
