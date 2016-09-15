@@ -9,12 +9,10 @@ class SomeConsumer
   # Specifies a dispatcher implementation for handling messages
   dispatcher SomeDispatcher
 
-  # The temparary caches of these stores will be proactively refreshed whenever
-  # messages are read from the subscription that belong to the stores' entities.
-  # This reduces the workload on handlers that eventually query entities out of
-  # these stores. If only one entity store needs to be refreshed, `refresh_store`
-  # can be called instead.
-  refresh_stores SomeStore, OtherStore
+  # Size (in messages) of the buffer that stores messages that have been read
+  # from the subscription but not yet dispatched. Optional; default value is
+  # shown.
+  message_buffer_size 1000
 
   # The configure method should configure a subscription for the particular
   # database being consumed. Any additional dependencies declared for this
@@ -23,8 +21,9 @@ class SomeConsumer
     # Configure a PostgreSQL subscription
     EventStream::Postgres::Read.configure self, stream_name: stream_name, category: category, delay_milliseconds: 1000
 
+    # - OR -
+
     # Configure an EventStore subscription
-    stream_name = EventStore::Messaging::StreamName.get stream_name: stream_name, category: category
     EventStore::Messaging::Subscription.configure self, stream_name, attr_name: :subscription
   end
 
