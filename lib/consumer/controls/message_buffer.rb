@@ -2,15 +2,9 @@ module Consumer
   module Controls
     module MessageBuffer
       module Full
-        def self.configure_queue(receiver)
-          queue = Queue.example
-          receiver.queue = queue
-          queue
-        end
-
         module Queue
           def self.example
-            message = Message.example
+            message = :some_message
 
             queue = SizedQueue.new 1
             queue.enq message

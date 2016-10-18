@@ -9,21 +9,11 @@ context "Cycle message is handled by subscription" do
 
   next_message = subscription.handle :cycle
 
-  context "Handler proceeds to enqueue the event that has been read" do
-    test do
-      assert next_message.is_a? Messages::EnqueueEvent
-    end
+  context "Handler enqueues a DispatchEventData message" do
+    control_message = Controls::Messages::DispatchEventData.example
 
-    event_data = next_message.event_data
-    control_event_data = Controls::EventData::Read.example
-
-    %i(type data metadata).each do |attribute|
-      test "Attribute `#{attribute}' matches" do
-        control_attribute = control_event_data.public_send attribute
-        attribute = event_data.public_send attribute
-
-        assert attribute == control_attribute
-      end
+    test "Message type" do
+      assert next_message.instance_of?(control_message.class)
     end
   end
 end

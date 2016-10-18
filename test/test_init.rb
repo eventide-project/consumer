@@ -14,6 +14,7 @@ puts RUBY_DESCRIPTION
 
 require_relative '../init.rb'
 require 'consumer/controls'
+require_relative './controls/controls_init'
 
 require 'test_bench'; TestBench.activate
 

@@ -25,16 +25,28 @@ module Consumer
     handle :cycle do
       event_data = fiber.transfer
 
-      message = Messages::EnqueueEvent.new
-      message.event_data = event_data
-      message
+      msg = Messages::DispatchEventData.new
+
+      SetAttributes.(
+        msg,
+        event_data,
+        copy: [
+          :type,
+          :data,
+          :metadata,
+          { :number => :position },
+          { :position => :global_position },
+          :stream_name
+        ],
+        strict: true
+      )
+
+      msg
     end
 
-    handle :enqueue_event do |msg|
-      event_data = msg.event_data
-
+    handle :dispatch_event_data do |msg|
       begin
-        queue.enq event_data, true
+        queue.enq msg, true
       rescue ThreadError
         return msg
       end

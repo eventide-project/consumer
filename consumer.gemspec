@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   # [Nathan Ladd, Thu 15 Sep 2016]
   s.add_runtime_dependency 'ntl-actor'
 
+  s.add_runtime_dependency 'event_source'
   s.add_runtime_dependency 'schema'
   s.add_runtime_dependency 'settings'
   s.add_runtime_dependency 'telemetry'

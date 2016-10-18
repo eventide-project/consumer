@@ -5,29 +5,19 @@ module Consumer
         def self.example(i=nil)
           Controls::ID.example i
         end
-
-        def self.random
-          Identifier::UUID::Random.get
-        end
       end
 
       module Name
-        def self.example(stream_id=nil)
-          stream_id ||= ID.example
+        def self.example
+          stream_id = ID.example
 
           "someStream-#{stream_id}"
-        end
-
-        def self.random
-          stream_id = ID.random
-
-          example stream_id
         end
       end
 
       module Category
         def self.example(random=nil)
-          :some_category
+          :some_stream
         end
 
         def self.random
@@ -39,7 +29,7 @@ module Consumer
 
         module EventStore
           def self.example
-            '$ce-someCategory'
+            '$ce-someStream'
           end
         end
       end
