@@ -1,10 +1,9 @@
-require 'event_source'
+require 'event_source/controls'
 
 require 'identifier/uuid/controls'
 
+require 'consumer/controls/category'
+require 'consumer/controls/event_data'
 require 'consumer/controls/id'
-require 'consumer/controls/event'
-require 'consumer/controls/reader'
-require 'consumer/controls/message_buffer'
-require 'consumer/controls/messages/dispatch_event_data'
-require 'consumer/controls/stream'
+require 'consumer/controls/position'
+require 'consumer/controls/stream_name'

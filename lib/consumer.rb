@@ -1,13 +1,10 @@
-require 'fiber'
-
 require 'actor'
-require 'schema'
+
+require 'event_source'
 require 'initializer'; Initializer.activate
-require 'telemetry'
+require 'schema'
 require 'telemetry/logger'
 
 require 'consumer/message_buffer'
-require 'consumer/messages'
-require 'consumer/subscription'
 
 require 'consumer/consumer'
