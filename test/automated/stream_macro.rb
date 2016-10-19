@@ -26,4 +26,14 @@ context "Stream macro" do
       assert consumer.stream == Controls::Stream.example
     end
   end
+
+  context "Stream is overriden" do
+    stream_name = Controls::StreamName.example randomize_category: true
+
+    consumer = Controls::Consumer::Example.new stream_name
+
+    test "Stream is set to the value supplied to constructor" do
+      assert consumer.stream.name == stream_name
+    end
+  end
 end
