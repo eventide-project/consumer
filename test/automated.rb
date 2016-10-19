@@ -1,6 +1,6 @@
 require_relative 'test_init'
 
-path_spec = ARGV[1] || 'bench/**/*.rb'
+path_spec = ARGV[1] || 'automated/**/*.rb'
 
 TestBench::Runner.(
   path_spec,
