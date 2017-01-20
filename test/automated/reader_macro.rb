@@ -20,6 +20,18 @@ context "Reader Macro" do
       test "Get dependency is set to that of reader" do
         assert iterator.get.equal?(read.get)
       end
+
+      context "Cycle dependency" do
+        cycle = iterator.cycle
+
+        test "Maximum milliseconds is set" do
+          assert cycle.maximum_milliseconds == Consumer::Defaults.cycle_maximum_milliseconds
+        end
+
+        test "Timeout is set" do
+          assert cycle.timeout_milliseconds == Consumer::Defaults.cycle_timeout_milliseconds
+        end
+      end
     end
   end
 end

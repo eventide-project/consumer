@@ -19,10 +19,17 @@ module Consumer
 
   module Configure
     def configure
-      read = reader_class.configure self, stream.name
+      read = reader_class.configure(
+        self,
+        stream.name,
+        cycle_maximum_milliseconds: Defaults.cycle_maximum_milliseconds,
+        cycle_timeout_milliseconds: Defaults.cycle_timeout_milliseconds
+      )
 
-      subscription = Subscription.configure self, read
-
+      subscription = Subscription.configure(
+        self,
+        read
+      )
       self.class.handler_registry.set subscription
     end
   end
