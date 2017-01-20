@@ -1,5 +1,5 @@
 module Consumer
   module Controls
-    ID = Identifier::UUID::Controls::Incrementing
+    ID = Messaging::Controls::ID
   end
 end

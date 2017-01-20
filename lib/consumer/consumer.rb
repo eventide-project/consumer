@@ -1,24 +1,18 @@
 module Consumer
   def self.included(cls)
-    return if cls == Object
-
     cls.class_exec do
       extend StreamMacro
-
-      initializer a(:stream_name, lazy('self.class.stream_name'))
     end
-  end
-
-  def stream
-    @stream ||= EventSource::Stream.new stream_name
   end
 
   module StreamMacro
-    def stream_macro(name)
-      define_singleton_method :stream_name do
-        name
+    def stream_macro(stream_name)
+      stream = EventSource::Stream.new stream_name
+
+      define_method :stream do
+        stream
       end
     end
-    alias :stream :stream_macro
+    alias_method :stream, :stream_macro
   end
 end
