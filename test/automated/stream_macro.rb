@@ -12,7 +12,7 @@ context "Stream macro" do
     consumer = consumer_class.new
 
     test "Category stream is supplied to instances" do
-      assert consumer.stream.name == category.name
+      assert consumer.stream == category
     end
   end
 
@@ -27,7 +27,7 @@ context "Stream macro" do
     consumer = consumer_class.new
 
     test "Stream is supplied to instances" do
-      assert consumer.stream.name == stream.name
+      assert consumer.stream == stream
     end
   end
 end
