@@ -5,12 +5,14 @@ module Consumer
 
       extend HandleMacro
       extend ReaderMacro
+      extend PositionStoreMacro
       extend StreamMacro
 
       prepend Configure
 
-      dependency :subscription, Subscription
+      dependency :dispatcher, Dispatcher
       dependency :position_store, PositionStore
+      dependency :subscription, Subscription
       dependency :read
     end
   end
@@ -19,18 +21,22 @@ module Consumer
 
   module Configure
     def configure
+      position_store = position_store_class.configure self, stream
+
+      starting_position = position_store.get
+
       read = reader_class.configure(
         self,
         stream.name,
+        position: starting_position,
         cycle_maximum_milliseconds: Defaults.cycle_maximum_milliseconds,
         cycle_timeout_milliseconds: Defaults.cycle_timeout_milliseconds
       )
 
-      subscription = Subscription.configure(
-        self,
-        read
-      )
-      self.class.handler_registry.set subscription
+      Subscription.configure self, read
+
+      dispatcher = Dispatcher.configure self, position_store: position_store
+      self.class.handler_registry.set dispatcher
     end
   end
 
@@ -53,6 +59,15 @@ module Consumer
     def handler_registry
       @handler_registry ||= HandlerRegistry.new
     end
+  end
+
+  module PositionStoreMacro
+    def position_store_macro(position_store_class)
+      define_method :position_store_class do
+        position_store_class
+      end
+    end
+    alias_method :position_store, :position_store_macro
   end
 
   module ReaderMacro

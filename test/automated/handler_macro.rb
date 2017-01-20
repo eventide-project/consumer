@@ -1,20 +1,18 @@
 require_relative './automated_init'
 
 context "Handler Macro" do
+  consumer_class = Controls::Consumer::Example
+
   context "Handler is a class" do
-    consumer_class = Class.new do
-      include Consumer
-
-      handle Controls::Handle::Example
-      reader Controls::Read::Example
-      stream Controls::StreamName.example
-    end
-
     context "Consumer" do
       consumer = consumer_class.build
 
-      test "Subscription includes handler" do
-        assert consumer.subscription.handlers == [Controls::Handle::Example]
+      context "Dispatcher" do
+        dispatcher = consumer.dispatcher
+
+        test "Dispatcher includes handler" do
+          assert dispatcher.handlers.include? Controls::Handle::Example
+        end
       end
     end
   end
@@ -22,19 +20,19 @@ context "Handler Macro" do
   context "Handler is a block" do
     blk = proc { nil }
 
-    consumer_class = Class.new do
-      include Consumer
-
+    consumer_class = Class.new consumer_class do
       handle &blk
-      reader Controls::Read::Example
-      stream Controls::StreamName.example
     end
 
     context "Consumer" do
       consumer = consumer_class.build
 
-      test "Subscription includes handler" do
-        assert consumer.subscription.handlers == [blk]
+      context "Dispatcher" do
+        dispatcher = consumer.dispatcher
+
+        test "Dispatcher includes handler" do
+          assert dispatcher.handlers.include? blk
+        end
       end
     end
   end

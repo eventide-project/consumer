@@ -8,9 +8,10 @@ module Consumer
       class Example
         include ::Consumer
 
-        stream StreamName.example
         handle Handle::Example
+        position_store PositionStore::Example
         reader Read::Example
+        stream StreamName.example
       end
     end
   end

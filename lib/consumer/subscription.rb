@@ -4,12 +4,6 @@ module Consumer
 
     configure :subscription
 
-    attr_writer :handlers
-
-    def handlers
-      @handlers ||= []
-    end
-
     dependency :iterator, EventSource::Iterator
 
     def self.build(read)

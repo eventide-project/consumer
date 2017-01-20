@@ -10,6 +10,8 @@ require 'consumer/defaults'
 require 'consumer/handler_registry'
 require 'consumer/position_store'
 require 'consumer/position_store/telemetry'
+
+require 'consumer/dispatcher'
 require 'consumer/subscription'
 
 require 'consumer/consumer'
