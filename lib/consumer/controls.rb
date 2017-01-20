@@ -1,6 +1,4 @@
-require 'event_source/controls'
-
-require 'identifier/uuid/controls'
+require 'messaging/controls'
 
 require 'consumer/controls/category'
 require 'consumer/controls/event_data'
