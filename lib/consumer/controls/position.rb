@@ -9,7 +9,7 @@ module Consumer
 
       module Global
         def self.example
-          EventSource::Controls::EventData.global_position
+          EventSource::Controls::EventData::Read.global_position
         end
       end
     end

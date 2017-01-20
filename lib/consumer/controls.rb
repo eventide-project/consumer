@@ -7,4 +7,6 @@ require 'consumer/controls/position'
 require 'consumer/controls/stream'
 require 'consumer/controls/stream_name'
 
+require 'consumer/controls/position_store'
+
 require 'consumer/controls/consumer'
