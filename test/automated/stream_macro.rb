@@ -1,6 +1,6 @@
 require_relative './automated_init'
 
-context "Stream macro" do
+context "Stream Macro" do
   context "Category is specified" do
     category = Controls::Stream::Category.example
 
