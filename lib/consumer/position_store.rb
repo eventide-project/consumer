@@ -15,7 +15,13 @@ module Consumer
       end
     end
 
+    Virtual::Method.define self, :configure
+
     module Get
+      def self.prepended(cls)
+        Virtual::PureMethod.define cls, :get
+      end
+
       def get
         logger.trace { "Get position (Stream: #{stream.name})" }
 
@@ -30,6 +36,10 @@ module Consumer
     end
 
     module Put
+      def self.prepended(cls)
+        Virtual::Method.define cls, :put
+      end
+
       def put(position)
         logger.trace { "Put position (Stream: #{stream.name}, Position: #{position})" }
 
@@ -44,8 +54,8 @@ module Consumer
     end
 
     module Build
-      def build(stream_name)
-        stream = EventSource::Stream.new stream_name
+      def build(stream)
+        stream = EventSource::Stream.canonize stream
 
         instance = new stream
         ::Telemetry.configure instance
