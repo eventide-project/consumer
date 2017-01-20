@@ -4,20 +4,33 @@ module Consumer
       extend Build
 
       extend HandleMacro
+      extend ReaderMacro
       extend StreamMacro
+
+      prepend Configure
 
       dependency :subscription, Subscription
       dependency :position_store, PositionStore
+      dependency :read
+    end
+  end
+
+  Virtual::Method.define self, :configure
+
+  module Configure
+    def configure
+      read = reader_class.configure self, stream.name
+
+      subscription = Subscription.configure self, read
+
+      self.class.handler_registry.set subscription
     end
   end
 
   module Build
     def build
       instance = new
-
-      subscription = Subscription.configure instance
-      handler_registry.set subscription
-
+      instance.configure
       instance
     end
   end
@@ -33,6 +46,15 @@ module Consumer
     def handler_registry
       @handler_registry ||= HandlerRegistry.new
     end
+  end
+
+  module ReaderMacro
+    def reader_macro(reader_class)
+      define_method :reader_class do
+        reader_class
+      end
+    end
+    alias_method :reader, :reader_macro
   end
 
   module StreamMacro

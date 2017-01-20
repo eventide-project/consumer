@@ -9,6 +9,8 @@ module Consumer
         include ::Consumer
 
         stream StreamName.example
+        handle Handle::Example
+        reader Read::Example
       end
     end
   end

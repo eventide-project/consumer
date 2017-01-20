@@ -10,8 +10,11 @@ module Consumer
       @handlers ||= []
     end
 
-    def self.build
+    dependency :iterator, EventSource::Iterator
+
+    def self.build(read)
       instance = new
+      instance.iterator = read.iterator
       instance
     end
   end

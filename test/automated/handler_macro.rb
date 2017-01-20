@@ -6,6 +6,8 @@ context "Handler Macro" do
       include Consumer
 
       handle Controls::Handle::Example
+      reader Controls::Read::Example
+      stream Controls::StreamName.example
     end
 
     context "Consumer" do
@@ -24,6 +26,8 @@ context "Handler Macro" do
       include Consumer
 
       handle &blk
+      reader Controls::Read::Example
+      stream Controls::StreamName.example
     end
 
     context "Consumer" do
