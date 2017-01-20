@@ -9,6 +9,8 @@ module Consumer
         prepend Get
         prepend Put
 
+        configure :position_store
+
         initializer :stream
 
         dependency :telemetry, ::Telemetry

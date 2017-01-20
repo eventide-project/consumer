@@ -1,5 +1,6 @@
 require 'actor'
 
+require 'configure'; Configure.activate
 require 'messaging'
 require 'log'
 

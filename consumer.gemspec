@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.bindir = 'bin'
 
   s.add_runtime_dependency 'ntl-actor'
+  s.add_runtime_dependency 'evt-configure'
   s.add_runtime_dependency 'evt-messaging'
 
   s.add_development_dependency 'test_bench'
