@@ -23,3 +23,4 @@ require 'consumer/subscription/defaults'
 require 'consumer/subscription/get_batch'
 
 require 'consumer/consumer'
+require 'consumer/substitute'
