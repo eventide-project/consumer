@@ -6,6 +6,12 @@ module Consumer
       end
 
       class Example
+        configure :get
+
+        def self.build
+          new
+        end
+
         def call(stream_name, position: nil)
           position ||= 0
 

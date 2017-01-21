@@ -13,7 +13,7 @@ module Consumer
         stream StreamName.example
 
         def configure_subscription(subscription)
-          subscription.get = Get.example
+          Get::Example.configure subscription
         end
       end
     end
