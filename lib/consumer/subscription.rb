@@ -36,6 +36,8 @@ module Consumer
     end
 
     handle :resupply do
+      logger.trace { "Resupplying (StreamName: #{stream.name}, Position: #{position})" }
+
       batch = cycle.() do
         get.(stream.name, position: position)
       end
@@ -46,16 +48,21 @@ module Consumer
         :resupply
       else
         self.next_batch = batch
-        nil
+
+        logger.debug { "Resupplied (StreamName: #{stream.name}, Position: #{position}, Batch Size: #{batch.count})" }
       end
     end
 
     handle :get_batch do |get_batch|
+      logger.trace { "Batch requested" }
+
       batch = reset_next_batch
 
       reply_message = get_batch.reply_message batch
 
       send.(reply_message, get_batch.reply_address)
+
+      logger.debug { "Batch request fulfilled; resupplying (Batch Size: #{batch.count})" }
 
       :resupply
     end
