@@ -34,7 +34,7 @@ context "Handler Registry" do
       end
 
       test "Proc class is not registered" do
-        assert registry.registered?(Proc)
+        refute registry.registered?(Proc)
       end
 
       test "Length is increased" do

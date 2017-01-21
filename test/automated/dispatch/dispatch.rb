@@ -7,7 +7,8 @@ context "Dispatch" do
   handle_2 = proc { |event_data| handled << event_data }
 
   dispatch = Consumer::Dispatch.new
-  dispatch.handlers = [handle_1, handle_2]
+  dispatch.handler_registry.register handle_1
+  dispatch.handler_registry.register handle_2
 
   event_data = Controls::EventData.example
 

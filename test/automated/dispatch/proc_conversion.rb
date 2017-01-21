@@ -3,10 +3,11 @@ require_relative '../automated_init'
 context "Dispatch" do
   context "Proc conversion" do
     handled = false
+
     handle = proc { |event_data| handled = true }
 
     dispatch = Consumer::Dispatch.new
-    dispatch.handlers = [handle]
+    dispatch.handler_registry.register handle
 
     dispatch_proc = dispatch.to_proc
 

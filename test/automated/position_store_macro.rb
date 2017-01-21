@@ -17,13 +17,5 @@ context "Position Store Macro" do
         assert iterator.stream_offset == Controls::Position::Global.example
       end
     end
-
-    context "Dispatcher dependency" do
-      dispatcher = consumer.dispatcher
-
-      test "Position store dependency is set" do
-        assert dispatcher.position_store == position_store
-      end
-    end
   end
 end

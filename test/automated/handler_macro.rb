@@ -34,7 +34,7 @@ context "Handler Macro" do
 
         test "Dispatcher includes handler" do
           assert dispatch do
-            handler? Controls::Handle::Example
+            handler? blk
           end
         end
       end

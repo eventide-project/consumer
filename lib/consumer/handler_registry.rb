@@ -32,7 +32,11 @@ module Consumer
 
     def registered?(handler)
       entries.any? do |entry|
-        handler === entry || handler == entry
+        return true if handler == entry 
+
+        next if entry.is_a? Proc
+
+        handler === entry
       end
     end
 

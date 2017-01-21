@@ -35,7 +35,7 @@ module Consumer
 
       Subscription.configure self, read
 
-      Dispatch.configure self, handler_registry: handler_registry
+      Dispatch.configure self, handler_registry: self.class.handler_registry
     end
   end
 
