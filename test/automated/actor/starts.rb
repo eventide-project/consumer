@@ -2,16 +2,16 @@ require_relative '../automated_init'
 
 context "Consumer Actor" do
   context "Starts" do
-    consumer = Controls::Consumer::Example.new
-    consumer.subscription_address = Actor::Messaging::Address.build
+    subscription_address = Actor::Messaging::Address.build
+    actor = Consumer::Actor.new subscription_address
 
-    consumer.handle :start
+    actor.handle :start
 
     test "Subscription is sent get batch message" do
-      get_batch = Consumer::Subscription::GetBatch.new consumer.address
+      get_batch = Consumer::Subscription::GetBatch.new actor.address
 
-      assert consumer.send do
-        sent? get_batch, address: consumer.subscription_address
+      assert actor.send do
+        sent? get_batch, address: subscription_address
       end
     end
   end

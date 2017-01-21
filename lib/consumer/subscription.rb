@@ -1,6 +1,6 @@
 module Consumer
   class Subscription
-    include Actor
+    include ::Actor
     include Log::Dependency
 
     configure :subscription

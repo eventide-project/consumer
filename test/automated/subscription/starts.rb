@@ -6,7 +6,7 @@ context "Subscription" do
 
     subscription.handle :start
 
-    test "Subscription resends itself resupply message" do
+    test "Subscription sends itself resupply message" do
       assert subscription.send do
         sent? :resupply, address: subscription.address
       end

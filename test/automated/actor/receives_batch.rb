@@ -5,16 +5,16 @@ context "Consumer Actor" do
     batch = Controls::EventData::Batch.example
     reply_message = Consumer::Subscription::GetBatch::Reply.new batch
 
-    consumer = Controls::Consumer::Example.new
-    consumer.subscription_address = Actor::Messaging::Address.build
+    subscription_address = Actor::Messaging::Address.build
+    actor = Consumer::Actor.new subscription_address
 
-    consumer.handle reply_message
+    actor.handle reply_message
 
     test "Subscription is sent get batch message" do
-      get_batch = Consumer::Subscription::GetBatch.new consumer.address
+      get_batch = Consumer::Subscription::GetBatch.new actor.address
 
-      assert consumer.send do
-        sent? get_batch, address: consumer.subscription_address
+      assert actor.send do
+        sent? get_batch, address: subscription_address
       end
     end
 
@@ -22,8 +22,8 @@ context "Consumer Actor" do
       batch.each_with_index do |event, index|
         context "Event ##{index + 1}" do
           test "Is dispatched" do
-            assert consumer.dispatch do
-              dispatched? event
+            assert actor.consumer do
+              consumed? event
             end
           end
         end
