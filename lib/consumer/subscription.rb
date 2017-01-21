@@ -4,11 +4,13 @@ module Consumer
 
     configure :subscription
 
-    dependency :iterator, EventSource::Iterator
+    initializer :get, a(:position)
+
+    dependency :cycle, Cycle
 
     def self.build(read)
-      instance = new
-      instance.iterator = read.iterator
+      instance = new read.get, read.iterator.position
+      Cycle.configure instance, cycle: read.iterator.cycle
       instance
     end
   end

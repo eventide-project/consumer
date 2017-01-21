@@ -11,10 +11,8 @@ context "Position Store Macro" do
     context "Subscription dependency" do
       subscription = consumer.subscription
 
-      test "Iterator offset is set to value in position store" do
-        iterator = consumer.subscription.iterator
-
-        assert iterator.stream_offset == Controls::Position::Global.example
+      test "Position is set to value in position store" do
+        assert subscription.position == Controls::Position::Global.example
       end
     end
 
