@@ -12,6 +12,8 @@ module Consumer
 
       prepend Configure
 
+      attr_writer :position_update_interval
+
       dependency :dispatch, Dispatch
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
@@ -24,7 +26,9 @@ module Consumer
 
     dispatch.(event_data)
 
-    logger.debug { "Event dispatched (#{LogText.event_data event_data})" }
+    update_position event_data.global_position
+
+    logger.info { "Event dispatched (#{LogText.event_data event_data})" }
 
   rescue => error
     logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.event_data event_data})" }
@@ -35,6 +39,18 @@ module Consumer
 
   def error_raised(error, _)
     raise error
+  end
+
+  def update_position(position)
+    logger.trace { "Updating position (Position: #{position}, Interval: #{position_update_interval})" }
+
+    if position % position_update_interval == 0
+      position_store.put position
+
+      logger.debug { "Updated position (Position: #{position}, Interval: #{position_update_interval})" }
+    else
+      logger.debug { "Interval not reached; position not updated (Position: #{position}, Interval: #{position_update_interval})" }
+    end
   end
 
   module LogText
@@ -89,14 +105,14 @@ module Consumer
 
   module PositionStoreMacro
     def position_store_macro(position_store_class, update_interval: nil)
-      update_interval ||= Defaults.position_store_update_interval
+      update_interval ||= Defaults.position_update_interval
 
       define_method :position_store_class do
         position_store_class
       end
 
-      define_method :position_store_update_interval do
-        update_interval
+      define_method :position_update_interval do
+        @position_update_interval ||= update_interval
       end
     end
     alias_method :position_store, :position_store_macro

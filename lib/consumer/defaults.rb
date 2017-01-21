@@ -8,7 +8,7 @@ module Consumer
       1000
     end
 
-    def self.position_store_update_interval
+    def self.position_update_interval
       100
     end
   end

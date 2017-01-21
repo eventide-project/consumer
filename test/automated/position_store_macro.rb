@@ -19,10 +19,10 @@ context "Position Store Macro" do
     end
 
     context "Position update interval" do
-      update_interval = consumer.position_store_update_interval
+      update_interval = consumer.position_update_interval
 
       test "Is set to default value" do
-        assert update_interval == Consumer::Defaults.position_store_update_interval
+        assert update_interval == Consumer::Defaults.position_update_interval
       end
     end
   end
@@ -38,7 +38,7 @@ context "Position Store Macro" do
 
     context "Position update interval" do
       test "Is set to default value" do
-        assert consumer.position_store_update_interval == update_interval
+        assert consumer.position_update_interval == update_interval
       end
     end
   end
