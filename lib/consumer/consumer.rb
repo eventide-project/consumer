@@ -5,6 +5,7 @@ module Consumer
 
       extend Build
 
+      extend CycleMacro
       extend HandleMacro
       extend PositionStoreMacro
       extend StreamMacro
@@ -65,7 +66,13 @@ module Consumer
 
       starting_position = position_store.get
 
-      subscription = Subscription.configure self, stream, position: starting_position
+      subscription = Subscription.configure(
+        self,
+        stream,
+        position: starting_position,
+        cycle_maximum_milliseconds: self.class.cycle_maximum_milliseconds,
+        cycle_timeout_milliseconds: self.class.cycle_timeout_milliseconds
+      )
 
       configure_subscription subscription
 
@@ -81,6 +88,21 @@ module Consumer
       instance.configure
       instance
     end
+  end
+
+  module CycleMacro
+    def self.extended(cls)
+      cls.singleton_class.class_exec do
+        attr_accessor :cycle_maximum_milliseconds
+        attr_accessor :cycle_timeout_milliseconds
+      end
+    end
+
+    def cycle_macro(maximum_milliseconds: nil, timeout_milliseconds: nil)
+      self.cycle_maximum_milliseconds = maximum_milliseconds
+      self.cycle_timeout_milliseconds = timeout_milliseconds
+    end
+    alias_method :cycle, :cycle_macro
   end
 
   module HandleMacro
