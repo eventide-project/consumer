@@ -88,9 +88,15 @@ module Consumer
   end
 
   module PositionStoreMacro
-    def position_store_macro(position_store_class)
+    def position_store_macro(position_store_class, update_interval: nil)
+      update_interval ||= Defaults.position_store_update_interval
+
       define_method :position_store_class do
         position_store_class
+      end
+
+      define_method :position_store_update_interval do
+        update_interval
       end
     end
     alias_method :position_store, :position_store_macro

@@ -7,5 +7,9 @@ module Consumer
     def self.cycle_timeout_milliseconds
       1000
     end
+
+    def self.position_store_update_interval
+      100
+    end
   end
 end
