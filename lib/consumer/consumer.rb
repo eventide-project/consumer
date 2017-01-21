@@ -19,6 +19,10 @@ module Consumer
 
   Virtual::Method.define self, :configure
 
+  def call(event_data)
+    dispatch.(event_data)
+  end
+
   module Configure
     def configure
       position_store = position_store_class.configure self, stream

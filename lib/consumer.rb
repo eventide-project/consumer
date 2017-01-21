@@ -13,6 +13,8 @@ require 'consumer/position_store/substitute'
 require 'consumer/position_store/telemetry'
 
 require 'consumer/dispatch'
+require 'consumer/dispatch/substitute'
+
 require 'consumer/subscription'
 
 require 'consumer/consumer'
