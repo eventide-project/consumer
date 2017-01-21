@@ -12,7 +12,7 @@ require 'consumer/position_store'
 require 'consumer/position_store/substitute'
 require 'consumer/position_store/telemetry'
 
-require 'consumer/dispatcher'
+require 'consumer/dispatch'
 require 'consumer/subscription'
 
 require 'consumer/consumer'

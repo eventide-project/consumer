@@ -10,7 +10,7 @@ module Consumer
 
       prepend Configure
 
-      dependency :dispatcher, Dispatcher
+      dependency :dispatch, Dispatch
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
       dependency :read
@@ -35,8 +35,7 @@ module Consumer
 
       Subscription.configure self, read
 
-      dispatcher = Dispatcher.configure self, position_store: position_store
-      self.class.handler_registry.set dispatcher
+      Dispatch.configure self, handler_registry: handler_registry
     end
   end
 

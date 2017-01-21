@@ -7,11 +7,13 @@ context "Handler Macro" do
     context "Consumer" do
       consumer = consumer_class.build
 
-      context "Dispatcher" do
-        dispatcher = consumer.dispatcher
+      context "Dispatch" do
+        dispatch = consumer.dispatch
 
         test "Dispatcher includes handler" do
-          assert dispatcher.handlers.include? Controls::Handle::Example
+          assert dispatch do
+            handler? Controls::Handle::Example
+          end
         end
       end
     end
@@ -28,10 +30,12 @@ context "Handler Macro" do
       consumer = consumer_class.build
 
       context "Dispatcher" do
-        dispatcher = consumer.dispatcher
+        dispatch = consumer.dispatch
 
         test "Dispatcher includes handler" do
-          assert dispatcher.handlers.include? blk
+          assert dispatch do
+            handler? Controls::Handle::Example
+          end
         end
       end
     end

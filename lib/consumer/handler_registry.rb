@@ -2,6 +2,8 @@ module Consumer
   class HandlerRegistry
     include Log::Dependency
 
+    configure :handler_registry
+
     def register(handler)
       logger.trace { "Registering handler (Handler: #{LogText.handler handler})" }
 
@@ -11,25 +13,27 @@ module Consumer
         raise Error, error_message
       end
 
-      entries << handler
+      if handler.respond_to? :build
+        instance = handler.build
+      else
+        instance = handler
+      end
+
+      entries << instance
 
       logger.debug { "Handler registered (Handler: #{LogText.handler handler})" }
 
-      entries
+      instance
+    end
+
+    def get
+      entries.to_a
     end
 
     def registered?(handler)
-      entries.include? handler
-    end
-
-    def set(receiver, attr_name: nil)
-      attr_name ||= :handlers
-
-      handlers = entries.to_a
-
-      receiver.public_send "#{attr_name}=", handlers
-
-      handlers
+      entries.any? do |entry|
+        handler === entry || handler == entry
+      end
     end
 
     def entries

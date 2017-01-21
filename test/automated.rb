@@ -1,8 +1,8 @@
-require_relative 'test_init'
+ENV['TEST_BENCH_EXCLUDE_PATTERN'] ||= '/_|sketch|(_init\.rb|_tests\.rb)\z'
+ENV['TEST_BENCH_TESTS_DIR'] ||= 'test/automated'
 
-path_spec = ARGV[1] || 'automated/**/*.rb'
+require_relative './test_init'
 
-TestBench::Runner.(
-  path_spec,
-  exclude_pattern: %r{/^skip_|(?:_init\.rb|\.sketch\.rb|_sketch\.rb|sketch\.rb|\.skip\.rb|_tests\.rb)\z}
-) or exit 1
+require 'test_bench/cli'
+
+TestBench::CLI.() or exit 1
