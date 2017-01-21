@@ -40,7 +40,9 @@ module Consumer
         get.(stream.name, position: position)
       end
 
-      if batch.empty?
+      if batch.nil? || batch.empty?
+        logger.debug { "Did not resupply; no events available (StreamName: #{stream.name}, Position: #{position})" }
+
         :resupply
       else
         self.next_batch = batch

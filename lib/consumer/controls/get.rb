@@ -16,10 +16,10 @@ module Consumer
           position ||= 0
 
           stream = streams.fetch stream_name do
-            return []
+            return nil
           end
 
-          stream[position] || []
+          stream[position]
         end
 
         def set_batch(stream_name, batch, position=nil)
