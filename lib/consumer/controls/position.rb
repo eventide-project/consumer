@@ -8,8 +8,12 @@ module Consumer
       end
 
       module Global
-        def self.example
-          EventSource::Controls::EventData::Read.global_position
+        def self.example(offset: nil)
+          offset ||= 0
+
+          position = EventSource::Controls::EventData::Read.global_position
+
+          position + offset
         end
       end
     end
