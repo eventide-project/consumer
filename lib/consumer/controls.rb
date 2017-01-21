@@ -9,6 +9,7 @@ require 'consumer/controls/position'
 require 'consumer/controls/stream'
 require 'consumer/controls/stream_name'
 
+require 'consumer/controls/cycle'
 require 'consumer/controls/get'
 
 require 'consumer/controls/handle'

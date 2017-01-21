@@ -28,7 +28,9 @@ module Consumer
     end
 
     handle :resupply do
-      batch = get.(stream_name, position: position)
+      batch = cycle.() do
+        get.(stream_name, position: position)
+      end
 
       if batch.empty?
         :resupply
