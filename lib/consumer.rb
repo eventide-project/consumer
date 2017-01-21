@@ -20,5 +20,6 @@ require 'consumer/dispatch/substitute'
 
 require 'consumer/subscription'
 require 'consumer/subscription/defaults'
+require 'consumer/subscription/get_batch'
 
 require 'consumer/consumer'

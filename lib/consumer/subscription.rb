@@ -5,7 +5,7 @@ module Consumer
 
     configure :subscription
 
-    initializer :stream, :get
+    initializer :stream
 
     attr_accessor :next_batch
 
@@ -15,13 +15,15 @@ module Consumer
     end
 
     dependency :cycle, Cycle
+    dependency :get
 
     def self.build(stream, get, position: nil, cycle_maximum_milliseconds: nil, cycle_timeout_milliseconds: nil)
       cycle_maximum_milliseconds ||= Defaults.cycle_maximum_milliseconds
       cycle_timeout_milliseconds ||= Defaults.cycle_timeout_milliseconds
 
-      instance = new stream, get
+      instance = new stream
 
+      instance.get = get
       instance.position = position
 
       Cycle.configure(
@@ -68,16 +70,6 @@ module Consumer
       self.position = batch.last.global_position + 1
 
       batch
-    end
-
-    GetBatch = Struct.new :reply_address
-
-    class GetBatch
-      def reply_message(batch)
-        Reply.new batch
-      end
-
-      Reply = Struct.new :batch
     end
   end
 end
