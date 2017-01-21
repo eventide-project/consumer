@@ -4,6 +4,7 @@ module Consumer
       include Log::Dependency
 
       extend Build
+      extend Start
 
       extend CycleMacro
       extend HandleMacro
@@ -85,6 +86,20 @@ module Consumer
       instance = new
       instance.configure
       instance
+    end
+  end
+
+  module Start
+    def start(&probe)
+      instance = build
+
+      _, subscription_thread = ::Actor::Start.(instance.subscription)
+
+      actor_address = Actor.start instance, instance.subscription
+
+      probe.(instance, actor_address) if probe
+
+      AsyncInvocation::Incorrect
     end
   end
 
