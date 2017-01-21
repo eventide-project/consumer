@@ -15,6 +15,7 @@ module Consumer
       attr_writer :position_update_interval
 
       dependency :dispatch, Dispatch
+      dependency :get
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
     end
@@ -35,8 +36,6 @@ module Consumer
   end
 
   Virtual::Method.define self, :configure
-
-  Virtual::Method.define self, :configure_subscription
 
   def error_raised(error, _)
     raise error
@@ -62,6 +61,8 @@ module Consumer
 
   module Configure
     def configure
+      super
+
       position_store = position_store_class.configure self, stream
 
       starting_position = position_store.get
@@ -69,16 +70,13 @@ module Consumer
       subscription = Subscription.configure(
         self,
         stream,
+        get,
         position: starting_position,
         cycle_maximum_milliseconds: self.class.cycle_maximum_milliseconds,
         cycle_timeout_milliseconds: self.class.cycle_timeout_milliseconds
       )
 
-      configure_subscription subscription
-
       Dispatch.configure self, handler_registry: self.class.handler_registry
-
-      super
     end
   end
 

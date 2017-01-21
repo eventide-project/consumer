@@ -10,8 +10,7 @@ module Consumer
           get.set_batch stream.name, batch, position
         end
 
-        subscription = ::Consumer::Subscription.new stream
-        subscription.get = get
+        subscription = ::Consumer::Subscription.new stream, get
 
         subscription.position = position if position
 

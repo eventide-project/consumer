@@ -5,7 +5,7 @@ module Consumer
 
     configure :subscription
 
-    initializer :stream
+    initializer :stream, :get
 
     attr_accessor :next_batch
 
@@ -15,10 +15,9 @@ module Consumer
     end
 
     dependency :cycle, Cycle
-    dependency :get
 
-    def self.build(stream, position: nil, cycle_maximum_milliseconds: nil, cycle_timeout_milliseconds: nil)
-      instance = new stream
+    def self.build(stream, get, position: nil, cycle_maximum_milliseconds: nil, cycle_timeout_milliseconds: nil)
+      instance = new stream, get
 
       instance.position = position
 

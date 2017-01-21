@@ -11,7 +11,7 @@ context "Cycle Macro" do
     context "Subscription dependency" do
       subscription = consumer.subscription
 
-      test "Timeout is set on cycle" do
+      test "Maximum is set on cycle" do
         assert subscription.cycle.maximum_milliseconds == 11
       end
     end
