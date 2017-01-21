@@ -22,11 +22,11 @@ context "Reader Macro" do
       cycle = subscription.cycle
 
       test "Maximum milliseconds is set" do
-        assert cycle.maximum_milliseconds == Consumer::Defaults.cycle_maximum_milliseconds
+        assert cycle.maximum_milliseconds == Consumer::Subscription::Defaults.cycle_maximum_milliseconds
       end
 
       test "Timeout is set" do
-        assert cycle.timeout_milliseconds == Consumer::Defaults.cycle_timeout_milliseconds
+        assert cycle.timeout_milliseconds == Consumer::Subscription::Defaults.cycle_timeout_milliseconds
       end
     end
   end

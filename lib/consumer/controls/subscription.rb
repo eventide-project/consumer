@@ -2,15 +2,15 @@ module Consumer
   module Controls
     module Subscription
       def self.example(next_batch: nil, batch: nil, position: nil)
-        stream_name = StreamName.example
+        stream = Stream.example
 
         get = Get.example
 
         unless batch.nil?
-          get.set_batch stream_name, batch, position
+          get.set_batch stream.name, batch, position
         end
 
-        subscription = ::Consumer::Subscription.new get, stream_name
+        subscription = ::Consumer::Subscription.new stream, get
 
         subscription.position = position if position
 

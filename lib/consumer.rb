@@ -19,5 +19,6 @@ require 'consumer/dispatch'
 require 'consumer/dispatch/substitute'
 
 require 'consumer/subscription'
+require 'consumer/subscription/defaults'
 
 require 'consumer/consumer'

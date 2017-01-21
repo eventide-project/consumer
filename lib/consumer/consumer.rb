@@ -67,13 +67,15 @@ module Consumer
 
       read = reader_class.configure(
         self,
-        stream.name,
-        position: starting_position,
-        cycle_maximum_milliseconds: Defaults.cycle_maximum_milliseconds,
-        cycle_timeout_milliseconds: Defaults.cycle_timeout_milliseconds
+        stream.name
       )
 
-      Subscription.configure self, read
+      Subscription.configure(
+        self,
+        stream,
+        read.get,
+        position: starting_position
+      )
 
       Dispatch.configure(
         self,

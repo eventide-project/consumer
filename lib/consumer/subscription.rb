@@ -5,7 +5,7 @@ module Consumer
 
     configure :subscription
 
-    initializer :get, :stream_name
+    initializer :stream, :get
 
     attr_accessor :next_batch
 
@@ -16,10 +16,20 @@ module Consumer
 
     dependency :cycle, Cycle
 
-    def self.build(read)
-      instance = new read.get, read.stream_name
-      instance.position = read.iterator.position
-      Cycle.configure instance, cycle: read.iterator.cycle
+    def self.build(stream, get, position: nil, cycle_maximum_milliseconds: nil, cycle_timeout_milliseconds: nil)
+      cycle_maximum_milliseconds ||= Defaults.cycle_maximum_milliseconds
+      cycle_timeout_milliseconds ||= Defaults.cycle_timeout_milliseconds
+
+      instance = new stream, get
+
+      instance.position = position
+
+      Cycle.configure(
+        instance,
+        maximum_milliseconds: cycle_maximum_milliseconds,
+        timeout_milliseconds: cycle_timeout_milliseconds
+      )
+
       instance
     end
 
@@ -29,7 +39,7 @@ module Consumer
 
     handle :resupply do
       batch = cycle.() do
-        get.(stream_name, position: position)
+        get.(stream.name, position: position)
       end
 
       if batch.empty?
