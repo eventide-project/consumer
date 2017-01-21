@@ -1,6 +1,8 @@
 module Consumer
   def self.included(cls)
     cls.class_exec do
+      include Log::Dependency
+
       extend Build
 
       extend HandleMacro
@@ -17,10 +19,28 @@ module Consumer
     end
   end
 
+  def call(event_data)
+    logger.trace { "Dispatching event (#{LogText.event_data event_data})" }
+
+    dispatch.(event_data)
+
+    logger.debug { "Event dispatched (#{LogText.event_data event_data})" }
+
+  rescue => error
+    logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.event_data event_data})" }
+    error_raised error, event_data
+  end
+
   Virtual::Method.define self, :configure
 
-  def call(event_data)
-    dispatch.(event_data)
+  def error_raised(error, _)
+    raise error
+  end
+
+  module LogText
+    def self.event_data(event_data)
+      "Stream: #{event_data.stream_name}, Position: #{event_data.position}, GlobalPosition: #{event_data.global_position}, Type: #{event_data.type}"
+    end
   end
 
   module Configure

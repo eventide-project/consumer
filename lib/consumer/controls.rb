@@ -2,6 +2,7 @@ require 'messaging/controls'
 
 require 'consumer/controls/category'
 require 'consumer/controls/event_data'
+require 'consumer/controls/error'
 require 'consumer/controls/id'
 require 'consumer/controls/position'
 require 'consumer/controls/stream'

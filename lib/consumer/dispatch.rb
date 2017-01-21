@@ -17,7 +17,7 @@ module Consumer
     end
 
     def call(event_data)
-      logger.trace { "Dispatching event (#{LogText.attributes event_data})" }
+      logger.trace { "Dispatching event (#{LogText.event_data event_data})" }
 
       handlers = handler_registry.get
 
@@ -25,7 +25,7 @@ module Consumer
         handle.(event_data)
       end
 
-      logger.debug { "Event dispatched (#{LogText.attributes event_data}, Handlers Count: #{handlers.count})" }
+      logger.debug { "Event dispatched (#{LogText.event_data event_data}, Handlers Count: #{handlers.count})" }
 
       nil
     end
@@ -37,12 +37,6 @@ module Consumer
     module Assertions
       def handler?(handle)
         handler_registry.registered? handle
-      end
-    end
-
-    module LogText
-      def self.attributes(event_data, handlers=nil)
-        "Stream: #{event_data.stream_name}, Position: #{event_data.position}, GlobalPosition: #{event_data.global_position}, Type: #{event_data.type}"
       end
     end
   end
