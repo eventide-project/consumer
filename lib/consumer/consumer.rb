@@ -1,6 +1,7 @@
 module Consumer
   def self.included(cls)
     cls.class_exec do
+      include Actor
       include Log::Dependency
 
       extend Build
@@ -19,6 +20,24 @@ module Consumer
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
     end
+  end
+
+  def handle_start
+    request_batch
+  end
+
+  def handle_reply(get_batch_reply)
+    events = get_batch_reply.batch
+
+    logger.trace { "Received batch (Events: #{events.count})" }
+
+    request_batch
+
+    events.each do |event_data|
+      self.(event_data)
+    end
+
+    logger.debug { "Batch received (Events: #{events.count})" }
   end
 
   def call(event_data)
@@ -51,6 +70,24 @@ module Consumer
     else
       logger.debug { "Interval not reached; position not updated (Position: #{position}, Interval: #{position_update_interval})" }
     end
+  end
+
+  def request_batch
+    logger.trace { "Requesting batch" }
+
+    get_batch = Subscription::GetBatch.new address
+
+    send.(get_batch, subscription_address)
+
+    logger.debug { "Batch requested" }
+  end
+
+  def subscription_address=(address)
+    subscription.address = address
+  end
+
+  def subscription_address
+    subscription.address
   end
 
   module LogText

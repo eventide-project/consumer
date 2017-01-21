@@ -27,6 +27,7 @@ module Consumer
         timeout_milliseconds: cycle_timeout_milliseconds
       )
 
+      instance.configure
       instance
     end
 
