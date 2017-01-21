@@ -17,21 +17,9 @@ module Consumer
     dependency :cycle, Cycle
     dependency :get
 
-    def self.build(stream, get, position: nil, cycle_maximum_milliseconds: nil, cycle_timeout_milliseconds: nil)
-      cycle_maximum_milliseconds ||= Defaults.cycle_maximum_milliseconds
-      cycle_timeout_milliseconds ||= Defaults.cycle_timeout_milliseconds
-
+    def self.build(stream, position: nil)
       instance = new stream
-
-      instance.get = get
       instance.position = position
-
-      Cycle.configure(
-        instance,
-        maximum_milliseconds: cycle_maximum_milliseconds,
-        timeout_milliseconds: cycle_timeout_milliseconds
-      )
-
       instance
     end
 

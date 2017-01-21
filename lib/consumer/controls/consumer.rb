@@ -10,8 +10,11 @@ module Consumer
 
         handle Handle::Example
         position_store PositionStore::Example
-        reader Read::Example
         stream StreamName.example
+
+        def configure_subscription(subscription)
+          subscription.get = Get.example
+        end
       end
     end
   end

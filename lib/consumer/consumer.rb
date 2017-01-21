@@ -6,7 +6,6 @@ module Consumer
       extend Build
 
       extend HandleMacro
-      extend ReaderMacro
       extend PositionStoreMacro
       extend StreamMacro
 
@@ -17,7 +16,6 @@ module Consumer
       dependency :dispatch, Dispatch
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
-      dependency :read
     end
   end
 
@@ -36,6 +34,8 @@ module Consumer
   end
 
   Virtual::Method.define self, :configure
+
+  Virtual::Method.define self, :configure_subscription
 
   def error_raised(error, _)
     raise error
@@ -65,22 +65,13 @@ module Consumer
 
       starting_position = position_store.get
 
-      read = reader_class.configure(
-        self,
-        stream.name
-      )
+      subscription = Subscription.configure self, stream, position: starting_position
 
-      Subscription.configure(
-        self,
-        stream,
-        read.get,
-        position: starting_position
-      )
+      configure_subscription subscription
 
-      Dispatch.configure(
-        self,
-        handler_registry: self.class.handler_registry
-      )
+      Dispatch.configure self, handler_registry: self.class.handler_registry
+
+      super
     end
   end
 
@@ -118,15 +109,6 @@ module Consumer
       end
     end
     alias_method :position_store, :position_store_macro
-  end
-
-  module ReaderMacro
-    def reader_macro(reader_class)
-      define_method :reader_class do
-        reader_class
-      end
-    end
-    alias_method :reader, :reader_macro
   end
 
   module StreamMacro
