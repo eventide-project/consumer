@@ -14,6 +14,7 @@ module Consumer
       initializer :stream
 
       attr_writer :position_update_interval
+
       attr_accessor :cycle_maximum_milliseconds
       attr_accessor :cycle_timeout_milliseconds
 
@@ -66,9 +67,13 @@ module Consumer
     def configure
       super
 
-      position_store = position_store_class.configure self, stream
+      position_store_class = self.class.position_store_class
 
-      starting_position = position_store.get
+      unless position_store_class.nil?
+        position_store = position_store_class.configure self, stream
+
+        starting_position = position_store.get
+      end
 
       subscription = Subscription.configure(
         self,
@@ -123,12 +128,16 @@ module Consumer
   end
 
   module PositionStoreMacro
+    def self.extended(cls)
+      cls.singleton_class.class_exec do
+        attr_accessor :position_store_class
+      end
+    end
+
     def position_store_macro(position_store_class, update_interval: nil)
       update_interval ||= Defaults.position_update_interval
 
-      define_method :position_store_class do
-        position_store_class
-      end
+      self.position_store_class = position_store_class
 
       define_method :position_update_interval do
         @position_update_interval ||= update_interval
