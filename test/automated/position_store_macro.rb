@@ -1,10 +1,12 @@
 require_relative './automated_init'
 
 context "Position Store Macro" do
+  stream = Controls::Stream.example
+
   context do
     consumer_class = Controls::Consumer::Example
 
-    consumer = consumer_class.build
+    consumer = consumer_class.build stream
 
     position_store = consumer.position_store
 
@@ -32,7 +34,7 @@ context "Position Store Macro" do
       position_store Controls::PositionStore::Example, update_interval: 11
     end
 
-    consumer = consumer_class.new
+    consumer = consumer_class.new stream
 
     context "Position update interval" do
       test "Is set to default value" do

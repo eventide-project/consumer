@@ -2,7 +2,7 @@ module Consumer
   module Controls
     module Consumer
       def self.example
-        Example.new
+        Example.new Stream.example
       end
 
       class Example
@@ -10,7 +10,6 @@ module Consumer
 
         handle Handle::Example
         position_store PositionStore::Example
-        stream StreamName.example
 
         def configure
           Get::Example.configure self
@@ -33,7 +32,6 @@ module Consumer
         end
 
         position_store PositionStore::LocalFile, update_interval: 10
-        stream StreamName.example
 
         def configure
           sleep_duration = ENV['SLEEP_DURATION'] || 100

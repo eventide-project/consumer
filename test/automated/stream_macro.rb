@@ -1,33 +1,23 @@
 require_relative './automated_init'
 
 context "Stream Macro" do
-  context "Category is specified" do
-    category = Controls::Stream::Category.example
+  stream_name = Controls::StreamName.example
 
-    consumer_class = Class.new do
-      include Consumer
-      stream category.name
-    end
+  consumer = Controls::Consumer::Example.build stream_name
 
-    consumer = consumer_class.new
+  context "Subscription dependency" do
+    subscription = consumer.subscription
 
-    test "Category stream is supplied to instances" do
-      assert consumer.stream == category
+    test "Stream is set" do
+      assert subscription.stream.name == stream_name
     end
   end
 
-  context "Stream is specified" do
-    stream = Controls::Stream.example
+  context "Position store dependency" do
+    position_store = consumer.position_store
 
-    consumer_class = Class.new do
-      include Consumer
-      stream stream.name
-    end
-
-    consumer = consumer_class.new
-
-    test "Stream is supplied to instances" do
-      assert consumer.stream == stream
+    test "Stream is set" do
+      assert position_store.stream.name == stream_name
     end
   end
 end

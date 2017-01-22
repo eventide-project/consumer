@@ -12,7 +12,7 @@ context "Error Handling" do
       end
     end
 
-    consumer = consumer_class.new
+    consumer = consumer_class.new Controls::Stream.example
 
     event_data = Controls::EventData.example
 

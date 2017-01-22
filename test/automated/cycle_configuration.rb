@@ -1,8 +1,10 @@
 require_relative './automated_init'
 
 context "Cycle Configuration" do
+  stream_name = Controls::StreamName.example
+
   context "Maximum milliseconds" do
-    consumer = Controls::Consumer::Example.build cycle_maximum_milliseconds: 11
+    consumer = Controls::Consumer::Example.build stream_name, cycle_maximum_milliseconds: 11
 
     context "Subscription dependency" do
       subscription = consumer.subscription
@@ -14,7 +16,7 @@ context "Cycle Configuration" do
   end
 
   context "Timeout milliseconds" do
-    consumer = Controls::Consumer::Example.build cycle_timeout_milliseconds: 11
+    consumer = Controls::Consumer::Example.build stream_name, cycle_timeout_milliseconds: 11
 
     context "Subscription dependency" do
       subscription = consumer.subscription

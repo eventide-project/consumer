@@ -3,9 +3,11 @@ require_relative './automated_init'
 context "Handler Macro" do
   consumer_class = Controls::Consumer::Example
 
+  stream = Controls::Stream.example
+
   context "Handler is a class" do
     context "Consumer" do
-      consumer = consumer_class.build
+      consumer = consumer_class.build stream
 
       context "Dispatch" do
         dispatch = consumer.dispatch
@@ -27,7 +29,7 @@ context "Handler Macro" do
     end
 
     context "Consumer" do
-      consumer = consumer_class.build
+      consumer = consumer_class.build stream
 
       context "Dispatcher" do
         dispatch = consumer.dispatch

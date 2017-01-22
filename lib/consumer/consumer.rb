@@ -8,9 +8,10 @@ module Consumer
 
       extend HandleMacro
       extend PositionStoreMacro
-      extend StreamMacro
 
       prepend Configure
+
+      initializer :stream
 
       attr_writer :position_update_interval
       attr_accessor :cycle_maximum_milliseconds
@@ -83,8 +84,10 @@ module Consumer
   end
 
   module Build
-    def build(cycle_timeout_milliseconds: nil, cycle_maximum_milliseconds: nil)
-      instance = new
+    def build(stream_name, cycle_timeout_milliseconds: nil, cycle_maximum_milliseconds: nil)
+      stream = EventSource::Stream.canonize stream_name
+
+      instance = new stream
       instance.cycle_maximum_milliseconds = cycle_maximum_milliseconds
       instance.cycle_timeout_milliseconds = cycle_timeout_milliseconds
       instance.configure
@@ -93,8 +96,8 @@ module Consumer
   end
 
   module Start
-    def start(&probe)
-      instance = build
+    def start(stream_name, **arguments, &probe)
+      instance = build stream_name, **arguments
 
       _, subscription_thread = ::Actor::Start.(instance.subscription)
 
@@ -132,16 +135,5 @@ module Consumer
       end
     end
     alias_method :position_store, :position_store_macro
-  end
-
-  module StreamMacro
-    def stream_macro(stream_name)
-      stream = EventSource::Stream.new stream_name
-
-      define_method :stream do
-        stream
-      end
-    end
-    alias_method :stream, :stream_macro
   end
 end
