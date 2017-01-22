@@ -6,7 +6,6 @@ module Consumer
       extend Build
       extend Start
 
-      extend CycleMacro
       extend HandleMacro
       extend PositionStoreMacro
       extend StreamMacro
@@ -14,6 +13,8 @@ module Consumer
       prepend Configure
 
       attr_writer :position_update_interval
+      attr_accessor :cycle_maximum_milliseconds
+      attr_accessor :cycle_timeout_milliseconds
 
       dependency :dispatch, Dispatch
       dependency :get
@@ -73,8 +74,8 @@ module Consumer
         stream,
         get,
         position: starting_position,
-        cycle_maximum_milliseconds: self.class.cycle_maximum_milliseconds,
-        cycle_timeout_milliseconds: self.class.cycle_timeout_milliseconds
+        cycle_maximum_milliseconds: cycle_maximum_milliseconds,
+        cycle_timeout_milliseconds: cycle_timeout_milliseconds
       )
 
       Dispatch.configure self, handler_registry: self.class.handler_registry
@@ -82,8 +83,10 @@ module Consumer
   end
 
   module Build
-    def build
+    def build(cycle_timeout_milliseconds: nil, cycle_maximum_milliseconds: nil)
       instance = new
+      instance.cycle_maximum_milliseconds = cycle_maximum_milliseconds
+      instance.cycle_timeout_milliseconds = cycle_timeout_milliseconds
       instance.configure
       instance
     end
@@ -101,21 +104,6 @@ module Consumer
 
       AsyncInvocation::Incorrect
     end
-  end
-
-  module CycleMacro
-    def self.extended(cls)
-      cls.singleton_class.class_exec do
-        attr_accessor :cycle_maximum_milliseconds
-        attr_accessor :cycle_timeout_milliseconds
-      end
-    end
-
-    def cycle_macro(maximum_milliseconds: nil, timeout_milliseconds: nil)
-      self.cycle_maximum_milliseconds = maximum_milliseconds
-      self.cycle_timeout_milliseconds = timeout_milliseconds
-    end
-    alias_method :cycle, :cycle_macro
   end
 
   module HandleMacro

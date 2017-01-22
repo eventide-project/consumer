@@ -1,12 +1,8 @@
 require_relative './automated_init'
 
-context "Cycle Macro" do
+context "Cycle Configuration" do
   context "Maximum milliseconds" do
-    consumer_class = Class.new Controls::Consumer::Example do
-      cycle maximum_milliseconds: 11
-    end
-
-    consumer = consumer_class.build
+    consumer = Controls::Consumer::Example.build cycle_maximum_milliseconds: 11
 
     context "Subscription dependency" do
       subscription = consumer.subscription
@@ -18,11 +14,7 @@ context "Cycle Macro" do
   end
 
   context "Timeout milliseconds" do
-    consumer_class = Class.new Controls::Consumer::Example do
-      cycle timeout_milliseconds: 11
-    end
-
-    consumer = consumer_class.build
+    consumer = Controls::Consumer::Example.build cycle_timeout_milliseconds: 11
 
     context "Subscription dependency" do
       subscription = consumer.subscription
