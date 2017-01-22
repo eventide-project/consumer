@@ -55,6 +55,10 @@ module Consumer
     end
   end
 
+  def position_update_interval
+    @position_update_interval ||= self.class.position_update_interval
+  end
+
   module LogText
     def self.event_data(event_data)
       "Stream: #{event_data.stream_name}, Position: #{event_data.position}, GlobalPosition: #{event_data.global_position}, Type: #{event_data.type}"
@@ -133,17 +137,17 @@ module Consumer
     def self.extended(cls)
       cls.singleton_class.class_exec do
         attr_accessor :position_store_class
+        attr_writer :position_update_interval
+
+        def position_update_interval
+          @position_update_interval ||= Defaults.position_update_interval
+        end
       end
     end
 
     def position_store_macro(position_store_class, update_interval: nil)
-      update_interval ||= Defaults.position_update_interval
-
       self.position_store_class = position_store_class
-
-      define_method :position_update_interval do
-        @position_update_interval ||= update_interval
-      end
+      self.position_update_interval = update_interval
     end
     alias_method :position_store, :position_store_macro
   end
