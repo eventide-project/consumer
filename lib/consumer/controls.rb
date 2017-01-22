@@ -18,4 +18,4 @@ require 'consumer/controls/position_store/local_file'
 require 'consumer/controls/subscription'
 
 require 'consumer/controls/consumer'
-require 'consumer/controls/consumer/incrementing'
+require 'consumer/controls/consumer/logs_events'

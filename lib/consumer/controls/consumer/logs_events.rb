@@ -1,7 +1,7 @@
 module Consumer
   module Controls
     module Consumer
-      class Incrementing
+      class LogsEvents
         include ::Consumer
 
         def self.logger
@@ -18,7 +18,7 @@ module Consumer
 
         position_store PositionStore::LocalFile, update_interval: 10
 
-        def configure(session: nil)
+        def configure(session: nil, batch_size: nil)
           sleep_duration = ENV['SLEEP_DURATION'] || 100
           sleep_duration = sleep_duration.to_i
 
