@@ -39,8 +39,6 @@ module Consumer
     error_raised error, event_data
   end
 
-  Virtual::Method.define self, :configure
-
   def error_raised(error, _)
     raise error
   end
@@ -67,7 +65,7 @@ module Consumer
     def configure(batch_size: nil, session: nil)
       logger.trace { "Configuring (Batch Size: #{batch_size}, Session: #{session.inspect})" }
 
-      super
+      super if defined? super
 
       position_store_class = self.class.position_store_class
 
