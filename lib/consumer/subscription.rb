@@ -54,7 +54,13 @@ module Consumer
     end
 
     handle :get_batch do |get_batch|
-      logger.trace { "Batch requested" }
+      logger.trace { "Batch request received" }
+
+      if next_batch.nil?
+        logger.debug { "Could not fulfill batch request; deferring" }
+
+        return get_batch
+      end
 
       batch = reset_next_batch
 

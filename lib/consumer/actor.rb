@@ -39,7 +39,7 @@ module Consumer
 
       send.(get_batch, subscription_address)
 
-      logger.debug { "Batch requested" }
+      logger.debug { "Send batch request" }
     end
   end
 end
