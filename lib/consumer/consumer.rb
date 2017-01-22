@@ -69,8 +69,6 @@ module Consumer
     def configure(batch_size: nil, session: nil)
       logger.trace { "Configuring (Batch Size: #{batch_size}, Session: #{session.inspect})" }
 
-      super if defined? super
-
       position_store_class = self.class.position_store_class
 
       unless position_store_class.nil?
@@ -89,6 +87,8 @@ module Consumer
       )
 
       Dispatch.configure self, handler_registry: self.class.handler_registry
+
+      super if defined? super
 
       logger.debug { "Configuring (Batch Size: #{batch_size}, Session: #{session.inspect})" }
     end
