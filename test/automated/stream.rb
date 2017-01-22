@@ -1,6 +1,6 @@
 require_relative './automated_init'
 
-context "Stream Macro" do
+context "Stream" do
   stream_name = Controls::StreamName.example
 
   consumer = Controls::Consumer::Example.build stream_name
