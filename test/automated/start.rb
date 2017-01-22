@@ -2,16 +2,14 @@ require_relative './automated_init'
 
 context "Consumer" do
   context "Start" do
-    consumer = nil
-    address = nil
+    return_value = nil
 
-    return_value = Controls::Consumer::Example.start do |_consumer, _address|
-      consumer = _consumer
-      address = _address
+    Actor::Supervisor.start do |supervisor|
+      return_value = Controls::Consumer::Example.start do |consumer, address|
+        Actor::Messaging::Send.(:stop, address)
+        Actor::Messaging::Send.(:stop, consumer.subscription.address)
+      end
     end
-
-    Actor::Messaging::Send.(:shutdown, address)
-    Actor::Messaging::Send.(:shutdown, consumer.subscription.address)
 
     test "Is asynchronous invocation" do
       assert return_value == AsyncInvocation::Incorrect
