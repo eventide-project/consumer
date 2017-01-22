@@ -64,7 +64,7 @@ module Consumer
   end
 
   module Configure
-    def configure
+    def configure(session: nil)
       super
 
       position_store_class = self.class.position_store_class
@@ -89,13 +89,13 @@ module Consumer
   end
 
   module Build
-    def build(stream_name, cycle_timeout_milliseconds: nil, cycle_maximum_milliseconds: nil)
+    def build(stream_name, cycle_timeout_milliseconds: nil, cycle_maximum_milliseconds: nil, session: nil)
       stream = EventSource::Stream.canonize stream_name
 
       instance = new stream
       instance.cycle_maximum_milliseconds = cycle_maximum_milliseconds
       instance.cycle_timeout_milliseconds = cycle_timeout_milliseconds
-      instance.configure
+      instance.configure session: session
       instance
     end
   end

@@ -11,7 +11,7 @@ module Consumer
         handle Handle::Example
         position_store PositionStore::Example
 
-        def configure
+        def configure(session: nil)
           Get::Example.configure self
         end
       end
@@ -33,7 +33,7 @@ module Consumer
 
         position_store PositionStore::LocalFile, update_interval: 10
 
-        def configure
+        def configure(session: nil)
           sleep_duration = ENV['SLEEP_DURATION'] || 100
           sleep_duration = sleep_duration.to_i
 
