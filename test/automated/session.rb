@@ -10,7 +10,7 @@ context "Session" do
 
     attr_accessor :session
 
-    def configure(session: nil)
+    def configure(session: nil, **)
       self.session = session
     end
   end

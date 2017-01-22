@@ -64,7 +64,9 @@ module Consumer
   end
 
   module Configure
-    def configure(session: nil)
+    def configure(batch_size: nil, session: nil)
+      logger.trace { "Configuring (Batch Size: #{batch_size}, Session: #{session.inspect})" }
+
       super
 
       position_store_class = self.class.position_store_class
@@ -85,17 +87,19 @@ module Consumer
       )
 
       Dispatch.configure self, handler_registry: self.class.handler_registry
+
+      logger.debug { "Configuring (Batch Size: #{batch_size}, Session: #{session.inspect})" }
     end
   end
 
   module Build
-    def build(stream_name, cycle_timeout_milliseconds: nil, cycle_maximum_milliseconds: nil, session: nil)
+    def build(stream_name, batch_size: nil, session: nil, cycle_timeout_milliseconds: nil, cycle_maximum_milliseconds: nil)
       stream = EventSource::Stream.canonize stream_name
 
       instance = new stream
       instance.cycle_maximum_milliseconds = cycle_maximum_milliseconds
       instance.cycle_timeout_milliseconds = cycle_timeout_milliseconds
-      instance.configure session: session
+      instance.configure batch_size: batch_size, session: session
       instance
     end
   end
