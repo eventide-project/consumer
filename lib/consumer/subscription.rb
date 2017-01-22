@@ -39,20 +39,20 @@ module Consumer
     end
 
     handle :resupply do
-      logger.trace { "Resupplying (StreamName: #{stream.name}, Position: #{position})" }
+      logger.trace { "Resupplying (StreamName: #{stream_name}, Position: #{position})" }
 
       batch = cycle.() do
-        get.(stream.name, position: position)
+        get.(stream_name, position: position)
       end
 
       if batch.nil? || batch.empty?
-        logger.debug { "Did not resupply; no events available (StreamName: #{stream.name}, Position: #{position})" }
+        logger.debug { "Did not resupply; no events available (StreamName: #{stream_name}, Position: #{position})" }
 
         :resupply
       else
         self.next_batch = batch
 
-        logger.debug { "Resupplied (StreamName: #{stream.name}, Position: #{position}, Batch Size: #{batch.count})" }
+        logger.debug { "Resupplied (StreamName: #{stream_name}, Position: #{position}, Batch Size: #{batch.count})" }
       end
     end
 
@@ -84,6 +84,10 @@ module Consumer
       self.position = batch.last.global_position + 1
 
       batch
+    end
+
+    def stream_name
+      stream.name
     end
   end
 end
