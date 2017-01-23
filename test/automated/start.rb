@@ -8,15 +8,15 @@ context "Consumer" do
     stream_name = Controls::StreamName.example
 
     Actor::Supervisor.start do |supervisor|
-      return_value = Controls::Consumer::Example.start stream_name do |_consumer, address|
+      return_value = Controls::Consumer::Example.start stream_name, cycle_timeout_milliseconds: 1 do |_consumer, _, (consumer_address, subscription_address)|
         consumer = _consumer
 
-        Actor::Messaging::Send.(:stop, address)
-        Actor::Messaging::Send.(:stop, consumer.subscription.address)
+        Actor::Messaging::Send.(:stop, consumer_address)
+        Actor::Messaging::Send.(:stop, subscription_address)
       end
     end
 
-    test "Is asynchronous invocation" do
+    test "Returns asynchronous invocation" do
       assert return_value == AsyncInvocation::Incorrect
     end
 

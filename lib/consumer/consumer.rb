@@ -4,6 +4,7 @@ module Consumer
       include Log::Dependency
 
       extend Build
+      extend Run
       extend Start
 
       extend HandleMacro
@@ -106,15 +107,44 @@ module Consumer
     end
   end
 
+  module Run
+    def run(stream_name, **arguments, &action)
+      consumer, threads, addresses = nil
+
+      return_value = start stream_name, **arguments do |_consumer, _threads, _addresses|
+        consumer = _consumer
+        threads = _threads
+        addresses = _addresses
+      end
+
+      loop do
+        action.(consumer, threads, addresses) if action
+        consumer.subscription.cycle { nil }
+      end
+
+      addresses.each do |address|
+        Actor::Messaging::Send.(:stop, address)
+      end
+
+      threads.each &:join
+
+      return_value
+    end
+  end
+
   module Start
     def start(stream_name, **arguments, &probe)
       instance = build stream_name, **arguments
 
       _, subscription_thread = ::Actor::Start.(instance.subscription)
 
-      actor_address = Actor.start instance, instance.subscription
+      actor_address, actor_thread = Actor.start instance, instance.subscription, include: :thread
 
-      probe.(instance, actor_address) if probe
+      if probe
+        subscription_address = instance.subscription.address
+
+        probe.(instance, [actor_thread, subscription_thread], [actor_address, subscription_address])
+      end
 
       AsyncInvocation::Incorrect
     end
