@@ -12,12 +12,4 @@ context "Stream" do
       assert subscription.stream.name == stream_name
     end
   end
-
-  context "Position store dependency" do
-    position_store = consumer.position_store
-
-    test "Stream is set" do
-      assert position_store.stream.name == stream_name
-    end
-  end
 end

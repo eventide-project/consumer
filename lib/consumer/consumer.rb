@@ -67,18 +67,12 @@ module Consumer
   end
 
   module Configure
-    def configure(batch_size: nil, session: nil)
+    def configure(batch_size: nil, session: nil, position_store: nil)
       logger.trace { "Configuring (Batch Size: #{batch_size}, Session: #{session.inspect})" }
 
       super if defined? super
 
-      position_store_class = self.class.position_store_class
-
-      unless position_store_class.nil?
-        position_store = position_store_class.configure self, stream
-
-        starting_position = position_store.get
-      end
+      starting_position = self.position_store.get
 
       subscription = Subscription.configure(
         self,
@@ -96,13 +90,14 @@ module Consumer
   end
 
   module Build
-    def build(stream_name, batch_size: nil, session: nil, cycle_timeout_milliseconds: nil, cycle_maximum_milliseconds: nil)
-      stream = EventSource::Stream.canonize stream_name
+    def build(stream_name, batch_size: nil, position_store: nil, position_update_interval: nil, session: nil, cycle_timeout_milliseconds: nil, cycle_maximum_milliseconds: nil)
+      stream = EventSource::Stream.build stream_name
 
       instance = new stream
+      instance.position_update_interval = position_update_interval
       instance.cycle_maximum_milliseconds = cycle_maximum_milliseconds
       instance.cycle_timeout_milliseconds = cycle_timeout_milliseconds
-      instance.configure batch_size: batch_size, session: session
+      instance.configure batch_size: batch_size, position_store: position_store, session: session
       instance
     end
   end
