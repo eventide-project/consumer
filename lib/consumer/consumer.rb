@@ -15,6 +15,9 @@ module Consumer
       initializer :stream
 
       attr_writer :position_update_interval
+      def position_update_interval
+        @position_update_interval ||= Defaults.position_update_interval
+      end
 
       attr_accessor :cycle_maximum_milliseconds
       attr_accessor :cycle_timeout_milliseconds
@@ -163,10 +166,6 @@ module Consumer
       cls.singleton_class.class_exec do
         attr_accessor :position_store_class
         attr_writer :position_update_interval
-
-        def position_update_interval
-          @position_update_interval ||= Defaults.position_update_interval
-        end
       end
     end
 
