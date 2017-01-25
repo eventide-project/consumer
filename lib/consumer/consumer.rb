@@ -85,7 +85,9 @@ module Consumer
         cycle_timeout_milliseconds: cycle_timeout_milliseconds
       )
 
-      Dispatch.configure self, handler_registry: self.class.handler_registry
+      handlers = self.class.handler_registry.get self
+
+      dispatch = Dispatch.configure self, handlers
 
       logger.debug { "Configuring (Batch Size: #{batch_size}, Session: #{session.inspect})" }
     end

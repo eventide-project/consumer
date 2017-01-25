@@ -11,6 +11,10 @@ module Consumer
         def handled_events
           @handled_events ||= []
         end
+
+        def handled?(event_data)
+          handled_events.include? event_data
+        end
       end
     end
   end

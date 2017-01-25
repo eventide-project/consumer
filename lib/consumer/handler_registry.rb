@@ -13,21 +13,23 @@ module Consumer
         raise Error, error_message
       end
 
-      if handler.respond_to? :build
-        instance = handler.build
-      else
-        instance = handler
-      end
-
-      entries << instance
+      entries << handler
 
       logger.debug { "Handler registered (Handler: #{LogText.handler handler})" }
 
-      instance
+      handler
     end
 
-    def get
-      entries.to_a
+    def get(consumer)
+      entries.map do |handler|
+        if handler.is_a? Proc
+          proc { |event_data|
+            consumer.instance_exec event_data, &handler
+          }
+        else
+          handler.build
+        end
+      end
     end
 
     def registered?(handler)

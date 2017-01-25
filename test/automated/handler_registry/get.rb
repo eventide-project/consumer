@@ -2,15 +2,32 @@ require_relative '../automated_init'
 
 context "Handler Registry" do
   context "Get" do
-    handler_1 = proc { nil }
-    handler_2 = proc { nil }
+    consumer = Controls::Consumer.example
 
-    handler_registry = Consumer::HandlerRegistry.new
-    handler_registry.register handler_1
-    handler_registry.register handler_2
+    context "Handler class" do
+      handler_registry = Consumer::HandlerRegistry.new
+      handler_registry.register Controls::Handle::Example
 
-    test "Registered handlers are returned" do
-      assert handler_registry.get == [handler_1, handler_2]
+      handle, * = handler_registry.get(consumer)
+
+      test "Handler is instantiated" do
+        assert handle.instance_of? Controls::Handle::Example
+      end
+    end
+
+    context "Proc" do
+      handler = proc { self }
+
+      handler_registry = Consumer::HandlerRegistry.new
+      handler_registry.register handler
+
+      handle, * = handler_registry.get(consumer)
+
+      test "Handler is evaluated in context of consumer" do
+        context = handle.()
+
+        assert context.equal?(consumer)
+      end
     end
   end
 end

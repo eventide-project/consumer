@@ -4,22 +4,16 @@ module Consumer
 
     configure :dispatch
 
-    attr_writer :handler_registry
+    initializer :handlers
 
-    def handler_registry
-      @handler_registry ||= HandlerRegistry.new
-    end
+    def self.build(handlers=nil)
+      handlers = Array(handlers)
 
-    def self.build(handler_registry: nil)
-      instance = new
-      instance.handler_registry = handler_registry unless handler_registry.nil?
-      instance
+      new handlers
     end
 
     def call(event_data)
       logger.trace { "Dispatching event (#{LogText.event_data event_data})" }
-
-      handlers = handler_registry.get
 
       handlers.each do |handle|
         handle.(event_data)
