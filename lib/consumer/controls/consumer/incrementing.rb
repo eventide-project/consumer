@@ -1,7 +1,7 @@
 module Consumer
   module Controls
     module Consumer
-      class LogsEvents
+      class Incrementing
         include ::Consumer
 
         def self.logger
