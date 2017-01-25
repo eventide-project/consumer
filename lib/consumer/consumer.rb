@@ -8,7 +8,6 @@ module Consumer
       extend Start
 
       extend HandleMacro
-      extend PositionStoreMacro
 
       prepend Configure
 
@@ -159,20 +158,5 @@ module Consumer
     def handler_registry
       @handler_registry ||= HandlerRegistry.new
     end
-  end
-
-  module PositionStoreMacro
-    def self.extended(cls)
-      cls.singleton_class.class_exec do
-        attr_accessor :position_store_class
-        attr_writer :position_update_interval
-      end
-    end
-
-    def position_store_macro(position_store_class, update_interval: nil)
-      self.position_store_class = position_store_class
-      self.position_update_interval = update_interval
-    end
-    alias_method :position_store, :position_store_macro
   end
 end

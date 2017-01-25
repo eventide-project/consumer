@@ -16,13 +16,13 @@ module Consumer
           logger.debug { event_data.data.pretty_inspect }
         end
 
-        position_store PositionStore::LocalFile, update_interval: 10
-
-        def configure(session: nil, batch_size: nil)
+        def configure(session: nil, batch_size: nil, position_store: nil)
           sleep_duration = ENV['SLEEP_DURATION'] || 100
           sleep_duration = sleep_duration.to_i
 
           Get::Incrementing.configure self, sleep_duration
+
+          PositionStore::LocalFile.configure self, position_store: position_store
         end
       end
     end
