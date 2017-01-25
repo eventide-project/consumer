@@ -20,10 +20,6 @@ context "Position Store" do
       test "Position" do
         assert record.data.position == position
       end
-
-      test "Stream" do
-        assert record.data.stream == position_store.stream
-      end
     end
   end
 end

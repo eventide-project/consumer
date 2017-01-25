@@ -2,9 +2,7 @@ module Consumer
   module Controls
     module PositionStore
       def self.example
-        stream_name = StreamName.example
-
-        Example.build stream_name
+        Example.build
       end
 
       class Example
