@@ -1,6 +1,7 @@
 require 'actor'
 
 require 'configure'; Configure.activate
+require 'cycle'
 require 'messaging'
 require 'log'
 
