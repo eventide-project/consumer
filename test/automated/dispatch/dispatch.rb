@@ -8,7 +8,7 @@ context "Dispatch" do
 
   handlers = [handle_1, handle_2]
 
-  dispatch = Consumer::Dispatch.new handlers
+  dispatch = Consumer::Dispatch.build handlers
 
   event_data = Controls::EventData.example
 

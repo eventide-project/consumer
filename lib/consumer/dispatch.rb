@@ -4,12 +4,16 @@ module Consumer
 
     configure :dispatch
 
-    initializer :handlers
-
     def self.build(handlers=nil)
       handlers = Array(handlers)
 
-      new handlers
+      instance = new
+
+      handlers.each do |handler|
+        instance.add_handler handler
+      end
+
+      instance
     end
 
     def call(event_data)
@@ -26,6 +30,10 @@ module Consumer
 
     def add_handler(handler)
       handlers << handler
+    end
+
+    def handlers
+      @handlers ||= []
     end
 
     def to_proc
