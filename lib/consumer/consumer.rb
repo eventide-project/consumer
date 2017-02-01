@@ -42,6 +42,42 @@ module Consumer
     error_raised error, event_data
   end
 
+  def run(&probe)
+    threads, addresses = nil
+
+    start do |_, _threads, _addresses|
+      threads = _threads
+      addresses = _addresses
+    end
+
+    loop do
+      probe.(self, threads, addresses) if probe
+      consumer.subscription.cycle { nil }
+    end
+
+    addresses.each do |address|
+      Actor::Messaging::Send.(:stop, address)
+    end
+
+    threads.each &:join
+
+    AsyncInvocation::Incorrect
+  end
+
+  def start(&probe)
+    _, subscription_thread = ::Actor::Start.(subscription)
+
+    actor_address, actor_thread = Actor.start self, subscription, include: :thread
+
+    if probe
+      subscription_address = subscription.address
+
+      probe.(self, [actor_thread, subscription_thread], [actor_address, subscription_address])
+    end
+
+    AsyncInvocation::Incorrect
+  end
+
   def add_handler(handler)
     dispatch.add_handler handler
   end
@@ -109,45 +145,16 @@ module Consumer
   end
 
   module Run
-    def run(stream_name, **arguments, &action)
-      consumer, threads, addresses = nil
-
-      return_value = start stream_name, **arguments do |_consumer, _threads, _addresses|
-        consumer = _consumer
-        threads = _threads
-        addresses = _addresses
-      end
-
-      loop do
-        action.(consumer, threads, addresses) if action
-        consumer.subscription.cycle { nil }
-      end
-
-      addresses.each do |address|
-        Actor::Messaging::Send.(:stop, address)
-      end
-
-      threads.each &:join
-
-      return_value
+    def run(stream_name, **arguments, &probe)
+      instance = build stream_name, **arguments
+      instance.run &probe
     end
   end
 
   module Start
     def start(stream_name, **arguments, &probe)
       instance = build stream_name, **arguments
-
-      _, subscription_thread = ::Actor::Start.(instance.subscription)
-
-      actor_address, actor_thread = Actor.start instance, instance.subscription, include: :thread
-
-      if probe
-        subscription_address = instance.subscription.address
-
-        probe.(instance, [actor_thread, subscription_thread], [actor_address, subscription_address])
-      end
-
-      AsyncInvocation::Incorrect
+      instance.start &probe
     end
   end
 
