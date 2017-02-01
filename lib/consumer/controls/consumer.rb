@@ -8,7 +8,7 @@ module Consumer
       class Example
         include ::Consumer
 
-        handle Handle::Example
+        handler Handle::Example
 
         def configure(session: nil, batch_size: nil, position_store: nil)
           Get::Example.configure self

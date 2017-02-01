@@ -8,11 +8,11 @@ module Consumer
           @logger ||= ::Log.get self
         end
 
-        handle do |event_data|
+        handler do |event_data|
           logger.info { "Handled event (StreamName: #{event_data.stream_name}, GlobalPosition: #{event_data.global_position})" }
         end
 
-        handle do |event_data|
+        handler do |event_data|
           logger.debug { event_data.data.pretty_inspect }
         end
 

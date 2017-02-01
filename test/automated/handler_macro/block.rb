@@ -5,7 +5,7 @@ context "Handler Macro" do
     consumer_class = Class.new Controls::Consumer::Example do
       attr_accessor :handled_event
 
-      handle do |event_data|
+      handler do |event_data|
         self.handled_event = event_data
       end
 

@@ -7,7 +7,7 @@ module Consumer
       extend Run
       extend Start
 
-      extend HandleMacro
+      extend HandlerMacro
 
       prepend Configure
 
@@ -158,13 +158,13 @@ module Consumer
     end
   end
 
-  module HandleMacro
-    def handle_macro(handler=nil, &block)
+  module HandlerMacro
+    def handler_macro(handler=nil, &block)
       handler ||= block
 
       handler_registry.register handler
     end
-    alias_method :handle, :handle_macro
+    alias_method :handler, :handler_macro
 
     def handler_registry
       @handler_registry ||= HandlerRegistry.new
