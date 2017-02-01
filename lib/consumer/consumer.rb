@@ -11,7 +11,7 @@ module Consumer
 
       prepend Configure
 
-      initializer :stream
+      initializer :stream_name
 
       attr_writer :position_update_interval
       def position_update_interval
@@ -78,7 +78,7 @@ module Consumer
 
       subscription = Subscription.configure(
         self,
-        stream,
+        stream_name,
         get,
         position: starting_position,
         cycle_maximum_milliseconds: cycle_maximum_milliseconds,
@@ -95,9 +95,7 @@ module Consumer
 
   module Build
     def build(stream_name, batch_size: nil, position_store: nil, position_update_interval: nil, session: nil, cycle_timeout_milliseconds: nil, cycle_maximum_milliseconds: nil)
-      stream = EventSource::Stream.build stream_name
-
-      instance = new stream
+      instance = new stream_name
       instance.position_update_interval = position_update_interval
       instance.cycle_maximum_milliseconds = cycle_maximum_milliseconds
       instance.cycle_timeout_milliseconds = cycle_timeout_milliseconds

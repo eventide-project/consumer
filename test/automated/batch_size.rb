@@ -3,7 +3,7 @@ require_relative './automated_init'
 context "Batch Size" do
   batch_size = 11
 
-  stream = Controls::Stream.example
+  stream_name = Controls::StreamName.example
 
   consumer_class = Class.new do
     include ::Consumer
@@ -16,7 +16,7 @@ context "Batch Size" do
   end
 
   context "Consumer is built" do
-    consumer = consumer_class.build stream, batch_size: batch_size
+    consumer = consumer_class.build stream_name, batch_size: batch_size
 
     test "Batch size is available when consumer is configured" do
       assert consumer.batch_size == batch_size

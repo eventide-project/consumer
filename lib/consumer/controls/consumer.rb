@@ -2,7 +2,7 @@ module Consumer
   module Controls
     module Consumer
       def self.example
-        Example.new Stream.example
+        Example.new StreamName.example
       end
 
       class Example

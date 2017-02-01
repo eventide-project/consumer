@@ -4,9 +4,9 @@ context "Handler Macro" do
   context "Handler is a class" do
     consumer_class = Controls::Consumer::Example
 
-    stream = Controls::Stream.example
+    stream_name = Controls::StreamName.example
 
-    consumer = consumer_class.build stream
+    consumer = consumer_class.build stream_name
 
     context "Event is dispatched" do
       dispatch = consumer.dispatch

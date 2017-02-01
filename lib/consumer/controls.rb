@@ -10,7 +10,6 @@ require 'consumer/controls/get/incrementing'
 require 'consumer/controls/handle'
 require 'consumer/controls/id'
 require 'consumer/controls/position'
-require 'consumer/controls/stream'
 require 'consumer/controls/stream_name'
 
 require 'consumer/controls/position_store'

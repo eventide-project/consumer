@@ -21,7 +21,7 @@ context "Consumer" do
     end
 
     test "Stream is set" do
-      assert consumer.stream.name == stream_name
+      assert consumer.stream_name == stream_name
     end
   end
 end

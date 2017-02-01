@@ -5,7 +5,7 @@ module Consumer
 
     configure :subscription
 
-    initializer :stream, :get
+    initializer :stream_name, :get
 
     attr_accessor :next_batch
 
@@ -16,11 +16,11 @@ module Consumer
 
     dependency :cycle, Cycle
 
-    def self.build(stream, get, position: nil, cycle_maximum_milliseconds: nil, cycle_timeout_milliseconds: nil)
+    def self.build(stream_name, get, position: nil, cycle_maximum_milliseconds: nil, cycle_timeout_milliseconds: nil)
       cycle_maximum_milliseconds ||= Defaults.cycle_maximum_milliseconds
       cycle_timeout_milliseconds ||= Defaults.cycle_timeout_milliseconds
 
-      instance = new stream, get
+      instance = new stream_name, get
 
       instance.position = position
 
@@ -84,10 +84,6 @@ module Consumer
       self.position = batch.last.global_position + 1
 
       batch
-    end
-
-    def stream_name
-      stream.name
     end
   end
 end
