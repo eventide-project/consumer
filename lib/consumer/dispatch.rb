@@ -24,6 +24,10 @@ module Consumer
       nil
     end
 
+    def add_handler(handler)
+      handlers << handler
+    end
+
     def to_proc
       method :call
     end

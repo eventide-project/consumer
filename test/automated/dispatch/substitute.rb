@@ -4,7 +4,7 @@ context "Dispatch" do
   context "Substitute" do
     substitute = SubstAttr::Substitute.build Consumer::Dispatch
 
-    context "No dispatches" do
+    context "No event dispatched" do
       context "Dispatched predicate" do
         test "Returns false" do
           refute substitute.dispatched?
@@ -12,7 +12,7 @@ context "Dispatch" do
       end
     end
 
-    context "Dispatches" do
+    context "Event dispatched" do
       event_data = Controls::EventData.example
 
       substitute.(event_data)
@@ -67,6 +67,16 @@ context "Dispatch" do
             end
           end
         end
+      end
+    end
+
+    context "Add handler" do
+      handler = Controls::Handle.example
+
+      substitute.add_handler handler
+
+      test "Predicate returns true" do
+        assert substitute.handler?(handler)
       end
     end
   end

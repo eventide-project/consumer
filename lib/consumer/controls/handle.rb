@@ -1,6 +1,10 @@
 module Consumer
   module Controls
     module Handle
+      def self.example
+        Example.new
+      end
+
       class Example
         include Messaging::Handle
 

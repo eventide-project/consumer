@@ -42,6 +42,10 @@ module Consumer
     error_raised error, event_data
   end
 
+  def add_handler(handler)
+    dispatch.add_handler handler
+  end
+
   def error_raised(error, _)
     raise error
   end

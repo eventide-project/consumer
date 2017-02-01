@@ -10,6 +10,10 @@ module Consumer
           dispatched_events << event_data
         end
 
+        def add_handler(handle)
+          handlers << handle
+        end
+
         def dispatched_events
           @dispatched_events ||= []
         end
@@ -22,6 +26,14 @@ module Consumer
           end
 
           dispatched_events.any? &block
+        end
+
+        def handlers
+          @handlers ||= []
+        end
+
+        def handler?(handler)
+          handlers.include? handler
         end
       end
     end
