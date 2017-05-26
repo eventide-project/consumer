@@ -1,6 +1,6 @@
 require_relative '../../automated_init'
 
-context "Consume Event" do
+context "Consume Message" do
   context "Position update interval not reached" do
     position = 1
 

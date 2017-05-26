@@ -1,13 +1,13 @@
 require_relative './automated_init'
 
-context "Consume Event" do
+context "Consume Message" do
   message_data = Controls::MessageData.example
 
   consumer = Controls::Consumer.example
 
   consumer.(message_data)
 
-  test "Event is dispatched" do
+  test "Message is dispatched" do
     assert consumer.dispatch do
       dispatched? message_data
     end
