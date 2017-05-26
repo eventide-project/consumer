@@ -11,3 +11,8 @@ gems_backup
 *scratch*
 settings
 tmp
+
+lib/consumer/event_store
+lib/consumer/event_store.rb
+lib/consumer/postgres
+lib/consumer/postgres.rb
