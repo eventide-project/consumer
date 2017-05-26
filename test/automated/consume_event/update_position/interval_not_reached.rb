@@ -7,9 +7,9 @@ context "Consume Event" do
     consumer = Controls::Consumer.example
     consumer.position_update_interval = 2
 
-    event_data = Controls::EventData.example global_position: position
+    message_data = Controls::MessageData.example global_position: position
 
-    consumer.(event_data)
+    consumer.(message_data)
 
     test "Position is not updated" do
       refute consumer.position_store do

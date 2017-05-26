@@ -5,8 +5,8 @@ context "Handler Macro" do
     consumer_class = Class.new Controls::Consumer::Example do
       attr_accessor :handled_event
 
-      handler do |event_data|
-        self.handled_event = event_data
+      handler do |message_data|
+        self.handled_event = message_data
       end
 
       def handled?(event)
@@ -19,12 +19,12 @@ context "Handler Macro" do
     consumer = consumer_class.build stream_name
 
     context "Event is dispatched" do
-      event_data = Controls::EventData.example
+      message_data = Controls::MessageData.example
 
-      consumer.(event_data)
+      consumer.(message_data)
 
-      test "Event data is dispatched to block" do
-        assert consumer.handled?(event_data)
+      test "Message data is dispatched to block" do
+        assert consumer.handled?(message_data)
       end
     end
   end

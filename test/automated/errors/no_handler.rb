@@ -4,7 +4,7 @@ context "Error Handling" do
   context "No error handler" do
     consumer = Controls::Consumer.example
 
-    event_data = Controls::EventData.example
+    message_data = Controls::MessageData.example
 
     context "Dispatch fails" do
       error = Controls::Error.example
@@ -12,7 +12,7 @@ context "Error Handling" do
       consumer.dispatch = proc { raise error }
 
       test "Error is raised" do
-        assert proc { consumer.(event_data) } do
+        assert proc { consumer.(message_data) } do
           raises_error? Controls::Error::Example
         end
       end

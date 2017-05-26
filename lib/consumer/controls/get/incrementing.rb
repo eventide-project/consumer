@@ -16,7 +16,7 @@ module Consumer
           sleep Rational(sleep_duration, 1000)
 
           3.times.map do |offset|
-            EventData.get(
+            MessageData.get(
               stream_name,
               position + offset,
               offset
@@ -25,11 +25,11 @@ module Consumer
         end
       end
 
-      class EventData
+      class MessageData
         def self.get(stream_name, global_position, position)
           data = { :position => position, :global_position => global_position }
 
-          Controls::EventData.example(
+          Controls::MessageData.example(
             stream_name: stream_name,
             data: data,
             global_position: global_position,

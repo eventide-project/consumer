@@ -3,7 +3,7 @@ module Consumer
     module Position
       module Stream
         def self.example
-          EventSource::Controls::EventData.position
+          MessageStore::Controls::MessageData.position
         end
       end
 
@@ -11,7 +11,7 @@ module Consumer
         def self.example(offset: nil)
           offset ||= 0
 
-          position = EventSource::Controls::EventData::Read.global_position
+          position = MessageStore::Controls::MessageData::Read.global_position
 
           position + offset
         end

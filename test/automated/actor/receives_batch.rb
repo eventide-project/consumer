@@ -2,7 +2,7 @@ require_relative '../automated_init'
 
 context "Consumer Actor" do
   context "Receives batch" do
-    batch = Controls::EventData::Batch.example
+    batch = Controls::MessageData::Batch.example
     reply_message = Consumer::Subscription::GetBatch::Reply.new batch
 
     subscription_address = Actor::Messaging::Address.build

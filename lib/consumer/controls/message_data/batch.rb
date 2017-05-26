@@ -1,6 +1,6 @@
 module Consumer
   module Controls
-    module EventData
+    module MessageData
       module Batch
         def self.example(instances: nil, position: nil)
           instances ||= size
@@ -9,7 +9,7 @@ module Consumer
           instances.times.map do |offset|
             position = start_position + offset
 
-            EventData.example global_position: position
+            MessageData.example(global_position: position)
           end
         end
 

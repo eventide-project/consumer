@@ -28,18 +28,18 @@ module Consumer
     end
   end
 
-  def call(event_data)
-    logger.trace { "Dispatching event (#{LogText.event_data event_data})" }
+  def call(message_data)
+    logger.trace { "Dispatching event (#{LogText.message_data message_data})" }
 
-    dispatch.(event_data)
+    dispatch.(message_data)
 
-    update_position event_data.global_position
+    update_position message_data.global_position
 
-    logger.info { "Event dispatched (#{LogText.event_data event_data})" }
+    logger.info { "Event dispatched (#{LogText.message_data message_data})" }
 
   rescue => error
-    logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.event_data event_data})" }
-    error_raised error, event_data
+    logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data message_data})" }
+    error_raised error, message_data
   end
 
   def run(&probe)
@@ -103,8 +103,8 @@ module Consumer
   end
 
   module LogText
-    def self.event_data(event_data)
-      "Stream: #{event_data.stream_name}, Position: #{event_data.position}, GlobalPosition: #{event_data.global_position}, Type: #{event_data.type}"
+    def self.message_data(message_data)
+      "Stream: #{message_data.stream_name}, Position: #{message_data.position}, GlobalPosition: #{message_data.global_position}, Type: #{message_data.type}"
     end
   end
 

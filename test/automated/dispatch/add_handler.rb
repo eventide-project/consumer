@@ -9,12 +9,12 @@ context "Dispatch" do
     dispatch.add_handler handler
 
     context "Dispatch event" do
-      event_data = Controls::EventData.example
+      message_data = Controls::MessageData.example
 
-      dispatch.(event_data)
+      dispatch.(message_data)
 
       test "Handler handles event" do
-        assert handler.handled?(event_data)
+        assert handler.handled?(message_data)
       end
     end
   end

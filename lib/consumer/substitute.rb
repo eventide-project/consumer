@@ -5,19 +5,19 @@ module Consumer
     end
 
     class Consumer
-      def call(event_data)
-        consumed_events << event_data
+      def call(message_data)
+        consumed_events << message_data
       end
 
       def consumed_events
         @consumed_events ||= []
       end
 
-      def consumed?(event_data=nil, &block)
-        if event_data.nil?
+      def consumed?(message_data=nil, &block)
+        if message_data.nil?
           block ||= proc { true }
         else
-          block ||= proc { |e| event_data == e }
+          block ||= proc { |e| message_data == e }
         end
 
         consumed_events.any? &block

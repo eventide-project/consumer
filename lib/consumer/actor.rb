@@ -25,8 +25,8 @@ module Consumer
 
       request_batch
 
-      events.each do |event_data|
-        consumer.(event_data)
+      events.each do |message_data|
+        consumer.(message_data)
       end
 
       logger.debug { "Batch received (Events: #{events.count})" }

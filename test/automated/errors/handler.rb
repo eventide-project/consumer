@@ -4,11 +4,11 @@ context "Error Handling" do
   context "Consumer handles errors" do
     consumer_class = Class.new Controls::Consumer::Example do
       attr_accessor :handled_error
-      attr_accessor :dispatched_event_data
+      attr_accessor :dispatched_message_data
 
-      def error_raised(error, event_data)
+      def error_raised(error, message_data)
         self.handled_error = error
-        self.dispatched_event_data = event_data
+        self.dispatched_message_data = message_data
       end
     end
 
@@ -16,7 +16,7 @@ context "Error Handling" do
 
     consumer = consumer_class.new stream_name
 
-    event_data = Controls::EventData.example
+    message_data = Controls::MessageData.example
 
     context "Dispatch fails" do
       error = Controls::Error.example
@@ -24,7 +24,7 @@ context "Error Handling" do
       consumer.dispatch = proc { raise error }
 
       test "Error is not raised" do
-        refute proc { consumer.(event_data) } do
+        refute proc { consumer.(message_data) } do
           raises_error? Controls::Error::Example
         end
       end
@@ -33,8 +33,8 @@ context "Error Handling" do
         assert consumer.handled_error == error
       end
 
-      test "Event data is passed to error handler" do
-        assert consumer.dispatched_event_data == event_data
+      test "Message data is passed to error handler" do
+        assert consumer.dispatched_message_data == message_data
       end
     end
   end

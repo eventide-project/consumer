@@ -3,18 +3,18 @@ require_relative '../automated_init'
 context "Dispatch" do
   handled = []
 
-  handle_1 = proc { |event_data| handled << event_data }
-  handle_2 = proc { |event_data| handled << event_data }
+  handle_1 = proc { |message_data| handled << message_data }
+  handle_2 = proc { |message_data| handled << message_data }
 
   handlers = [handle_1, handle_2]
 
   dispatch = Consumer::Dispatch.build handlers
 
-  event_data = Controls::EventData.example
+  message_data = Controls::MessageData.example
 
-  dispatch.(event_data)
+  dispatch.(message_data)
 
   test "Each handler handles event data" do
-    assert handled == [event_data, event_data]
+    assert handled == [message_data, message_data]
   end
 end

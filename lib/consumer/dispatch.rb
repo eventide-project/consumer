@@ -16,14 +16,14 @@ module Consumer
       instance
     end
 
-    def call(event_data)
-      logger.trace { "Dispatching event (#{LogText.event_data event_data})" }
+    def call(message_data)
+      logger.trace { "Dispatching event (#{LogText.message_data message_data})" }
 
       handlers.each do |handle|
-        handle.(event_data)
+        handle.(message_data)
       end
 
-      logger.debug { "Event dispatched (#{LogText.event_data event_data}, Handlers Count: #{handlers.count})" }
+      logger.debug { "Event dispatched (#{LogText.message_data message_data}, Handlers Count: #{handlers.count})" }
 
       nil
     end

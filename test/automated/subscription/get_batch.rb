@@ -2,7 +2,7 @@ require_relative '../automated_init'
 
 context "Subscription" do
   context "Get batch" do
-    batch = Controls::EventData::Batch.example
+    batch = Controls::MessageData::Batch.example
     subscription = Controls::Subscription.example next_batch: batch
 
     reply_address = Actor::Messaging::Address.new

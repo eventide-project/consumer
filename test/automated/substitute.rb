@@ -13,9 +13,9 @@ context "Consumer" do
     end
 
     context "Event is consumed" do
-      event_data = Controls::EventData.example
+      message_data = Controls::MessageData.example
 
-      substitute.(event_data)
+      substitute.(message_data)
 
       context "Consumed predicate" do
         context "No argument" do
@@ -25,30 +25,30 @@ context "Consumer" do
         end
 
         context "Argument" do
-          context "Event data matches" do
+          context "Message data matches" do
             test "Returns true" do
-              assert substitute.consumed?(event_data)
+              assert substitute.consumed?(message_data)
             end
           end
 
-          context "Event data does not match" do
-            other_event_data = Controls::EventData.example
+          context "Message data does not match" do
+            other_message_data = Controls::MessageData.example
 
             test "Returns false" do
-              refute substitute.consumed?(other_event_data)
+              refute substitute.consumed?(other_message_data)
             end
           end
         end
 
         context "Block" do
-          test "Event data is passed" do
-            _event_data = nil
+          test "Message data is passed" do
+            _message_data = nil
 
-            substitute.consumed? do |event_data|
-              _event_data = event_data
+            substitute.consumed? do |message_data|
+              _message_data = message_data
             end
 
-            assert _event_data.equal?(event_data)
+            assert _message_data.equal?(message_data)
           end
 
           context "Block returns true" do

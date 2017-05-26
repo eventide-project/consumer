@@ -23,8 +23,8 @@ module Consumer
     def get(consumer)
       entries.map do |handler|
         if handler.is_a? Proc
-          proc { |event_data|
-            consumer.instance_exec event_data, &handler
+          proc { |message_data|
+            consumer.instance_exec message_data, &handler
           }
         else
           handler.build

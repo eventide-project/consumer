@@ -11,14 +11,14 @@ context "Handler Macro" do
     context "Event is dispatched" do
       dispatch = consumer.dispatch
 
-      event_data = Controls::EventData.example
+      message_data = Controls::MessageData.example
 
-      dispatch.(event_data)
+      dispatch.(message_data)
 
       test "Event is handled by instance of handler class" do
         handler, * = dispatch.handlers
 
-        assert handler.handled?(event_data)
+        assert handler.handled?(message_data)
       end
     end
   end
