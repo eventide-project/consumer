@@ -1,7 +1,7 @@
 require_relative './interactive_init'
 
 Actor::Supervisor.start do
-  stream = Controls::Stream.example
+  stream_name = Controls::StreamName.example
 
-  Controls::Consumer::Incrementing.start stream
+  Controls::Consumer::Incrementing.start(stream_name)
 end
