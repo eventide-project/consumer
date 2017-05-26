@@ -129,7 +129,7 @@ module Consumer
 
       dispatch = Dispatch.configure self, handlers
 
-      logger.debug { "Configuring (Batch Size: #{batch_size}, Session: #{session.inspect})" }
+      logger.debug { "Done configuring (Batch Size: #{batch_size}, Session: #{session.inspect}, Starting Position: #{starting_position})" }
     end
   end
 

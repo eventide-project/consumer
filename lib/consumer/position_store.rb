@@ -61,7 +61,7 @@ module Consumer
 
         position = super
 
-        logger.debug { "Get position done (Position: #{position || '(none)'})" }
+        logger.info { "Get position done (Position: #{position || '(none)'})" }
 
         telemetry.record :get, Telemetry::Get.new(position)
 
@@ -79,7 +79,7 @@ module Consumer
 
         super
 
-        logger.debug { "Put position done (Position: #{position})" }
+        logger.info { "Put position done (Position: #{position})" }
 
         telemetry.record :put, Telemetry::Put.new(position)
 
