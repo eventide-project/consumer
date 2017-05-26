@@ -14,7 +14,7 @@ context "Dispatch" do
 
   dispatch.(message_data)
 
-  test "Each handler handles event data" do
+  test "Each handler handles message data" do
     assert handled == [message_data, message_data]
   end
 end
