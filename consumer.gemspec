@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name = 'evt-consumer'
-  s.version = '0.5.0.1'
+  s.version = '0.5.0.2'
   s.summary = 'Consumer library that maintains a long running subscription to an event stream'
   s.description = ' '
 
