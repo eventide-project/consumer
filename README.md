@@ -24,11 +24,16 @@ class SomeConsumer
     # - OR -
 
     # Configure an EventStore subscription
-    EventSource::EventStore::HTTP::Get.configure self, session: session, batch_size: batch_size
+    EventSource::EventStore::HTTP::Get.configure(
+      self,
+      session: session,
+      batch_size: batch_size
+    )
   end
 
-  # Errors are handled by this method. If omitted, the default action when an
-  # error is raised during the dispatching of a message is to re-raise the error
+  # Errors are handled by this method. If this method is omitted, the default
+  # action when an error is raised during the handling of a message is to
+  # re-raise the error.
   def error_raised(error, event_data)
     SomeErrorNotificationService.(error)
 
@@ -39,21 +44,21 @@ end
 
 ### Using a Consumer Class
 
-The consumer can be started directly or through [process-host](https://github.com/eventide-project/process-host). Use of ProcessHost is recommended for services deployed to a production environment.
+The consumer can be started directly or through the use of [component-host](https://github.com/eventide-project/component-host). Use of ComponentHost is recommended for services deployed to a production environment.
 
 #### Starting a Consumer Directly
 
 ```ruby
 # Postgres
-SomeConsumer.start "someCategory"
+SomeConsumer.start("someCategory")
 
 # EventStore
-SomeConsumer.start "$ce-someCategory"
+SomeConsumer.start("$ce-someCategory")
 ```
 
-#### Starting via ProcessHost
+#### Starting via ComponentHost
 
-**TBD**
+See the [documentation](https://github.com/eventide-project/component-host) for information on how to use ComponentHost with consumers.
 
 ## License
 
