@@ -5,13 +5,13 @@ module Consumer
         include Consumer::PositionStore
 
         def get
-          return 0 unless File.exist? path
-          text = File.read path
+          return 0 unless File.exist?(path)
+          text = File.read(path)
           text.to_i
         end
 
         def put(position)
-          File.write path, position
+          File.write(path, position)
         end
 
         def path

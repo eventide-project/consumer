@@ -20,7 +20,7 @@ module Consumer
       cycle_maximum_milliseconds ||= Defaults.cycle_maximum_milliseconds
       cycle_timeout_milliseconds ||= Defaults.cycle_timeout_milliseconds
 
-      instance = new stream_name, get
+      instance = new(stream_name, get)
 
       instance.position = position
 
@@ -67,7 +67,7 @@ module Consumer
 
       batch = reset_next_batch
 
-      reply_message = get_batch.reply_message batch
+      reply_message = get_batch.reply_message(batch)
 
       send.(reply_message, get_batch.reply_address)
 

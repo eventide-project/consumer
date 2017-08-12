@@ -9,15 +9,15 @@ module Consumer
         include Messaging::Handle
 
         def handle(message_data)
-          handled_events << message_data
+          handled_messages << message_data
         end
 
-        def handled_events
-          @handled_events ||= []
+        def handled_messages
+          @handled_messages ||= []
         end
 
         def handled?(message_data)
-          handled_events.include? message_data
+          handled_messages.include?(message_data)
         end
       end
     end

@@ -15,7 +15,7 @@ module Consumer
         def call(stream_name, position: nil)
           position ||= 0
 
-          stream = streams.fetch stream_name do
+          stream = streams.fetch(stream_name) do
             return nil
           end
 

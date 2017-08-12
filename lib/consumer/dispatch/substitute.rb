@@ -7,25 +7,25 @@ module Consumer
 
       class Dispatch
         def call(message_data)
-          dispatched_events << message_data
+          dispatched_messages << message_data
         end
 
         def add_handler(handle)
           handlers << handle
         end
 
-        def dispatched_events
-          @dispatched_events ||= []
+        def dispatched_messages
+          @dispatched_messages ||= []
         end
 
         def dispatched?(message_data=nil, &block)
           if message_data.nil?
             block ||= proc { true }
           else
-            block ||= proc { |e| message_data == e }
+            block ||= proc { |msg| message_data == msg }
           end
 
-          dispatched_events.any? &block
+          dispatched_messages.any? &block
         end
 
         def handlers
@@ -33,7 +33,7 @@ module Consumer
         end
 
         def handler?(handler)
-          handlers.include? handler
+          handlers.include?(handler)
         end
       end
     end

@@ -7,18 +7,18 @@ context "Handler Registry" do
 
       registry = Consumer::HandlerRegistry.new
 
-      handler = registry.register handler_class
+      handler = registry.register(handler_class)
 
       test "Handler is registered" do
-        assert registry.registered?(handler)
+        assert(registry.registered?(handler))
       end
 
       test "Handler class is registered" do
-        assert registry.registered?(handler_class)
+        assert(registry.registered?(handler_class))
       end
 
       test "Length is increased" do
-        assert registry.count == 1
+        assert(registry.count == 1)
       end
     end
 
@@ -27,18 +27,18 @@ context "Handler Registry" do
 
       registry = Consumer::HandlerRegistry.new
 
-      registry.register handler
+      registry.register(handler)
 
       test "Handler is registered" do
-        assert registry.registered?(handler)
+        assert(registry.registered?(handler))
       end
 
       test "Proc class is not registered" do
-        refute registry.registered?(Proc)
+        refute(registry.registered?(Proc))
       end
 
       test "Length is increased" do
-        assert registry.count == 1
+        assert(registry.count == 1)
       end
     end
   end

@@ -16,10 +16,10 @@ context "Batch Size" do
   end
 
   context "Consumer is built" do
-    consumer = consumer_class.build stream_name, batch_size: batch_size
+    consumer = consumer_class.build(stream_name, batch_size: batch_size)
 
     test "Batch size is available when consumer is configured" do
-      assert consumer.batch_size == batch_size
+      assert(consumer.batch_size == batch_size)
     end
   end
 end

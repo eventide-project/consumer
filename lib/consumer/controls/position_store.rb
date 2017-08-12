@@ -13,7 +13,7 @@ module Consumer
         def configure
           self.telemetry_sink = ::Consumer::PositionStore::Telemetry::Sink.new
 
-          telemetry.register telemetry_sink
+          telemetry.register(telemetry_sink)
         end
 
         def get

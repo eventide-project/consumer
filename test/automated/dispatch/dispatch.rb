@@ -8,13 +8,13 @@ context "Dispatch" do
 
   handlers = [handle_1, handle_2]
 
-  dispatch = Consumer::Dispatch.build handlers
+  dispatch = Consumer::Dispatch.build(handlers)
 
   message_data = Controls::MessageData.example
 
   dispatch.(message_data)
 
   test "Each handler handles message data" do
-    assert handled == [message_data, message_data]
+    assert(handled == [message_data, message_data])
   end
 end

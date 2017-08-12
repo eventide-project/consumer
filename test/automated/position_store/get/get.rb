@@ -7,18 +7,18 @@ context "Position Store" do
     position = position_store.get
 
     test "Position is returned" do
-      assert position == Controls::Position::Global.example
+      assert(position == Controls::Position::Global.example)
     end
 
     context "Recorded telemetry" do
       record, * = position_store.telemetry_sink.get_records
 
       test "Is recorded" do
-        refute record.nil?
+        refute(record.nil?)
       end
 
       test "Position" do
-        assert record.data.position == position
+        assert(record.data.position == position)
       end
     end
   end

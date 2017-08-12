@@ -7,7 +7,7 @@ module Consumer
         initializer :sleep_duration
 
         def self.build(sleep_duration)
-          new sleep_duration
+          new(sleep_duration)
         end
 
         def call(stream_name, position: nil)
@@ -27,7 +27,10 @@ module Consumer
 
       class MessageData
         def self.get(stream_name, global_position, position)
-          data = { :position => position, :global_position => global_position }
+          data = {
+            :position => position,
+            :global_position => global_position
+          }
 
           Controls::MessageData.example(
             stream_name: stream_name,

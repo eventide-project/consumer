@@ -6,21 +6,21 @@ module Consumer
 
     class Consumer
       def call(message_data)
-        consumed_events << message_data
+        dispatched_messages << message_data
       end
 
-      def consumed_events
-        @consumed_events ||= []
+      def dispatched_messages
+        @dispatched_messages ||= []
       end
 
-      def consumed?(message_data=nil, &block)
+      def dispatched?(message_data=nil, &block)
         if message_data.nil?
           block ||= proc { true }
         else
-          block ||= proc { |e| message_data == e }
+          block ||= proc { |msg| message_data == msg }
         end
 
-        consumed_events.any? &block
+        dispatched_messages.any?(&block)
       end
     end
   end

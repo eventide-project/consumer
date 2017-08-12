@@ -8,8 +8,8 @@ module Consumer
         record :put
       end
 
-      Get = Struct.new :position
-      Put = Struct.new :position
+      Get = Struct.new(:position)
+      Put = Struct.new(:position)
     end
   end
 end

@@ -1,6 +1,6 @@
 module Consumer
   class Subscription
-    GetBatch = Struct.new :reply_address
+    GetBatch = Struct.new(:reply_address)
 
     class GetBatch
       include ::Actor::Messaging::Message

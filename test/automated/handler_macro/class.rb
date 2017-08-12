@@ -6,7 +6,7 @@ context "Handler Macro" do
 
     stream_name = Controls::StreamName.example
 
-    consumer = consumer_class.build stream_name
+    consumer = consumer_class.build(stream_name)
 
     context "Event is dispatched" do
       dispatch = consumer.dispatch
@@ -18,7 +18,7 @@ context "Handler Macro" do
       test "Event is handled by instance of handler class" do
         handler, * = dispatch.handlers
 
-        assert handler.handled?(message_data)
+        assert(handler.handled?(message_data))
       end
     end
   end
