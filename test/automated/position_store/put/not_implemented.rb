@@ -6,7 +6,7 @@ context "Position Store" do
       include Consumer::PositionStore
     end
 
-    position_store = position_store.new
+    position_store = position_store.build
 
     test "Abstract method error not raised" do
       position = Controls::Position::Global.example

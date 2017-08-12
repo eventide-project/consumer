@@ -17,9 +17,15 @@ module Consumer
 
     Virtual::Method.define(self, :configure)
 
+    attr_reader :identifier
+
+    def initialize(identifier)
+      @identifier = identifier
+    end
+
     module Build
-      def build
-        instance = new
+      def build(identifier=nil)
+        instance = new(identifier)
         instance.configure
         instance
       end

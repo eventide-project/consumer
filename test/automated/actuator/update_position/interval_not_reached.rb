@@ -1,6 +1,6 @@
 require_relative '../../automated_init'
 
-context "Consume Message" do
+context "Actuator" do
   context "Position update interval not reached" do
     position = 1
 
