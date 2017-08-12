@@ -16,10 +16,10 @@ context "Session" do
   end
 
   context "Consumer is built" do
-    consumer = consumer_class.build stream_name, session: session
+    consumer = consumer_class.build(stream_name, session: session)
 
     test "Session is available when consumer is configured" do
-      assert consumer.session.equal?(session)
+      assert(consumer.session.equal?(session))
     end
   end
 end

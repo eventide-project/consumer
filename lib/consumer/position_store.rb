@@ -15,13 +15,11 @@ module Consumer
       end
     end
 
-    Virtual::Method.define self, :configure
+    Virtual::Method.define(self, :configure)
 
     module Build
-      def build
-        instance = new
-        instance.configure
-        instance
+      def self.extended(cls)
+        Virtual::PureMethod.define(cls.singleton_class, :build)
       end
     end
 
@@ -31,13 +29,13 @@ module Consumer
 
         if position_store.nil?
           if arguments.any?
-            position_store = build *arguments, **keyword_arguments
+            position_store = build(*arguments, **keyword_arguments)
           else
-            position_store = build *arguments
+            position_store = build(*arguments)
           end
         end
 
-        receiver.public_send "#{attr_name}=", position_store
+        receiver.public_send("#{attr_name}=", position_store)
 
         position_store
       end
@@ -45,7 +43,7 @@ module Consumer
 
     module Configure
       def configure
-        ::Telemetry.configure self
+        ::Telemetry.configure(self)
 
         super
       end
@@ -53,7 +51,7 @@ module Consumer
 
     module Get
       def self.prepended(cls)
-        Virtual::PureMethod.define cls, :get
+        Virtual::PureMethod.define(cls, :get)
       end
 
       def get
@@ -63,7 +61,7 @@ module Consumer
 
         logger.info { "Get position done (Position: #{position || '(none)'})" }
 
-        telemetry.record :get, Telemetry::Get.new(position)
+        telemetry.record(:get, Telemetry::Get.new(position))
 
         position
       end
@@ -71,7 +69,7 @@ module Consumer
 
     module Put
       def self.prepended(cls)
-        Virtual::Method.define cls, :put
+        Virtual::Method.define(cls, :put)
       end
 
       def put(position)
@@ -81,7 +79,7 @@ module Consumer
 
         logger.info { "Put position done (Position: #{position})" }
 
-        telemetry.record :put, Telemetry::Put.new(position)
+        telemetry.record(:put, Telemetry::Put.new(position))
 
         nil
       end

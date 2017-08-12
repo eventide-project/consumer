@@ -1,6 +1,6 @@
-require_relative './automated_init'
+require_relative '../automated_init'
 
-context "Consume Message" do
+context "Actuator" do
   message_data = Controls::MessageData.example
 
   consumer = Controls::Consumer.example
@@ -8,8 +8,8 @@ context "Consume Message" do
   consumer.(message_data)
 
   test "Message is dispatched" do
-    assert consumer.dispatch do
-      dispatched? message_data
+    assert(consumer.dispatch) do
+      dispatched?(message_data)
     end
   end
 end

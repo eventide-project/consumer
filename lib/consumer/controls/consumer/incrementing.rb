@@ -3,10 +3,7 @@ module Consumer
     module Consumer
       class Incrementing
         include ::Consumer
-
-        def self.logger
-          @logger ||= ::Log.get self
-        end
+        include ::Log::Dependency
 
         handler do |message_data|
           logger.info { "Handled event (StreamName: #{message_data.stream_name}, GlobalPosition: #{message_data.global_position})" }
@@ -20,9 +17,9 @@ module Consumer
           sleep_duration = ENV['SLEEP_DURATION'] || 100
           sleep_duration = sleep_duration.to_i
 
-          Get::Incrementing.configure self, sleep_duration
+          Get::Incrementing.configure(self, sleep_duration)
 
-          PositionStore::LocalFile.configure self, position_store: position_store
+          PositionStore::LocalFile.configure(self, position_store: position_store)
         end
       end
     end

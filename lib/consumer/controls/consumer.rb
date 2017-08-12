@@ -2,7 +2,7 @@ module Consumer
   module Controls
     module Consumer
       def self.example
-        Example.new StreamName.example
+        Example.new(StreamName.example)
       end
 
       class Example
@@ -11,8 +11,8 @@ module Consumer
         handler Handle::Example
 
         def configure(session: nil, batch_size: nil, position_store: nil)
-          Get::Example.configure self
-          PositionStore::Example.configure self, position_store: position_store
+          Get::Example.configure(self)
+          PositionStore::Example.configure(self, position_store: position_store)
         end
       end
     end

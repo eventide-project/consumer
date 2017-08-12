@@ -14,7 +14,7 @@ context "Error Handling" do
 
     stream_name = Controls::StreamName.example
 
-    consumer = consumer_class.new stream_name
+    consumer = consumer_class.new(stream_name)
 
     message_data = Controls::MessageData.example
 
@@ -30,11 +30,11 @@ context "Error Handling" do
       end
 
       test "Error is passed to error handler" do
-        assert consumer.handled_error == error
+        assert(consumer.handled_error == error)
       end
 
       test "Message data is passed to error handler" do
-        assert consumer.dispatched_message_data == message_data
+        assert(consumer.dispatched_message_data == message_data)
       end
     end
   end

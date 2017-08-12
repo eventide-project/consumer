@@ -1,11 +1,9 @@
 module Consumer
   module Controls
-    module Error
+    module Identifier
       def self.example
-        Example.new
+        'some-consumer'
       end
-
-      Example = Class.new(RuntimeError)
     end
   end
 end

@@ -19,23 +19,23 @@ module Consumer
     end
 
     handle Subscription::GetBatch::Reply do |get_batch_reply|
-      events = get_batch_reply.batch
+      messages = get_batch_reply.batch
 
-      logger.trace { "Received batch (Events: #{events.count})" }
+      logger.trace { "Received batch (Messages: #{messages.count})" }
 
       request_batch
 
-      events.each do |message_data|
+      messages.each do |message_data|
         consumer.(message_data)
       end
 
-      logger.debug { "Batch received (Events: #{events.count})" }
+      logger.debug { "Batch received (Events: #{messages.count})" }
     end
 
     def request_batch
       logger.trace { "Requesting batch" }
 
-      get_batch = Subscription::GetBatch.new address
+      get_batch = Subscription::GetBatch.new(address)
 
       send.(get_batch, subscription_address)
 

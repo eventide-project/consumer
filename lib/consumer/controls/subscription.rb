@@ -7,10 +7,10 @@ module Consumer
         get = Get.example
 
         unless batch.nil?
-          get.set_batch stream_name, batch, position
+          get.set_batch(stream_name, batch, position)
         end
 
-        subscription = ::Consumer::Subscription.new stream_name, get
+        subscription = ::Consumer::Subscription.new(stream_name, get)
 
         subscription.position = position if position
 

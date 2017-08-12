@@ -6,17 +6,17 @@ context "Position Store" do
 
     position = Controls::Position::Global.example
     
-    position_store.put position
+    position_store.put(position)
 
     context "Recorded telemetry" do
       record, * = position_store.telemetry_sink.put_records
 
       test "Is recorded" do
-        refute record.nil?
+        refute(record.nil?)
       end
 
       test "Position" do
-        assert record.data.position == position
+        assert(record.data.position == position)
       end
     end
   end

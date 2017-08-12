@@ -8,6 +8,7 @@ module Consumer
       extend Start
 
       extend HandlerMacro
+      extend IdentifierMacro
 
       prepend Configure
 
@@ -29,16 +30,16 @@ module Consumer
   end
 
   def call(message_data)
-    logger.trace { "Dispatching event (#{LogText.message_data message_data})" }
+    logger.trace { "Dispatching event (#{LogText.message_data(message_data)})" }
 
     dispatch.(message_data)
 
-    update_position message_data.global_position
+    update_position(message_data.global_position)
 
-    logger.info { "Event dispatched (#{LogText.message_data message_data})" }
+    logger.info { "Event dispatched (#{LogText.message_data(message_data)})" }
 
   rescue => error
-    logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data message_data})" }
+    logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data(message_data)})" }
     error_raised error, message_data
   end
 
@@ -59,15 +60,19 @@ module Consumer
       Actor::Messaging::Send.(:stop, address)
     end
 
-    threads.each &:join
+    threads.each(&:join)
 
     AsyncInvocation::Incorrect
+  end
+
+  def identifier
+    self.class.identifier
   end
 
   def start(&probe)
     _, subscription_thread = ::Actor::Start.(subscription)
 
-    actor_address, actor_thread = Actor.start self, subscription, include: :thread
+    actor_address, actor_thread = Actor.start(self, subscription, include: :thread)
 
     if probe
       subscription_address = subscription.address
@@ -89,8 +94,10 @@ module Consumer
   def update_position(position)
     logger.trace { "Updating position (Position: #{position}, Interval: #{position_update_interval})" }
 
-    if position % position_update_interval == 0
-      position_store.put position
+    position_offset = position % position_update_interval
+
+    if position_offset == 0
+      position_store.put(position)
 
       logger.debug { "Updated position (Position: #{position}, Interval: #{position_update_interval})" }
     else
@@ -112,7 +119,7 @@ module Consumer
     def configure(batch_size: nil, session: nil, position_store: nil)
       logger.trace { "Configuring (Batch Size: #{batch_size}, Session: #{session.inspect})" }
 
-      super if defined? super
+      super if defined?(super)
 
       starting_position = self.position_store.get
 
@@ -125,9 +132,9 @@ module Consumer
         cycle_timeout_milliseconds: cycle_timeout_milliseconds
       )
 
-      handlers = self.class.handler_registry.get self
+      handlers = self.class.handler_registry.get(self)
 
-      dispatch = Dispatch.configure self, handlers
+      dispatch = Dispatch.configure(self, handlers)
 
       logger.debug { "Done configuring (Batch Size: #{batch_size}, Session: #{session.inspect}, Starting Position: #{starting_position})" }
     end
@@ -139,7 +146,7 @@ module Consumer
       instance.position_update_interval = position_update_interval
       instance.cycle_maximum_milliseconds = cycle_maximum_milliseconds
       instance.cycle_timeout_milliseconds = cycle_timeout_milliseconds
-      instance.configure batch_size: batch_size, position_store: position_store, session: session
+      instance.configure(batch_size: batch_size, position_store: position_store, session: session)
       instance
     end
   end
@@ -147,14 +154,14 @@ module Consumer
   module Run
     def run(stream_name, **arguments, &probe)
       instance = build stream_name, **arguments
-      instance.run &probe
+      instance.run(&probe)
     end
   end
 
   module Start
     def start(stream_name, **arguments, &probe)
       instance = build stream_name, **arguments
-      instance.start &probe
+      instance.start(&probe)
     end
   end
 
@@ -162,12 +169,28 @@ module Consumer
     def handler_macro(handler=nil, &block)
       handler ||= block
 
-      handler_registry.register handler
+      handler_registry.register(handler)
     end
     alias_method :handler, :handler_macro
 
     def handler_registry
       @handler_registry ||= HandlerRegistry.new
+    end
+  end
+
+  module IdentifierMacro
+    attr_writer :identifier
+
+    def identifier_macro(identifier)
+      self.identifier = identifier
+    end
+
+    def identifier(identifier=nil)
+      if identifier.nil?
+        @identifier
+      else
+        identifier_macro(identifier)
+      end
     end
   end
 end

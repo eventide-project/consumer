@@ -6,11 +6,11 @@ context "Handler Registry" do
 
     registry = Consumer::HandlerRegistry.new
 
-    registry.register handler_class
+    registry.register(handler_class)
 
     test "Is error" do
-      assert proc { registry.register handler_class } do
-        raises_error? Consumer::HandlerRegistry::Error
+      assert proc { registry.register(handler_class) } do
+        raises_error?(Consumer::HandlerRegistry::Error)
       end
     end
   end

@@ -10,20 +10,20 @@ module Consumer
       instance = new
 
       handlers.each do |handler|
-        instance.add_handler handler
+        instance.add_handler(handler)
       end
 
       instance
     end
 
     def call(message_data)
-      logger.trace { "Dispatching event (#{LogText.message_data message_data})" }
+      logger.trace { "Dispatching event (#{LogText.message_data(message_data)})" }
 
       handlers.each do |handle|
         handle.(message_data)
       end
 
-      logger.debug { "Event dispatched (#{LogText.message_data message_data}, Handlers Count: #{handlers.count})" }
+      logger.debug { "Event dispatched (#{LogText.message_data(message_data)}, Handlers Count: #{handlers.count})" }
 
       nil
     end
@@ -37,12 +37,12 @@ module Consumer
     end
 
     def to_proc
-      method :call
+      method(:call)
     end
 
     module Assertions
       def handler?(handle)
-        handler_registry.registered? handle
+        handler_registry.registered?(handle)
       end
     end
   end

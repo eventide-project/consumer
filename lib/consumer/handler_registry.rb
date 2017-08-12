@@ -5,17 +5,17 @@ module Consumer
     configure :handler_registry
 
     def register(handler)
-      logger.trace { "Registering handler (Handler: #{LogText.handler handler})" }
+      logger.trace { "Registering handler (Handler: #{LogText.handler(handler)})" }
 
       if registered? handler
-        error_message = "Handler is already registered (Handler: #{LogText.handler handler})"
-        logger.error error_message
+        error_message = "Handler is already registered (Handler: #{LogText.handler(handler)})"
+        logger.error { error_message }
         raise Error, error_message
       end
 
       entries << handler
 
-      logger.debug { "Handler registered (Handler: #{LogText.handler handler})" }
+      logger.debug { "Handler registered (Handler: #{LogText.handler(handler)})" }
 
       handler
     end
@@ -24,7 +24,7 @@ module Consumer
       entries.map do |handler|
         if handler.is_a? Proc
           proc { |message_data|
-            consumer.instance_exec message_data, &handler
+            consumer.instance_exec(message_data, &handler)
           }
         else
           handler.build
@@ -36,7 +36,7 @@ module Consumer
       entries.any? do |entry|
         return true if handler == entry 
 
-        next if entry.is_a? Proc
+        next if entry.is_a?(Proc)
 
         handler === entry
       end
@@ -60,6 +60,6 @@ module Consumer
       end
     end
 
-    Error = Class.new StandardError
+    Error = Class.new(RuntimeError)
   end
 end

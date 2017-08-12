@@ -3,11 +3,11 @@ require_relative '../../automated_init'
 context "Position Store" do
   context "Get" do
     context "Substitute" do
-      substitute = SubstAttr::Substitute.build Consumer::PositionStore
+      substitute = SubstAttr::Substitute.build(Consumer::PositionStore)
 
       context "Position not set" do
         test "Returns nil" do
-          assert substitute.get == nil
+          assert(substitute.get == nil)
         end
       end
 
@@ -17,7 +17,7 @@ context "Position Store" do
         substitute.get_position = position
 
         test "Returns position" do
-          assert substitute.get == position
+          assert(substitute.get == position)
         end
       end
     end
