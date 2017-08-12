@@ -8,6 +8,7 @@ module Consumer
       extend Start
 
       extend HandlerMacro
+      extend IdentifierMacro
 
       prepend Configure
 
@@ -62,6 +63,10 @@ module Consumer
     threads.each &:join
 
     AsyncInvocation::Incorrect
+  end
+
+  def identifier
+    self.class.identifier
   end
 
   def start(&probe)
@@ -168,6 +173,22 @@ module Consumer
 
     def handler_registry
       @handler_registry ||= HandlerRegistry.new
+    end
+  end
+
+  module IdentifierMacro
+    attr_writer :identifier
+
+    def identifier_macro(identifier)
+      self.identifier = identifier
+    end
+
+    def identifier(identifier=nil)
+      if identifier.nil?
+        @identifier
+      else
+        identifier_macro(identifier)
+      end
     end
   end
 end
