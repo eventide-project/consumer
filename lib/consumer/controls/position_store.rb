@@ -10,6 +10,12 @@ module Consumer
 
         attr_accessor :telemetry_sink
 
+        def self.build
+          instance = new
+          instance.configure
+          instance
+        end
+
         def configure
           self.telemetry_sink = ::Consumer::PositionStore::Telemetry::Sink.new
 
