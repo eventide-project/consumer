@@ -4,7 +4,6 @@ module Consumer
       include Log::Dependency
 
       extend Build
-      extend Run
       extend Start
 
       extend HandlerMacro
@@ -41,28 +40,6 @@ module Consumer
   rescue => error
     logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data(message_data)})" }
     error_raised error, message_data
-  end
-
-  def run(&probe)
-    threads, addresses = nil
-
-    start do |_, _threads, _addresses|
-      threads = _threads
-      addresses = _addresses
-    end
-
-    loop do
-      probe.(self, threads, addresses) if probe
-      consumer.subscription.cycle { nil }
-    end
-
-    addresses.each do |address|
-      Actor::Messaging::Send.(:stop, address)
-    end
-
-    threads.each(&:join)
-
-    AsyncInvocation::Incorrect
   end
 
   def identifier
@@ -148,13 +125,6 @@ module Consumer
       instance.cycle_timeout_milliseconds = cycle_timeout_milliseconds
       instance.configure(batch_size: batch_size, position_store: position_store, session: session)
       instance
-    end
-  end
-
-  module Run
-    def run(stream_name, **arguments, &probe)
-      instance = build stream_name, **arguments
-      instance.run(&probe)
     end
   end
 
