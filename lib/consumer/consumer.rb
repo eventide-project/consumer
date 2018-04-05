@@ -100,7 +100,7 @@ module Consumer
 
       starting_position = self.position_store.get
 
-      subscription = Subscription.configure(
+      Subscription.configure(
         self,
         stream_name,
         get,
