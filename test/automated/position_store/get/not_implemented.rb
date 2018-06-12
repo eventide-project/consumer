@@ -10,7 +10,7 @@ context "Position Store" do
 
     test "Abstract method error" do
       assert proc { position_store.get } do
-        raises_error? Virtual::PureMethodError
+        raises_error? Virtual::PureMethod::Error
       end
     end
   end

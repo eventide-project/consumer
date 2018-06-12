@@ -12,7 +12,7 @@ context "Position Store" do
       position = Controls::Position::Global.example
 
       refute proc { position_store.put(position) } do
-        raises_error? Virtual::PureMethodError
+        raises_error? Virtual::PureMethod::Error
       end
     end
   end
