@@ -120,10 +120,13 @@ module Consumer
   module Build
     def build(stream_name, batch_size: nil, position_store: nil, position_update_interval: nil, session: nil, cycle_timeout_milliseconds: nil, cycle_maximum_milliseconds: nil, **arguments)
       instance = new stream_name
+
       instance.position_update_interval = position_update_interval
       instance.cycle_maximum_milliseconds = cycle_maximum_milliseconds
       instance.cycle_timeout_milliseconds = cycle_timeout_milliseconds
+
       instance.configure(batch_size: batch_size, position_store: position_store, session: session, **arguments)
+
       instance
     end
   end
