@@ -9,10 +9,10 @@ context "Cycle Configuration" do
     context "Subscription dependency" do
       subscription = consumer.subscription
 
-      test "Maximum is set to default value" do
-        default_maximum = Consumer::Subscription::Defaults.cycle_maximum_milliseconds
+      test "Interval is set to default value" do
+        default_interval = Consumer::Subscription::Defaults.cycle_interval_milliseconds
 
-        assert(subscription.cycle.maximum_milliseconds == default_maximum)
+        assert(subscription.cycle.interval_milliseconds == default_interval)
       end
 
       test "Timeout is set to default value" do
@@ -23,14 +23,14 @@ context "Cycle Configuration" do
     end
   end
 
-  context "Maximum milliseconds" do
-    consumer = Controls::Consumer::Example.build(stream_name, cycle_maximum_milliseconds: 11)
+  context "Interval milliseconds" do
+    consumer = Controls::Consumer::Example.build(stream_name, cycle_interval_milliseconds: 11)
 
     context "Subscription dependency" do
       subscription = consumer.subscription
 
-      test "Maximum is set on cycle" do
-        assert(subscription.cycle.maximum_milliseconds == 11)
+      test "Interval is set on cycle" do
+        assert(subscription.cycle.interval_milliseconds == 11)
       end
     end
   end

@@ -3,12 +3,12 @@ module Consumer
     module Cycle
       def self.example
         ::Cycle.build(
-          maximum_milliseconds: maximum_milliseconds,
+          interval_milliseconds: interval_milliseconds,
           timeout_milliseconds: timeout_milliseconds
         )
       end
 
-      def self.maximum_milliseconds
+      def self.interval_milliseconds
         1
       end
 
