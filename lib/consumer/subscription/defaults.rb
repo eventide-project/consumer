@@ -1,7 +1,7 @@
 module Consumer
   class Subscription
     module Defaults
-      def self.cycle_maximum_milliseconds
+      def self.cycle_interval_milliseconds
         100
       end
 
