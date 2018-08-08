@@ -1,12 +1,12 @@
 module Consumer
   class Subscription
     module Defaults
-      def self.cycle_interval_milliseconds
+      def self.poll_interval_milliseconds
         100
       end
 
-      def self.cycle_timeout_milliseconds
-        1000
+      def self.poll_timeout_milliseconds
+        0
       end
     end
   end

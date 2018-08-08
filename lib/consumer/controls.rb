@@ -1,7 +1,7 @@
 require 'messaging/controls'
 
 require 'consumer/controls/category'
-require 'consumer/controls/cycle'
+require 'consumer/controls/poll'
 require 'consumer/controls/message_data'
 require 'consumer/controls/message_data/batch'
 require 'consumer/controls/error'

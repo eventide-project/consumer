@@ -1,8 +1,8 @@
 module Consumer
   module Controls
-    module Cycle
+    module Poll
       def self.example
-        ::Cycle.build(
+        ::Poll.build(
           interval_milliseconds: interval_milliseconds,
           timeout_milliseconds: timeout_milliseconds
         )
@@ -13,7 +13,7 @@ module Consumer
       end
 
       def self.timeout_milliseconds
-        11
+        0
       end
     end
   end

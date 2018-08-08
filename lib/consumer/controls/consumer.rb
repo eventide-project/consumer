@@ -10,7 +10,7 @@ module Consumer
 
         handler Handle::Example
 
-        def configure(session: nil, batch_size: nil, position_store: nil)
+        def configure(batch_size: nil, session: nil, position_store: nil, **)
           Get::Example.configure(self)
           PositionStore::Example.configure(self, position_store: position_store)
         end

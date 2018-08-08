@@ -14,20 +14,20 @@ module Consumer
       @position ||= 0
     end
 
-    dependency :cycle, Cycle
+    dependency :poll, Poll
 
-    def self.build(stream_name, get, position: nil, cycle_interval_milliseconds: nil, cycle_timeout_milliseconds: nil)
-      cycle_interval_milliseconds ||= Defaults.cycle_interval_milliseconds
-      cycle_timeout_milliseconds ||= Defaults.cycle_timeout_milliseconds
+    def self.build(stream_name, get, position: nil, poll_interval_milliseconds: nil)
+      poll_interval_milliseconds ||= Defaults.poll_interval_milliseconds
+      poll_timeout_milliseconds = Defaults.poll_timeout_milliseconds
 
       instance = new(stream_name, get)
 
       instance.position = position
 
-      Cycle.configure(
+      Poll.configure(
         instance,
-        interval_milliseconds: cycle_interval_milliseconds,
-        timeout_milliseconds: cycle_timeout_milliseconds
+        interval_milliseconds: poll_interval_milliseconds,
+        timeout_milliseconds: poll_timeout_milliseconds
       )
 
       instance.configure
@@ -41,7 +41,7 @@ module Consumer
     handle :resupply do
       logger.trace { "Resupplying (StreamName: #{stream_name}, Position: #{position})" }
 
-      batch = cycle.() do
+      batch = poll.() do
         get.(stream_name, position: position)
       end
 

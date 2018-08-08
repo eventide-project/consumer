@@ -18,8 +18,7 @@ module Consumer
         @position_update_interval ||= Defaults.position_update_interval
       end
 
-      attr_accessor :cycle_interval_milliseconds
-      attr_accessor :cycle_timeout_milliseconds
+      attr_accessor :poll_interval_milliseconds
 
       dependency :dispatch, Dispatch
       dependency :get
@@ -105,8 +104,7 @@ module Consumer
         stream_name,
         get,
         position: starting_position,
-        cycle_interval_milliseconds: cycle_interval_milliseconds,
-        cycle_timeout_milliseconds: cycle_timeout_milliseconds
+        poll_interval_milliseconds: poll_interval_milliseconds
       )
 
       handlers = self.class.handler_registry.get(self)
@@ -118,12 +116,11 @@ module Consumer
   end
 
   module Build
-    def build(stream_name, batch_size: nil, position_store: nil, position_update_interval: nil, session: nil, cycle_timeout_milliseconds: nil, cycle_interval_milliseconds: nil, **arguments)
+    def build(stream_name, batch_size: nil, position_store: nil, position_update_interval: nil, session: nil, poll_interval_milliseconds: nil, **arguments)
       instance = new stream_name
 
       instance.position_update_interval = position_update_interval
-      instance.cycle_interval_milliseconds = cycle_interval_milliseconds
-      instance.cycle_timeout_milliseconds = cycle_timeout_milliseconds
+      instance.poll_interval_milliseconds = poll_interval_milliseconds
 
       instance.configure(batch_size: batch_size, position_store: position_store, session: session, **arguments)
 

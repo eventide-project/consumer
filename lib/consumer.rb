@@ -1,7 +1,7 @@
 require 'actor'
 
 require 'configure'; Configure.activate
-require 'cycle'
+require 'poll'
 require 'messaging'
 require 'log'
 
