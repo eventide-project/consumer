@@ -39,11 +39,5 @@ module Consumer
     def to_proc
       method(:call)
     end
-
-    module Assertions
-      def handler?(handle)
-        handler_registry.registered?(handle)
-      end
-    end
   end
 end
