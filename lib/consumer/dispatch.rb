@@ -2,6 +2,10 @@ module Consumer
   class Dispatch
     include Log::Dependency
 
+    def handlers
+      @handlers ||= []
+    end
+
     configure :dispatch
 
     def self.build(handlers=nil)
@@ -30,10 +34,6 @@ module Consumer
 
     def add_handler(handler)
       handlers << handler
-    end
-
-    def handlers
-      @handlers ||= []
     end
 
     def to_proc
