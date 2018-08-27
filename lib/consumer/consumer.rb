@@ -24,6 +24,10 @@ module Consumer
       dependency :get
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
+
+      virtual :error_raised do |error, message_data|
+        raise error
+      end
     end
   end
 
@@ -38,7 +42,7 @@ module Consumer
 
   rescue => error
     logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data(message_data)})" }
-    error_raised error, message_data
+    error_raised(error, message_data)
   end
 
   def identifier
@@ -61,10 +65,6 @@ module Consumer
 
   def add_handler(handler)
     dispatch.add_handler handler
-  end
-
-  def error_raised(error, _)
-    raise error
   end
 
   def update_position(position)
