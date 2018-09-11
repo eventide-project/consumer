@@ -99,8 +99,8 @@ module Consumer
   end
 
   module Configure
-    def configure(batch_size: nil, session: nil, position_store: nil, **)
-      logger.trace { "Configuring (Batch Size: #{batch_size}, Session: #{session.inspect})" }
+    def configure(batch_size: nil, position_store: nil, **)
+      logger.trace { "Configuring (Batch Size: #{batch_size})" }
 
       super if defined?(super)
 
@@ -118,18 +118,18 @@ module Consumer
 
       dispatch = Dispatch.configure(self, handlers)
 
-      logger.debug { "Done configuring (Batch Size: #{batch_size}, Session: #{session.inspect}, Starting Position: #{starting_position})" }
+      logger.debug { "Done configuring (Batch Size: #{batch_size}, Starting Position: #{starting_position})" }
     end
   end
 
   module Build
-    def build(stream_name, batch_size: nil, position_store: nil, position_update_interval: nil, session: nil, poll_interval_milliseconds: nil, **arguments)
+    def build(stream_name, batch_size: nil, position_store: nil, position_update_interval: nil, poll_interval_milliseconds: nil, **arguments)
       instance = new stream_name
 
       instance.position_update_interval = position_update_interval
       instance.poll_interval_milliseconds = poll_interval_milliseconds
 
-      instance.configure(batch_size: batch_size, position_store: position_store, session: session, **arguments)
+      instance.configure(batch_size: batch_size, position_store: position_store, **arguments)
 
       instance
     end
