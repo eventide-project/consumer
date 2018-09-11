@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'evt-configure'
   s.add_runtime_dependency 'evt-poll'
   s.add_runtime_dependency 'evt-messaging'
+  s.add_runtime_dependency 'evt-settings'
 
   s.add_development_dependency 'test_bench'
 end

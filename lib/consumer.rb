@@ -4,6 +4,7 @@ require 'configure'; Configure.activate
 require 'poll'
 require 'messaging'
 require 'log'
+require 'settings'
 
 require 'consumer/log'
 require 'consumer/log_text'

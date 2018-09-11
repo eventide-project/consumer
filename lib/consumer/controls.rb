@@ -11,6 +11,7 @@ require 'consumer/controls/handle'
 require 'consumer/controls/id'
 require 'consumer/controls/identifier'
 require 'consumer/controls/position'
+require 'consumer/controls/session'
 require 'consumer/controls/stream_name'
 
 require 'consumer/controls/position_store'
