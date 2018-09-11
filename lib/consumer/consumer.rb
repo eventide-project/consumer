@@ -124,7 +124,7 @@ module Consumer
 
   module Build
     def build(stream_name, batch_size: nil, position_store: nil, position_update_interval: nil, poll_interval_milliseconds: nil, **arguments)
-      instance = new stream_name
+      instance = new(stream_name)
 
       instance.position_update_interval = position_update_interval
       instance.poll_interval_milliseconds = poll_interval_milliseconds
