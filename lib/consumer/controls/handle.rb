@@ -8,6 +8,12 @@ module Consumer
       class Example
         include Messaging::Handle
 
+        attr_accessor :session
+
+        def configure(session: nil)
+          self.session = session
+        end
+
         def handle(message_data)
           handled_messages << message_data
         end
@@ -18,6 +24,14 @@ module Consumer
 
         def handled?(message_data)
           handled_messages.include?(message_data)
+        end
+
+        def session?(session=nil)
+          if session.nil?
+            !self.session.nil?
+          else
+            session == self.session
+          end
         end
       end
     end

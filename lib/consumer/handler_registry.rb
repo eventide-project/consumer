@@ -20,14 +20,18 @@ module Consumer
       handler
     end
 
-    def get(consumer)
+    def get(session: nil, context: nil)
       entries.map do |handler|
         if handler.is_a? Proc
-          proc { |message_data|
-            consumer.instance_exec(message_data, &handler)
-          }
+          if context.nil?
+            handler
+          else
+            proc { |message_data|
+              context.instance_exec(message_data, &handler)
+            }
+          end
         else
-          handler.build
+          handler.build(session: session)
         end
       end
     end

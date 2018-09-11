@@ -23,7 +23,10 @@ module Consumer
           self.some_setting == other_settings.some_setting &&
             self.other_setting == other_settings.other_setting
         end
-        alias_method :==, :settings?
+
+        def ==(other_session)
+          other_session.is_a?(self.class) && settings?(other_session)
+        end
       end
 
       module Settings
