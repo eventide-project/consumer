@@ -18,6 +18,11 @@ module Consumer
         @position_update_interval ||= Defaults.position_update_interval
       end
 
+      attr_writer :position_update_counter
+      def position_update_counter
+        @position_update_counter ||= 0
+      end
+
       attr_accessor :poll_interval_milliseconds
 
       dependency :dispatch, Dispatch
@@ -68,16 +73,18 @@ module Consumer
   end
 
   def update_position(position)
-    logger.trace { "Updating position (Position: #{position}, Interval: #{position_update_interval})" }
+    logger.trace { "Updating position (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
 
-    position_offset = position % position_update_interval
+    self.position_update_counter += 1
 
-    if position_offset == 0
+    if position_update_counter >= position_update_interval
       position_store.put(position)
 
-      logger.debug { "Updated position (Position: #{position}, Interval: #{position_update_interval})" }
+      logger.debug { "Updated position (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
+
+      self.position_update_counter = 0
     else
-      logger.debug { "Interval not reached; position not updated (Position: #{position}, Interval: #{position_update_interval})" }
+      logger.debug { "Interval not reached; position not updated (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
     end
   end
 

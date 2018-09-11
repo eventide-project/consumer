@@ -2,12 +2,13 @@ require_relative '../../automated_init'
 
 context "Actuator" do
   context "Position update interval not reached" do
-    position = 1
+    global_position = Controls::Position::Global.example
 
     consumer = Controls::Consumer.example
-    consumer.position_update_interval = 2
+    consumer.position_update_interval = 11
+    consumer.position_update_counter = 9
 
-    message_data = Controls::MessageData.example(global_position: position)
+    message_data = Controls::MessageData.example(global_position: global_position)
 
     consumer.(message_data)
 

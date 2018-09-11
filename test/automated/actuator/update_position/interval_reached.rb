@@ -2,35 +2,45 @@ require_relative '../../automated_init'
 
 context "Actuator" do
   context "Position update interval reached" do
-    position = 4
+    global_position = Controls::Position::Global.example
 
-    context "Precise match" do
+    context "Counter reaches interval" do
       consumer = Controls::Consumer.example
-      consumer.position_update_interval = position
+      consumer.position_update_interval = 11
+      consumer.position_update_counter = 10
 
-      message_data = Controls::MessageData.example(global_position: position)
+      message_data = Controls::MessageData.example(global_position: global_position)
 
       consumer.(message_data)
 
       test "Position is updated" do
         assert(consumer.position_store) do
-          put?(position)
+          put?(global_position)
         end
+      end
+
+      test "Counter is reset" do
+        assert(consumer.position_update_counter == 0)
       end
     end
 
-    context "Position is multiple of interval" do
+    context "Counter exceeds interval" do
       consumer = Controls::Consumer.example
-      consumer.position_update_interval = position / 2
+      consumer.position_update_interval = 11
+      consumer.position_update_counter = 11
 
-      message_data = Controls::MessageData.example(global_position: position)
+      message_data = Controls::MessageData.example(global_position: global_position)
 
       consumer.(message_data)
 
       test "Position is updated" do
         assert(consumer.position_store) do
-          put?(position)
+          put?(global_position)
         end
+      end
+
+      test "Counter is reset" do
+        assert(consumer.position_update_counter == 0)
       end
     end
   end
