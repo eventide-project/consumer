@@ -20,12 +20,14 @@ module Consumer
         end
 
         def settings?(other_settings)
-          self.some_setting == other_settings.some_setting &&
-            self.other_setting == other_settings.other_setting
+          self.some_setting == other_settings.get(:some_setting) &&
+            self.other_setting == other_settings.get(:other_setting)
         end
 
         def ==(other_session)
-          other_session.is_a?(self.class) && settings?(other_session)
+          other_session.is_a?(self.class) &&
+            self.some_setting == other_session.some_setting &&
+            self.other_setting == other_session.other_setting
         end
       end
 

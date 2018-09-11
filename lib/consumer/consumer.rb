@@ -23,6 +23,8 @@ module Consumer
         @position_update_counter ||= 0
       end
 
+      attr_accessor :handler_session
+
       attr_accessor :poll_interval_milliseconds
 
       dependency :dispatch, Dispatch
@@ -114,7 +116,7 @@ module Consumer
         poll_interval_milliseconds: poll_interval_milliseconds
       )
 
-      handlers = self.class.handler_registry.get(context: self)
+      handlers = self.class.handler_registry.get(session: handler_session, context: self)
 
       Dispatch.configure(self, handlers)
 
