@@ -116,7 +116,7 @@ module Consumer
 
       handlers = self.class.handler_registry.get(context: self)
 
-      dispatch = Dispatch.configure(self, handlers)
+      Dispatch.configure(self, handlers)
 
       logger.debug { "Done configuring (Batch Size: #{batch_size}, Starting Position: #{starting_position})" }
     end
