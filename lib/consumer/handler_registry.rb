@@ -4,6 +4,14 @@ module Consumer
 
     configure :handler_registry
 
+    def entries
+      @entries ||= Set.new
+    end
+
+    def count
+      entries.count
+    end
+
     def register(handler)
       logger.trace { "Registering handler (Handler: #{LogText.handler(handler)})" }
 
@@ -44,14 +52,6 @@ module Consumer
 
         handler === entry
       end
-    end
-
-    def entries
-      @entries ||= Set.new
-    end
-
-    def count
-      entries.count
     end
 
     module LogText
