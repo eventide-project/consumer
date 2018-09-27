@@ -13,7 +13,7 @@ module Consumer
           logger.debug { message_data.data.pretty_inspect }
         end
 
-        def configure(session: nil, batch_size: nil, position_store: nil)
+        def configure(batch_size: nil, position_store: nil)
           sleep_duration = ENV['SLEEP_DURATION'] || 100
           sleep_duration = sleep_duration.to_i
 
