@@ -32,7 +32,6 @@ module Consumer
 
       attr_accessor :poll_interval_milliseconds
 
-      dependency :dispatch, Dispatch
       dependency :get
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
@@ -46,7 +45,9 @@ module Consumer
   def call(message_data)
     logger.trace { "Dispatching message (#{LogText.message_data(message_data)})" }
 
-    dispatch.(message_data)
+    handlers.each do |handler|
+      handler.(message_data)
+    end
 
     update_position(message_data.global_position)
 
@@ -73,10 +74,6 @@ module Consumer
     end
 
     AsyncInvocation::Incorrect
-  end
-
-  def add_handler(handler)
-    dispatch.add_handler handler
   end
 
   def update_position(position)
@@ -124,8 +121,6 @@ module Consumer
       self.class.handler_registry.each do |handler|
         self.handlers << handler.build(session: session)
       end
-
-      Dispatch.configure(self, handlers)
 
       logger.debug { "Done configuring (Batch Size: #{batch_size}, Starting Position: #{starting_position})" }
     end

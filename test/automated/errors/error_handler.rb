@@ -21,7 +21,7 @@ context "Error Handling" do
     context "Dispatch fails" do
       error = Controls::Error.example
 
-      consumer.dispatch = proc { raise error }
+      consumer.handlers = [proc { raise error }]
 
       test "Error is not raised" do
         refute proc { consumer.(message_data) } do
