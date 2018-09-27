@@ -24,15 +24,13 @@ module Consumer
     end
 
     module ClassConfigure
-      def configure(receiver, *arguments, position_store: nil, attr_name: nil, **keyword_arguments)
+      def configure(receiver, *arguments, attr_name: nil, **keyword_arguments)
         attr_name ||= :position_store
 
-        if position_store.nil?
-          if arguments.any?
-            position_store = build(*arguments, **keyword_arguments)
-          else
-            position_store = build(*arguments)
-          end
+        if arguments.any?
+          position_store = build(*arguments, **keyword_arguments)
+        else
+          position_store = build(*arguments)
         end
 
         receiver.public_send("#{attr_name}=", position_store)

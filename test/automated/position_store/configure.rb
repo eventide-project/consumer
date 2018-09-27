@@ -25,17 +25,5 @@ context "Position Store" do
         assert(receiver.some_attr == position_store)
       end
     end
-
-    context "Position store is supplied" do
-      receiver = OpenStruct.new
-
-      position_store = Controls::PositionStore::Example.build
-
-      Controls::PositionStore::Example.configure(receiver, position_store: position_store)
-
-      test "Sets supplied store" do
-        assert(receiver.position_store.equal?(position_store))
-      end
-    end
   end
 end
