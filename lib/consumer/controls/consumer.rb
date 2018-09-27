@@ -11,9 +11,7 @@ module Consumer
         handler Handle::Example
 
         def configure(batch_size: nil, position_store: nil, settings: nil, **)
-          unless settings.nil?
-            self.session = Controls::Session.example(settings)
-          end
+          Controls::Session::Example.configure(self, settings)
 
           Get::Example.configure(self)
           PositionStore::Example.configure(self, position_store: position_store)

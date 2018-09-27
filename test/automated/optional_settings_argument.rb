@@ -27,13 +27,13 @@ context "Optional Settings Argument" do
     session = consumer.session
 
     test "Session is configured" do
-      assert(session.nil?)
+      refute(session.nil?)
     end
 
-    test "Instantiated handlers are not assigned session" do
+    test "Handlers are assigned session" do
       handler, * = consumer.dispatch.handlers
 
-      refute(handler.session?)
+      assert(handler.session?(session))
     end
   end
 end

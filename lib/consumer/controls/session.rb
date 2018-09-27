@@ -6,7 +6,10 @@ module Consumer
       end
 
       class Example
+        extend ::Configure::Macro
         extend ::Settings::Setting::Macro
+
+        configure :session
 
         setting :some_setting
         setting :other_setting
