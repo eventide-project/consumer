@@ -12,6 +12,7 @@ module Consumer
 
         def get
           return 0 unless File.exist?(path)
+
           text = File.read(path)
           text.to_i
         end
