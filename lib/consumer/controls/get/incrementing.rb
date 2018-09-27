@@ -19,7 +19,7 @@ module Consumer
         def call(stream_name, position: nil)
           position ||= 0
 
-          sleep(frequency_milliseconds)
+          sleep(frequency_seconds)
 
           3.times.map do |offset|
             MessageData.get(
