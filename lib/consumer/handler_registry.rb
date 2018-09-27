@@ -13,34 +13,24 @@ module Consumer
     end
 
     def register(handler)
-      logger.trace { "Registering handler (Handler: #{LogText.handler(handler)})" }
+      logger.trace { "Registering handler (Handler: #{handler.name})" }
 
       if registered? handler
-        error_message = "Handler is already registered (Handler: #{LogText.handler(handler)})"
+        error_message = "Handler is already registered (Handler: #{handler.name})"
         logger.error { error_message }
         raise Error, error_message
       end
 
       entries << handler
 
-      logger.debug { "Handler registered (Handler: #{LogText.handler(handler)})" }
+      logger.debug { "Handler registered (Handler: #{handler.name})" }
 
       handler
     end
 
-    def get(session: nil, context: nil)
+    def get(session: nil)
       entries.map do |handler|
-        if handler.is_a? Proc
-          if context.nil?
-            handler
-          else
-            proc { |message_data|
-              context.instance_exec(message_data, &handler)
-            }
-          end
-        else
-          handler.build(session: session)
-        end
+        handler.build(session: session)
       end
     end
 
@@ -51,16 +41,6 @@ module Consumer
         next if entry.is_a?(Proc)
 
         handler === entry
-      end
-    end
-
-    module LogText
-      def self.handler(handler)
-        case handler
-        when Module then handler.name
-        when Proc then '(proc)'
-        else handler.inspect
-        end
       end
     end
 

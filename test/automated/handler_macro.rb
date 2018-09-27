@@ -1,4 +1,4 @@
-require_relative '../automated_init'
+require_relative './automated_init'
 
 context "Handler Macro" do
   context "Handler is a class" do

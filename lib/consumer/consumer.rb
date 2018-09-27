@@ -116,7 +116,7 @@ module Consumer
         poll_interval_milliseconds: poll_interval_milliseconds
       )
 
-      handlers = self.class.handler_registry.get(session: handler_session, context: self)
+      handlers = self.class.handler_registry.get(session: handler_session)
 
       Dispatch.configure(self, handlers)
 
