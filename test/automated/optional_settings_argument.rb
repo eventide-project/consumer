@@ -8,26 +8,26 @@ context "Optional Settings Argument" do
 
     consumer = Controls::Consumer::Example.build(stream_name, settings: settings)
 
-    handler_session = consumer.handler_session
+    session = consumer.session
 
-    test "Handler session is configured by given settings" do
-      assert(handler_session.settings?(settings))
+    test "Session is configured by given settings" do
+      assert(session.settings?(settings))
     end
 
     test "Instantiated handlers are assigned session" do
       handler, * = consumer.dispatch.handlers
 
-      assert(handler.session?(handler_session))
+      assert(handler.session?(session))
     end
   end
 
   context "Omitted" do
     consumer = Controls::Consumer::Example.build(stream_name)
 
-    handler_session = consumer.handler_session
+    session = consumer.session
 
-    test "Handler session is configured" do
-      assert(handler_session.nil?)
+    test "Session is configured" do
+      assert(session.nil?)
     end
 
     test "Instantiated handlers are not assigned session" do

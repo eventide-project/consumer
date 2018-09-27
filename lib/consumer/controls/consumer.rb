@@ -12,7 +12,7 @@ module Consumer
 
         def configure(batch_size: nil, position_store: nil, settings: nil, **)
           unless settings.nil?
-            self.handler_session = Controls::Session.example(settings)
+            self.session = Controls::Session.example(settings)
           end
 
           Get::Example.configure(self)

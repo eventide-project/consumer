@@ -23,7 +23,7 @@ module Consumer
         @position_update_counter ||= 0
       end
 
-      attr_accessor :handler_session
+      attr_accessor :session
 
       attr_accessor :poll_interval_milliseconds
 
@@ -119,7 +119,7 @@ module Consumer
       handlers = []
 
       self.class.handler_registry.each do |handler|
-        handlers << handler.build(session: handler_session)
+        handlers << handler.build(session: session)
       end
 
       Dispatch.configure(self, handlers)
