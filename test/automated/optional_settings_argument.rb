@@ -15,7 +15,7 @@ context "Optional Settings Argument" do
     end
 
     test "Instantiated handlers are assigned session" do
-      handler, * = consumer.dispatch.handlers
+      handler, * = consumer.handlers
 
       assert(handler.session?(session))
     end
@@ -31,7 +31,7 @@ context "Optional Settings Argument" do
     end
 
     test "Handlers are assigned session" do
-      handler, * = consumer.dispatch.handlers
+      handler, * = consumer.handlers
 
       assert(handler.session?(session))
     end

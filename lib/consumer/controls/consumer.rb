@@ -9,6 +9,7 @@ module Consumer
         include ::Consumer
 
         handler Handle::Example
+        handler Handle::Alternate::Example
 
         def configure(batch_size: nil, position_store: nil, settings: nil, **)
           Controls::Session::Example.configure(self, settings)
