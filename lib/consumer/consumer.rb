@@ -13,6 +13,11 @@ module Consumer
 
       initializer :stream_name
 
+      attr_writer :identifier
+      def identifier
+        @identifier ||= self.class.identifier
+      end
+
       attr_writer :position_update_interval
       def position_update_interval
         @position_update_interval ||= Defaults.position_update_interval
@@ -56,10 +61,6 @@ module Consumer
   rescue => error
     logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data(message_data)})" }
     error_raised(error, message_data)
-  end
-
-  def identifier
-    self.class.identifier
   end
 
   def start(&probe)
@@ -127,8 +128,12 @@ module Consumer
   end
 
   module Build
-    def build(stream_name, position_update_interval: nil, poll_interval_milliseconds: nil, **arguments)
+    def build(stream_name, position_update_interval: nil, poll_interval_milliseconds: nil, identifier: nil, **arguments)
       instance = new(stream_name)
+
+      unless identifier.nil?
+        instance.identifier = identifier
+      end
 
       instance.position_update_interval = position_update_interval
       instance.poll_interval_milliseconds = poll_interval_milliseconds
