@@ -6,6 +6,8 @@ module Consumer
       end
 
       class Example
+        extend ::Configure::Macro
+
         configure :get
 
         def self.build
