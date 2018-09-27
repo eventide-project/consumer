@@ -116,7 +116,11 @@ module Consumer
         poll_interval_milliseconds: poll_interval_milliseconds
       )
 
-      handlers = self.class.handler_registry.get(session: handler_session)
+      handlers = []
+
+      self.class.handler_registry.each do |handler|
+        handlers << handler.build(session: handler_session)
+      end
 
       Dispatch.configure(self, handlers)
 

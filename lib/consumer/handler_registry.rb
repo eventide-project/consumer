@@ -32,12 +32,6 @@ module Consumer
       handler
     end
 
-    def get(session: nil)
-      entries.map do |handler|
-        handler.build(session: session)
-      end
-    end
-
     def registered?(handler)
       entries.any? do |entry|
         return true if handler == entry 
