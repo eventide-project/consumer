@@ -12,6 +12,10 @@ module Consumer
       entries.count
     end
 
+    def each(&block)
+      entries.each(&block)
+    end
+
     def register(handler)
       logger.trace { "Registering handler (Handler: #{handler.name})" }
 

@@ -34,6 +34,12 @@ module Consumer
           end
         end
       end
+
+      module Alternate
+        class Example
+          include Messaging::Handle
+        end
+      end
     end
   end
 end
