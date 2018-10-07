@@ -32,7 +32,7 @@ module Consumer
             identifier identifier
           end
 
-          def configure(batch_size: nil, settings: nil, **)
+          def configure(settings: nil, **)
             Controls::Session::Example.configure(self, settings)
 
             Get::Example.configure(self)
