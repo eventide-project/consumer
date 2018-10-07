@@ -93,10 +93,6 @@ module Consumer
     end
   end
 
-  def position_update_interval
-    @position_update_interval ||= self.class.position_update_interval
-  end
-
   module LogText
     def self.message_data(message_data)
       "Type: #{message_data.type}, Stream: #{message_data.stream_name}, Position: #{message_data.position}, GlobalPosition: #{message_data.global_position}"
