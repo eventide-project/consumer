@@ -3,9 +3,12 @@ module Consumer
     module PositionStore
       class LocalFile
         include Consumer::PositionStore
+        extend Initializer::Macro
 
-        def self.build
-          instance = new
+        initializer(:identifier)
+
+        def self.build(identifier: nil)
+          instance = new(identifier)
           instance.configure
           instance
         end
@@ -22,7 +25,13 @@ module Consumer
         end
 
         def path
-          'tmp/control_position_store'
+          path = File.join('tmp', 'local_file_position_store')
+
+          unless identifier.nil?
+            path << "-#{identifier}"
+          end
+
+          path
         end
       end
     end

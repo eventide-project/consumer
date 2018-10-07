@@ -19,7 +19,11 @@ module Consumer
 
     module Build
       def self.extended(cls)
-        Virtual::PureMethod.define(cls.singleton_class, :build)
+        cls.singleton_class.class_exec do
+          extend Virtual::Macro
+
+          abstract :build
+        end
       end
     end
 
