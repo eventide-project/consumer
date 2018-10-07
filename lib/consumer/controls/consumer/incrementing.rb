@@ -28,13 +28,13 @@ module Consumer
         handler Handlers::PrintSummary
         handler Handlers::PrintData
 
-        def configure(batch_size: nil, position_store: nil)
+        def configure
           sleep_duration = ENV['SLEEP_DURATION'] || 100
           sleep_duration = sleep_duration.to_i
 
           Get::Incrementing.configure(self, sleep_duration)
 
-          PositionStore::LocalFile.configure(self, position_store: position_store)
+          PositionStore::LocalFile.configure(self)
         end
       end
     end
