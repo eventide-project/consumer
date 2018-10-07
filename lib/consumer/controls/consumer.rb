@@ -32,11 +32,11 @@ module Consumer
             identifier identifier
           end
 
-          def configure(batch_size: nil, position_store: nil, settings: nil, **)
+          def configure(batch_size: nil, settings: nil, **)
             Controls::Session::Example.configure(self, settings)
 
             Get::Example.configure(self)
-            PositionStore::Example.configure(self, position_store: position_store)
+            PositionStore::Example.configure(self)
           end
         end
       end
