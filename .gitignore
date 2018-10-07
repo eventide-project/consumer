@@ -6,3 +6,5 @@ Gemfile.lock
 gems
 *scratch*
 tmp
+/lib/consumer/postgres.rb
+/lib/consumer/postgres
