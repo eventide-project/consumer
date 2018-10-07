@@ -31,7 +31,7 @@ module Consumer
       def configure(receiver, *arguments, attr_name: nil, **keyword_arguments)
         attr_name ||= :position_store
 
-        if arguments.any?
+        if keyword_arguments.any?
           position_store = build(*arguments, **keyword_arguments)
         else
           position_store = build(*arguments)
