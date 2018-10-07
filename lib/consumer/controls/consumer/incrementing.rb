@@ -28,7 +28,7 @@ module Consumer
         handler Handlers::PrintSummary
         handler Handlers::PrintData
 
-        def configure
+        def configure(**)
           sleep_duration = ENV['SLEEP_DURATION'] || 100
           sleep_duration = sleep_duration.to_i
 
