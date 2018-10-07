@@ -100,10 +100,10 @@ module Consumer
   end
 
   module Configure
-    def configure(**)
+    def configure(**kwargs)
       logger.trace { "Configuring (Stream Name: #{stream_name})" }
 
-      super if defined?(super)
+      super(**kwargs)
 
       starting_position = self.position_store.get
 
