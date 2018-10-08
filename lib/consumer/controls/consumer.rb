@@ -1,8 +1,12 @@
 module Consumer
   module Controls
     module Consumer
-      def self.example
-        Example.new(StreamName.example)
+      def self.example(stream_name=nil, identifier: nil, handlers: nil)
+        stream_name ||= StreamName.example
+
+        cls = example_class(identifier: identifier, handlers: handlers)
+
+        cls.new(stream_name)
       end
 
       def self.example_class(identifier: nil, handlers: nil)
@@ -39,6 +43,24 @@ module Consumer
             PositionStore::Example.configure(self)
           end
         end
+      end
+
+      def self.clear_handled_messages
+        Example.handler_registry.each do |handler|
+          handler.clear_handled_messages
+        end
+      end
+
+      def self.handled_messages(message_data=nil)
+        handled_messages = []
+
+        Example.handler_registry.each do |handler|
+          if handler.handled?(message_data)
+            handled_messages << message_data
+          end
+        end
+
+        handled_messages
       end
 
       Example = self.example_class

@@ -13,12 +13,6 @@ context "Optional Settings Argument" do
     test "Session is configured by given settings" do
       assert(session.settings?(settings))
     end
-
-    test "Instantiated handlers are assigned session" do
-      handler, * = consumer.handlers
-
-      assert(handler.session?(session))
-    end
   end
 
   context "Omitted" do
@@ -28,12 +22,6 @@ context "Optional Settings Argument" do
 
     test "Session is configured" do
       refute(session.nil?)
-    end
-
-    test "Handlers are assigned session" do
-      handler, * = consumer.handlers
-
-      assert(handler.session?(session))
     end
   end
 end

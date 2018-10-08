@@ -28,11 +28,6 @@ module Consumer
         @position_update_counter ||= 0
       end
 
-      attr_writer :handlers
-      def handlers
-        @handlers ||= []
-      end
-
       attr_accessor :session
 
       attr_accessor :poll_interval_milliseconds
@@ -50,8 +45,8 @@ module Consumer
   def call(message_data)
     logger.trace { "Dispatching message (#{LogText.message_data(message_data)})" }
 
-    handlers.each do |handler|
-      handler.(message_data)
+    self.class.handler_registry.each do |handler|
+      handler.(message_data, session: session)
     end
 
     update_position(message_data.global_position)
@@ -114,10 +109,6 @@ module Consumer
         position: starting_position,
         poll_interval_milliseconds: poll_interval_milliseconds
       )
-
-      self.class.handler_registry.each do |handler|
-        self.handlers << handler.build(session: session)
-      end
 
       logger.debug { "Done configuring (Stream Name: #{stream_name}, Starting Position: #{starting_position})" }
     end

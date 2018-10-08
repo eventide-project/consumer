@@ -1,26 +1,18 @@
 require_relative './automated_init'
 
 context "Handler Macro" do
-  consumer_class = Controls::Consumer::Example
-
-  stream_name = Controls::StreamName.example
-
-  consumer = consumer_class.build(stream_name)
+  consumer = Controls::Consumer.example
 
   context "Message is dispatched" do
     message_data = Controls::MessageData.example
 
-    handlers = consumer.handlers
-    assert(handlers.count > 1)
-
+    Controls::Consumer.clear_handled_messages
     consumer.(message_data)
 
     test "Message is dispatched to each handler" do
-      dispatched = handlers.all? do |handler|
-        handler.handled?(message_data)
-      end
+      handled_messages = Controls::Consumer.handled_messages(message_data)
 
-      assert(dispatched)
+      assert(handled_messages.count > 1)
     end
   end
 end

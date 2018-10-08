@@ -6,17 +6,13 @@ context "Actuator" do
   message_data = Controls::MessageData.example
 
   consumer = Controls::Consumer::Example.build(stream_name)
-  handlers = consumer.handlers
 
-  assert(handlers.count > 1)
-
+  Controls::Consumer.clear_handled_messages
   consumer.(message_data)
 
   test "Message is dispatched to each handler" do
-    dispatched = handlers.all? do |handler|
-      handler.handled?(message_data)
-    end
+    handled_messages = Controls::Consumer.handled_messages(message_data)
 
-    assert(dispatched)
+    assert(handled_messages.count > 1)
   end
 end
