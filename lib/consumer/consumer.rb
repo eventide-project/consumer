@@ -13,14 +13,25 @@ module Consumer
 
       initializer :stream_name
 
+      attr_writer :identifier
+      def identifier
+        @identifier ||= self.class.identifier
+      end
+
       attr_writer :position_update_interval
       def position_update_interval
         @position_update_interval ||= Defaults.position_update_interval
       end
 
+      attr_writer :position_update_counter
+      def position_update_counter
+        @position_update_counter ||= 0
+      end
+
+      attr_accessor :session
+
       attr_accessor :poll_interval_milliseconds
 
-      dependency :dispatch, Dispatch
       dependency :get
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
@@ -28,13 +39,17 @@ module Consumer
       virtual :error_raised do |error, message_data|
         raise error
       end
+
+      alias_method :call, :dispatch
     end
   end
 
-  def call(message_data)
+  def dispatch(message_data)
     logger.trace { "Dispatching message (#{LogText.message_data(message_data)})" }
 
-    dispatch.(message_data)
+    self.class.handler_registry.each do |handler|
+      handler.(message_data, session: session)
+    end
 
     update_position(message_data.global_position)
 
@@ -43,10 +58,6 @@ module Consumer
   rescue => error
     logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data(message_data)})" }
     error_raised(error, message_data)
-  end
-
-  def identifier
-    self.class.identifier
   end
 
   def start(&probe)
@@ -63,26 +74,20 @@ module Consumer
     AsyncInvocation::Incorrect
   end
 
-  def add_handler(handler)
-    dispatch.add_handler handler
-  end
-
   def update_position(position)
-    logger.trace { "Updating position (Position: #{position}, Interval: #{position_update_interval})" }
+    logger.trace { "Updating position (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
 
-    position_offset = position % position_update_interval
+    self.position_update_counter += 1
 
-    if position_offset == 0
+    if position_update_counter >= position_update_interval
       position_store.put(position)
 
-      logger.debug { "Updated position (Position: #{position}, Interval: #{position_update_interval})" }
-    else
-      logger.debug { "Interval not reached; position not updated (Position: #{position}, Interval: #{position_update_interval})" }
-    end
-  end
+      logger.debug { "Updated position (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
 
-  def position_update_interval
-    @position_update_interval ||= self.class.position_update_interval
+      self.position_update_counter = 0
+    else
+      logger.debug { "Interval not reached; position not updated (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
+    end
   end
 
   module LogText
@@ -92,10 +97,10 @@ module Consumer
   end
 
   module Configure
-    def configure(batch_size: nil, session: nil, position_store: nil, **)
-      logger.trace { "Configuring (Batch Size: #{batch_size}, Session: #{session.inspect})" }
+    def configure(**kwargs)
+      logger.trace { "Configuring (Stream Name: #{stream_name})" }
 
-      super if defined?(super)
+      super(**kwargs)
 
       starting_position = self.position_store.get
 
@@ -107,22 +112,22 @@ module Consumer
         poll_interval_milliseconds: poll_interval_milliseconds
       )
 
-      handlers = self.class.handler_registry.get(self)
-
-      dispatch = Dispatch.configure(self, handlers)
-
-      logger.debug { "Done configuring (Batch Size: #{batch_size}, Session: #{session.inspect}, Starting Position: #{starting_position})" }
+      logger.debug { "Done configuring (Stream Name: #{stream_name}, Starting Position: #{starting_position})" }
     end
   end
 
   module Build
-    def build(stream_name, batch_size: nil, position_store: nil, position_update_interval: nil, session: nil, poll_interval_milliseconds: nil, **arguments)
-      instance = new stream_name
+    def build(stream_name, position_update_interval: nil, poll_interval_milliseconds: nil, identifier: nil, **arguments)
+      instance = new(stream_name)
+
+      unless identifier.nil?
+        instance.identifier = identifier
+      end
 
       instance.position_update_interval = position_update_interval
       instance.poll_interval_milliseconds = poll_interval_milliseconds
 
-      instance.configure(batch_size: batch_size, position_store: position_store, session: session, **arguments)
+      instance.configure(**arguments)
 
       instance
     end

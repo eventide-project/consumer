@@ -4,6 +4,7 @@ require 'configure'; Configure.activate
 require 'poll'
 require 'messaging'
 require 'log'
+require 'settings'
 
 require 'consumer/log'
 require 'consumer/log_text'
@@ -15,9 +16,6 @@ require 'consumer/handler_registry'
 require 'consumer/position_store'
 require 'consumer/position_store/substitute'
 require 'consumer/position_store/telemetry'
-
-require 'consumer/dispatch'
-require 'consumer/dispatch/substitute'
 
 require 'consumer/subscription'
 require 'consumer/subscription/defaults'

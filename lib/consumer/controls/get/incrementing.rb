@@ -2,18 +2,26 @@ module Consumer
   module Controls
     module Get
       class Incrementing
+        extend ::Configure::Macro
+
         configure :get
 
-        initializer :sleep_duration
+        initializer :frequency_milliseconds
 
-        def self.build(sleep_duration)
-          new(sleep_duration)
+        def frequency_seconds
+          frequency_milliseconds.to_f / 1000
+        end
+
+        def self.build(frequency_milliseconds=nil)
+          frequency_milliseconds ||= Defaults.frequency_milliseconds
+
+          new(frequency_milliseconds)
         end
 
         def call(stream_name, position: nil)
           position ||= 0
 
-          sleep Rational(sleep_duration, 1000)
+          sleep(frequency_seconds)
 
           3.times.map do |offset|
             MessageData.get(
@@ -23,21 +31,27 @@ module Consumer
             )
           end
         end
-      end
 
-      class MessageData
-        def self.get(stream_name, global_position, position)
-          data = {
-            :position => position,
-            :global_position => global_position
-          }
+        module Defaults
+          def self.frequency_milliseconds
+            100
+          end
+        end
 
-          Controls::MessageData.example(
-            stream_name: stream_name,
-            data: data,
-            global_position: global_position,
-            position: position
-          )
+        class MessageData
+          def self.get(stream_name, global_position, position)
+            data = {
+              :position => position,
+              :global_position => global_position
+            }
+
+            Controls::MessageData.example(
+              stream_name: stream_name,
+              data: data,
+              global_position: global_position,
+              position: position
+            )
+          end
         end
       end
     end

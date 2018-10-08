@@ -5,21 +5,36 @@ module Consumer
         include ::Consumer
         include ::Log::Dependency
 
-        handler do |message_data|
-          logger.info { "Handled event (StreamName: #{message_data.stream_name}, GlobalPosition: #{message_data.global_position})" }
+        module Handlers
+          class PrintSummary
+            include Messaging::Handle
+            include Log::Dependency
+
+            def handle(message_data)
+              logger.info { "Handled event (StreamName: #{message_data.stream_name}, GlobalPosition: #{message_data.global_position})" }
+            end
+          end
+
+          class PrintData
+            include Messaging::Handle
+            include Log::Dependency
+
+            def handle(message_data)
+              logger.debug { message_data.data.pretty_inspect }
+            end
+          end
         end
 
-        handler do |message_data|
-          logger.debug { message_data.data.pretty_inspect }
-        end
+        handler Handlers::PrintSummary
+        handler Handlers::PrintData
 
-        def configure(session: nil, batch_size: nil, position_store: nil)
+        def configure
           sleep_duration = ENV['SLEEP_DURATION'] || 100
           sleep_duration = sleep_duration.to_i
 
           Get::Incrementing.configure(self, sleep_duration)
 
-          PositionStore::LocalFile.configure(self, position_store: position_store)
+          PositionStore::LocalFile.configure(self, identifier: identifier)
         end
       end
     end
