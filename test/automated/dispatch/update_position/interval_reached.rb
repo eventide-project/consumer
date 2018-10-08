@@ -1,6 +1,6 @@
 require_relative '../../automated_init'
 
-context "Actuator" do
+context "Dispatch" do
   context "Position update interval reached" do
     global_position = Controls::Position::Global.example
 
@@ -11,7 +11,7 @@ context "Actuator" do
 
       message_data = Controls::MessageData.example(global_position: global_position)
 
-      consumer.(message_data)
+      consumer.dispatch(message_data)
 
       test "Position is updated" do
         assert(consumer.position_store) do
@@ -31,7 +31,7 @@ context "Actuator" do
 
       message_data = Controls::MessageData.example(global_position: global_position)
 
-      consumer.(message_data)
+      consumer.dispatch(message_data)
 
       test "Position is updated" do
         assert(consumer.position_store) do

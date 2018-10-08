@@ -42,7 +42,7 @@ module Consumer
     end
   end
 
-  def call(message_data)
+  def dispatch(message_data)
     logger.trace { "Dispatching message (#{LogText.message_data(message_data)})" }
 
     self.class.handler_registry.each do |handler|

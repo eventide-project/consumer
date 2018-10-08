@@ -5,7 +5,7 @@ module Consumer
     end
 
     class Consumer
-      def call(message_data)
+      def dispatch(message_data)
         dispatched_messages << message_data
       end
 

@@ -15,7 +15,7 @@ context "Consumer" do
     context "Message is dispatched" do
       message_data = Controls::MessageData.example
 
-      substitute.(message_data)
+      substitute.dispatch(message_data)
 
       context "Dispatched predicate" do
         context "No argument" do
