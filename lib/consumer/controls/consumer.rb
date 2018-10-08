@@ -19,7 +19,10 @@ module Consumer
         if handlers == :none
           handlers = []
         else
-          handlers ||= self.handlers
+          handlers ||= [
+            Handle.example_class,
+            Handle.example_class
+          ]
         end
 
         Class.new do
@@ -39,24 +42,19 @@ module Consumer
             Get::Example.configure(self)
             PositionStore::Example.configure(self)
           end
+
+          def handled_messages
+            handled_messages = []
+
+            self.class.handler_registry.each do |handler|
+              next unless handler.ancestors.include?(Handle)
+
+              handled_messages += handler.handled_messages
+            end
+
+            handled_messages
+          end
         end
-      end
-
-      def self.handlers
-        [
-          Handle::Example,
-          Handle::Alternate::Example
-        ]
-      end
-
-      def self.handled_messages
-        handled_messages = []
-
-        self.handlers.each do |handler|
-          handled_messages += handler.handled_messages
-        end
-
-        handled_messages
       end
 
       Example = self.example_class

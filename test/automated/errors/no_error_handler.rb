@@ -6,7 +6,7 @@ context "Error Handling" do
 
     context "Dispatch fails" do
       consumer = Controls::Consumer.example(handlers: [
-        Controls::Handle::Fail::Example
+        Controls::Handle::RaiseError::Example
       ])
 
       test "Error is raised" do

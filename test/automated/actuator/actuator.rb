@@ -8,7 +8,7 @@ context "Actuator" do
   consumer.(message_data)
 
   test "Message is dispatched to each handler" do
-    handled_messages = Controls::Consumer.handled_messages
+    handled_messages = consumer.handled_messages
 
     assert(handled_messages.count > 1)
   end

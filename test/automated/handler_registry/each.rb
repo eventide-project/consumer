@@ -2,8 +2,8 @@ require_relative '../automated_init'
 
 context "Handler Registry" do
   context "Each" do
-    handler = Controls::Handle::Example
-    other_handler = Controls::Handle::Alternate::Example
+    handler = Controls::Handle.example_class
+    other_handler = Controls::Handle.example_class
 
     registry = Consumer::HandlerRegistry.new
 
