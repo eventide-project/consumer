@@ -19,10 +19,7 @@ module Consumer
         if handlers == :none
           handlers = []
         else
-          handlers ||= [
-            Handle::Example,
-            Handle::Alternate::Example
-          ]
+          handlers ||= self.handlers
         end
 
         Class.new do
@@ -45,19 +42,18 @@ module Consumer
         end
       end
 
-      def self.clear_handled_messages
-        Example.handler_registry.each do |handler|
-          handler.clear_handled_messages
-        end
+      def self.handlers
+        [
+          Handle::Example,
+          Handle::Alternate::Example
+        ]
       end
 
-      def self.handled_messages(message_data=nil)
+      def self.handled_messages
         handled_messages = []
 
-        Example.handler_registry.each do |handler|
-          if handler.handled?(message_data)
-            handled_messages << message_data
-          end
+        self.handlers.each do |handler|
+          handled_messages += handler.handled_messages
         end
 
         handled_messages

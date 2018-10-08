@@ -6,11 +6,10 @@ context "Handler Macro" do
   context "Message is dispatched" do
     message_data = Controls::MessageData.example
 
-    Controls::Consumer.clear_handled_messages
     consumer.(message_data)
 
     test "Message is dispatched to each handler" do
-      handled_messages = Controls::Consumer.handled_messages(message_data)
+      handled_messages = Controls::Consumer.handled_messages
 
       assert(handled_messages.count > 1)
     end
