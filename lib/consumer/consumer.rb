@@ -39,6 +39,8 @@ module Consumer
       virtual :error_raised do |error, message_data|
         raise error
       end
+
+      alias_method :call, :dispatch
     end
   end
 
