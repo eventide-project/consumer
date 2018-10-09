@@ -1,6 +1,9 @@
 module Consumer
   class Subscription
     include ::Actor
+
+    ::Configure.activate(self)
+
     include Log::Dependency
 
     configure :subscription

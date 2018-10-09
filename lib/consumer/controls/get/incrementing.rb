@@ -2,7 +2,7 @@ module Consumer
   module Controls
     module Get
       class Incrementing
-        extend ::Configure::Macro
+        ::Configure.activate(self)
 
         configure :get
 

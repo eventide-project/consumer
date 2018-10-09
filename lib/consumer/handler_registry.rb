@@ -1,5 +1,7 @@
 module Consumer
   class HandlerRegistry
+    Configure.activate(self)
+
     include Log::Dependency
 
     configure :handler_registry
