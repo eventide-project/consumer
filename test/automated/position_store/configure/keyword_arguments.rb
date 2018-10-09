@@ -8,7 +8,8 @@ context "Position Store" do
 
         position_store_class = Class.new do
           include Consumer::PositionStore
-          extend Initializer::Macro
+
+          Initializer.activate(self)
 
           initializer :some_attribute
 
