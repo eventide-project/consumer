@@ -1,6 +1,8 @@
 module Consumer
   def self.included(cls)
     cls.class_exec do
+      Dependency.activate(self)
+
       include Log::Dependency
 
       extend Build
