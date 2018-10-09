@@ -2,6 +2,7 @@ module Consumer
   def self.included(cls)
     cls.class_exec do
       Dependency.activate(self)
+      Initializer.activate(self)
 
       include Log::Dependency
 

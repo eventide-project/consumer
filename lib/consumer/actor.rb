@@ -3,6 +3,7 @@ module Consumer
     include ::Actor
 
     Dependency.activate(self)
+    Initializer.activate(self)
 
     include Log::Dependency
 

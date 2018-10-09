@@ -3,6 +3,7 @@ module Consumer
     module Get
       class Incrementing
         ::Configure.activate(self)
+        Initializer.activate(self)
 
         configure :get
 

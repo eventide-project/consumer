@@ -4,6 +4,7 @@ module Consumer
 
     ::Configure.activate(self)
     Dependency.activate(self)
+    Initializer.activate(self)
 
     include Log::Dependency
 
