@@ -2,8 +2,8 @@ module Consumer
   module Controls
     module Get
       class Incrementing
-        ::Configure.activate(self)
-        Initializer.activate(self)
+        include ::Configure
+        include Initializer
 
         configure :get
 

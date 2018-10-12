@@ -1,10 +1,8 @@
 module Consumer
   class Actor
     include ::Actor
-
-    Dependency.activate(self)
-    Initializer.activate(self)
-
+    include Dependency
+    include Initializer
     include Log::Dependency
 
     initializer :subscription_address

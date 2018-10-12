@@ -3,8 +3,7 @@ module Consumer
     module PositionStore
       class LocalFile
         include Consumer::PositionStore
-
-        Initializer.activate(self)
+        include Initializer
 
         initializer(:identifier)
 
