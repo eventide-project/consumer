@@ -2,8 +2,7 @@ module Consumer
   module PositionStore
     def self.included(cls)
       cls.class_exec do
-        Dependency.activate(self)
-
+        include Dependency
         include Log::Dependency
 
         extend Build
