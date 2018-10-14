@@ -5,12 +5,16 @@ module Consumer
     include Initializer
     include Log::Dependency
 
-    initializer :subscription_address
+    initializer :subscription_address, :delay_threshold
 
     dependency :consumer, Consumer
 
     def self.build(consumer, subscription)
-      instance = new subscription.address
+      subscription_address = subscription.address
+
+      delay_threshold = subscription.batch_size
+
+      instance = new(subscription_address, delay_threshold)
       instance.consumer = consumer
       instance.configure
       instance

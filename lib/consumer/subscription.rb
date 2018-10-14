@@ -17,6 +17,10 @@ module Consumer
       @position ||= 0
     end
 
+    def batch_size
+      get.batch_size
+    end
+
     dependency :poll, Poll
 
     def self.build(stream_name, get, position: nil, poll_interval_milliseconds: nil)

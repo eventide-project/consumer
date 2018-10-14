@@ -5,8 +5,7 @@ context "Consumer Actor" do
     batch = Controls::MessageData::Batch.example
     reply_message = Consumer::Subscription::GetBatch::Reply.new(batch)
 
-    subscription_address = Actor::Messaging::Address.build
-    actor = Consumer::Actor.new(subscription_address)
+    actor = Controls::Actor.example
 
     actor.handle(reply_message)
 
@@ -14,7 +13,7 @@ context "Consumer Actor" do
       get_batch = Consumer::Subscription::GetBatch.new(actor.address)
 
       assert(actor.send) do
-        sent?(get_batch, address: subscription_address)
+        sent?(get_batch, address: actor.subscription_address)
       end
     end
 

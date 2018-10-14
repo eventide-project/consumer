@@ -1,17 +1,27 @@
 module Consumer
   module Controls
     module Get
-      def self.example
-        Example.new
+      def self.example(batch_size: nil)
+        Example.build(batch_size: batch_size)
+      end
+
+      def self.default_batch_size
+        MessageData::Batch.size
       end
 
       class Example
         include ::Configure
 
+        include MessageStore::Get
+
+        initializer :batch_size
+
         configure :get
 
-        def self.build
-          new
+        def self.build(batch_size: nil)
+          batch_size ||= Get.default_batch_size
+
+          new(batch_size)
         end
 
         def call(stream_name, position: nil)
