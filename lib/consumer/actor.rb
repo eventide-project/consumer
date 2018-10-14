@@ -5,9 +5,14 @@ module Consumer
     include Initializer
     include Log::Dependency
 
-    initializer :subscription_address, :delay_threshold
+    initializer :subscription_address, a(:delay_threshold)
 
     dependency :consumer, Consumer
+
+    attr_writer :current_batch
+    def current_batch
+      @current_batch ||= []
+    end
 
     def self.build(consumer, subscription)
       subscription_address = subscription.address
@@ -29,7 +34,9 @@ module Consumer
 
       logger.trace { "Received batch (Messages: #{messages.count})" }
 
-      request_batch
+      unless messages.count > delay_threshold
+        request_batch
+      end
 
       messages.each do |message_data|
         consumer.dispatch(message_data)
