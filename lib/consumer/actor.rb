@@ -32,17 +32,37 @@ module Consumer
     handle Subscription::GetBatch::Reply do |get_batch_reply|
       next_batch = get_batch_reply.batch
 
-      logger.trace { "Received batch (Next Batch: #{next_batch.count}, Current Batch: #{current_batch.count})" }
+      logger.trace { "Received batch (Next Batch: #{next_batch.size}, Current Batch: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
 
       self.current_batch += next_batch
 
-      unless current_batch.count > delay_threshold
+      unless current_batch.size > delay_threshold
         request_batch
       end
 
-      logger.debug { "Batch received (Next Batch: #{next_batch.count}, Current Batch: #{current_batch.count})" }
+      logger.debug { "Batch received (Next Batch: #{next_batch.size}, Current Batch: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
 
       :dispatch
+    end
+
+    handle :dispatch do
+      logger.trace { "Dispatching Message (Current Batch: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
+
+      dispatch_message = current_batch.shift
+
+      if current_batch.size == delay_threshold
+        request_batch
+      end
+
+      consumer.dispatch(dispatch_message)
+
+      unless current_batch.empty?
+        next_message = :dispatch
+      end
+
+      logger.debug { "Dispatched Message (Current Batch: #{current_batch.size}, Delay Threshold: #{delay_threshold}, Next Message: #{next_message.inspect})" }
+
+      next_message
     end
 
     def request_batch
@@ -53,6 +73,8 @@ module Consumer
       send.(get_batch, subscription_address)
 
       logger.debug { "Send batch request" }
+
+      nil
     end
   end
 end
