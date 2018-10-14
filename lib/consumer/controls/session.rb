@@ -6,8 +6,8 @@ module Consumer
       end
 
       class Example
-        extend ::Configure::Macro
-        extend ::Settings::Setting::Macro
+        include ::Configure
+        include Settings::Setting
 
         configure :session
 

@@ -20,6 +20,8 @@ require 'consumer/controls/subscription'
 require 'consumer/controls/handle'
 require 'consumer/controls/handle/raise_error'
 
+require 'consumer/controls/actor'
+
 require 'consumer/controls/consumer'
 require 'consumer/controls/consumer/incrementing'
 require 'consumer/controls/consumer/error_handler'
