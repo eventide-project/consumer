@@ -10,7 +10,7 @@ context "Consumer Actor" do
 
       actor.delay_threshold = received_batch.size + 1
 
-      next_actor_message = actor.handle(reply_message)
+      actor.handle(reply_message)
 
       test "Subscription is sent get batch message" do
         get_batch = Consumer::Subscription::GetBatch.new(actor.address)
@@ -18,10 +18,6 @@ context "Consumer Actor" do
         assert(actor.send) do
           sent?(get_batch, address: actor.subscription_address)
         end
-      end
-
-      test "Dispatch message is next for actor" do
-        assert(next_actor_message == :dispatch)
       end
     end
   end

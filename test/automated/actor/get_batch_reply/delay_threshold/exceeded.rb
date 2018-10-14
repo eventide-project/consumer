@@ -12,16 +12,12 @@ context "Consumer Actor" do
       received_batch = Controls::MessageData::Batch.example(instances: 1)
       reply_message = Consumer::Subscription::GetBatch::Reply.new(received_batch)
 
-      next_actor_message = actor.handle(reply_message)
+      actor.handle(reply_message)
 
       test "Subscription is not sent any message" do
         refute(actor.send) do
           sent?(address: actor.subscription_address)
         end
-      end
-
-      test "Dispatch message is next for actor" do
-        assert(next_actor_message == :dispatch)
       end
     end
   end

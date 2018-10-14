@@ -34,15 +34,21 @@ module Consumer
 
       logger.trace(tag: :actor) { "Received batch (Received Batch Size: #{received_batch.size}, Prefetch Queue Depth: #{prefetch_queue.size}, Delay Threshold: #{delay_threshold})" }
 
+      prefetch_queue_empty = prefetch_queue.empty?
+
       self.prefetch_queue += received_batch
 
       unless prefetch_queue.size > delay_threshold
         request_batch
       end
 
-      logger.debug(tag: :actor) { "Batch received (Received Batch Size: #{received_batch.size}, Prefetch Queue Depth: #{prefetch_queue.size}, Delay Threshold: #{delay_threshold})" }
+      if prefetch_queue_empty
+        next_message = :dispatch
+      end
 
-      :dispatch
+      logger.debug(tag: :actor) { "Batch received (Received Batch Size: #{received_batch.size}, Prefetch Queue Depth: #{prefetch_queue.size}, Delay Threshold: #{delay_threshold}, Next Actor Message: #{next_message || '(none)'})" }
+
+      next_message
     end
 
     handle :dispatch do
@@ -60,7 +66,7 @@ module Consumer
         next_message = :dispatch
       end
 
-      logger.debug(tag: :actor) { "Dispatched Message (Prefetch Queue Depth: #{prefetch_queue.size}, Delay Threshold: #{delay_threshold}, Global Position: #{dispatch_message.global_position}, Next Message: #{next_message.inspect})" }
+      logger.debug(tag: :actor) { "Dispatched Message (Prefetch Queue Depth: #{prefetch_queue.size}, Delay Threshold: #{delay_threshold}, Global Position: #{dispatch_message.global_position}, Next Actor Message: #{next_message || '(none)'})" }
 
       next_message
     end
