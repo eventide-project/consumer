@@ -6,7 +6,7 @@ module Consumer
       end
 
       class Example
-        extend ::Configure::Macro
+        include ::Configure
 
         configure :get
 
