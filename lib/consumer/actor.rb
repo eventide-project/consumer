@@ -32,7 +32,7 @@ module Consumer
     handle Subscription::GetBatch::Reply do |get_batch_reply|
       next_batch = get_batch_reply.batch
 
-      logger.trace { "Received batch (Next Batch: #{next_batch.size}, Current Batch: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
+      logger.trace(tag: :actor) { "Received batch (Next Batch Size: #{next_batch.size}, Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
 
       self.current_batch += next_batch
 
@@ -40,13 +40,13 @@ module Consumer
         request_batch
       end
 
-      logger.debug { "Batch received (Next Batch: #{next_batch.size}, Current Batch: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
+      logger.debug(tag: :actor) { "Batch received (Next Batch Size: #{next_batch.size}, Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
 
       :dispatch
     end
 
     handle :dispatch do
-      logger.trace { "Dispatching Message (Current Batch: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
+      logger.trace(tag: :actor) { "Dispatching Message (Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
 
       dispatch_message = current_batch.shift
 
@@ -60,19 +60,19 @@ module Consumer
         next_message = :dispatch
       end
 
-      logger.debug { "Dispatched Message (Current Batch: #{current_batch.size}, Delay Threshold: #{delay_threshold}, Next Message: #{next_message.inspect})" }
+      logger.debug(tag: :actor) { "Dispatched Message (Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold}, Global Position: #{dispatch_message.global_position}, Next Message: #{next_message.inspect})" }
 
       next_message
     end
 
     def request_batch
-      logger.trace { "Requesting batch" }
+      logger.trace(tag: :actor) { "Requesting batch (Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
 
       get_batch = Subscription::GetBatch.new(address)
 
       send.(get_batch, subscription_address)
 
-      logger.debug { "Send batch request" }
+      logger.debug(tag: :actor) { "Sent batch request (Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
 
       nil
     end
