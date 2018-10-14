@@ -30,19 +30,19 @@ module Consumer
     end
 
     handle Subscription::GetBatch::Reply do |get_batch_reply|
-      messages = get_batch_reply.batch
+      next_batch = get_batch_reply.batch
 
-      logger.trace { "Received batch (Messages: #{messages.count})" }
+      logger.trace { "Received batch (Next Batch: #{next_batch.count}, Current Batch: #{current_batch.count})" }
 
-      unless messages.count > delay_threshold
+      self.current_batch += next_batch
+
+      unless current_batch.count > delay_threshold
         request_batch
       end
 
-      messages.each do |message_data|
-        consumer.dispatch(message_data)
-      end
+      logger.debug { "Batch received (Next Batch: #{next_batch.count}, Current Batch: #{current_batch.count})" }
 
-      logger.debug { "Batch received (Events: #{messages.count})" }
+      :dispatch
     end
 
     def request_batch

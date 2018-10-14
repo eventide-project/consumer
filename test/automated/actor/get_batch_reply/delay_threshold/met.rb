@@ -1,7 +1,7 @@
-require_relative '../../automated_init'
+require_relative '../../../automated_init'
 
 context "Consumer Actor" do
-  context "Receive Match Message is Handled" do
+  context "Get Batch Reply Message is Handled" do
     context "Delay Threshhold is Met" do
       actor = Controls::Actor.example
 
@@ -21,20 +21,8 @@ context "Consumer Actor" do
         end
       end
 
-      test "No message is next for actor" do
-        assert(next_message.nil?)
-      end
-
-      context "Batch" do
-        batch.each_with_index do |message_data, index|
-          context "Message ##{index + 1}" do
-            test "Is dispatched" do
-              assert(actor.consumer) do
-                dispatched?(message_data)
-              end
-            end
-          end
-        end
+      test "Dispatch message is next for actor" do
+        assert(next_message == :dispatch)
       end
     end
   end
