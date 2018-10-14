@@ -5,9 +5,9 @@ context "Consumer Actor" do
     context "Delay Threshold is Exceeded" do
       actor = Controls::Actor.example
 
-      actor.current_batch = current_batch = Controls::MessageData::Batch.example
+      actor.prefetch_queue = prefetch_queue = Controls::MessageData::Batch.example
 
-      actor.delay_threshold = current_batch.size
+      actor.delay_threshold = prefetch_queue.size
 
       actor.handle(:dispatch)
 

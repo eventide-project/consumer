@@ -4,13 +4,11 @@ context "Consumer Actor" do
   context "Dispatch Message is Handled" do
     actor = Controls::Actor.example
 
-    current_batch = Controls::MessageData::Batch.example
+    actor.prefetch_queue = prefetch_queue = Controls::MessageData::Batch.example
 
-    oldest_message = current_batch.first or fail
+    oldest_message = prefetch_queue.first or fail
 
-    actor.current_batch = current_batch
-
-    next_message = actor.handle(:dispatch)
+    next_actor_message = actor.handle(:dispatch)
 
     consumer = actor.consumer
 
@@ -20,14 +18,12 @@ context "Consumer Actor" do
       end
     end
 
-    test "Dispatched message is removed from current batch" do
-      refute(actor.current_batch.include?(oldest_message))
+    test "Dispatched message is removed from prefetch queue" do
+      refute(actor.prefetch_queue.include?(oldest_message))
     end
 
-    test "Other messages in current batch are not dispatched" do
-      assert(actor.current_batch.size > 1)
-
-      not_dispatched = actor.current_batch.none? do |message|
+    test "Other messages in prefetch queue are not dispatched" do
+      not_dispatched = actor.prefetch_queue.none? do |message|
         consumer.dispatched?(message)
       end
 
@@ -35,7 +31,7 @@ context "Consumer Actor" do
     end
 
     test "Dispatch message is next for actor" do
-      assert(next_message == :dispatch)
+      assert(next_actor_message == :dispatch)
     end
   end
 end

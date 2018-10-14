@@ -9,9 +9,9 @@ module Consumer
 
     dependency :consumer, Consumer
 
-    attr_writer :current_batch
-    def current_batch
-      @current_batch ||= []
+    attr_writer :prefetch_queue
+    def prefetch_queue
+      @prefetch_queue ||= []
     end
 
     def self.build(consumer, subscription)
@@ -30,49 +30,49 @@ module Consumer
     end
 
     handle Subscription::GetBatch::Reply do |get_batch_reply|
-      next_batch = get_batch_reply.batch
+      received_batch = get_batch_reply.batch
 
-      logger.trace(tag: :actor) { "Received batch (Next Batch Size: #{next_batch.size}, Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
+      logger.trace(tag: :actor) { "Received batch (Received Batch Size: #{received_batch.size}, Prefetch Queue Depth: #{prefetch_queue.size}, Delay Threshold: #{delay_threshold})" }
 
-      self.current_batch += next_batch
+      self.prefetch_queue += received_batch
 
-      unless current_batch.size > delay_threshold
+      unless prefetch_queue.size > delay_threshold
         request_batch
       end
 
-      logger.debug(tag: :actor) { "Batch received (Next Batch Size: #{next_batch.size}, Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
+      logger.debug(tag: :actor) { "Batch received (Received Batch Size: #{received_batch.size}, Prefetch Queue Depth: #{prefetch_queue.size}, Delay Threshold: #{delay_threshold})" }
 
       :dispatch
     end
 
     handle :dispatch do
-      logger.trace(tag: :actor) { "Dispatching Message (Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
+      logger.trace(tag: :actor) { "Dispatching Message (Prefetch Queue Depth: #{prefetch_queue.size}, Delay Threshold: #{delay_threshold})" }
 
-      dispatch_message = current_batch.shift
+      dispatch_message = prefetch_queue.shift
 
-      if current_batch.size == delay_threshold
+      if prefetch_queue.size == delay_threshold
         request_batch
       end
 
       consumer.dispatch(dispatch_message)
 
-      unless current_batch.empty?
+      unless prefetch_queue.empty?
         next_message = :dispatch
       end
 
-      logger.debug(tag: :actor) { "Dispatched Message (Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold}, Global Position: #{dispatch_message.global_position}, Next Message: #{next_message.inspect})" }
+      logger.debug(tag: :actor) { "Dispatched Message (Prefetch Queue Depth: #{prefetch_queue.size}, Delay Threshold: #{delay_threshold}, Global Position: #{dispatch_message.global_position}, Next Message: #{next_message.inspect})" }
 
       next_message
     end
 
     def request_batch
-      logger.trace(tag: :actor) { "Requesting batch (Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
+      logger.trace(tag: :actor) { "Requesting batch (Prefetch Queue Depth: #{prefetch_queue.size}, Delay Threshold: #{delay_threshold})" }
 
       get_batch = Subscription::GetBatch.new(address)
 
       send.(get_batch, subscription_address)
 
-      logger.debug(tag: :actor) { "Sent batch request (Current Batch Size: #{current_batch.size}, Delay Threshold: #{delay_threshold})" }
+      logger.debug(tag: :actor) { "Sent batch request (Prefetch Queue Depth: #{prefetch_queue.size}, Delay Threshold: #{delay_threshold})" }
 
       nil
     end

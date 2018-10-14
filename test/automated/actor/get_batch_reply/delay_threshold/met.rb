@@ -5,13 +5,13 @@ context "Consumer Actor" do
     context "Delay Threshhold is Met" do
       actor = Controls::Actor.example
 
-      batch = Controls::MessageData::Batch.example
+      received_batch = Controls::MessageData::Batch.example
 
-      reply_message = Consumer::Subscription::GetBatch::Reply.new(batch)
+      reply_message = Consumer::Subscription::GetBatch::Reply.new(received_batch)
 
-      actor.delay_threshold = batch.size
+      actor.delay_threshold = received_batch.size
 
-      next_message = actor.handle(reply_message)
+      next_actor_message = actor.handle(reply_message)
 
       test "Subscription is sent get batch message" do
         get_batch = Consumer::Subscription::GetBatch.new(actor.address)
@@ -22,7 +22,7 @@ context "Consumer Actor" do
       end
 
       test "Dispatch message is next for actor" do
-        assert(next_message == :dispatch)
+        assert(next_actor_message == :dispatch)
       end
     end
   end

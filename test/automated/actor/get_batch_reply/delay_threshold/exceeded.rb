@@ -5,15 +5,14 @@ context "Consumer Actor" do
     context "Delay Threshhold Exceeded" do
       actor = Controls::Actor.example
 
-      current_batch = Controls::MessageData::Batch.example
-      actor.current_batch = current_batch
+      actor.prefetch_queue = prefetch_queue = Controls::MessageData::Batch.example
 
-      actor.delay_threshold = current_batch.size
+      actor.delay_threshold = prefetch_queue.size
 
-      batch = Controls::MessageData::Batch.example(instances: 1)
-      reply_message = Consumer::Subscription::GetBatch::Reply.new(batch)
+      received_batch = Controls::MessageData::Batch.example(instances: 1)
+      reply_message = Consumer::Subscription::GetBatch::Reply.new(received_batch)
 
-      next_message = actor.handle(reply_message)
+      next_actor_message = actor.handle(reply_message)
 
       test "Subscription is not sent any message" do
         refute(actor.send) do
@@ -22,7 +21,7 @@ context "Consumer Actor" do
       end
 
       test "Dispatch message is next for actor" do
-        assert(next_message == :dispatch)
+        assert(next_actor_message == :dispatch)
       end
     end
   end
