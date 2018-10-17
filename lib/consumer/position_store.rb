@@ -56,11 +56,11 @@ module Consumer
       end
 
       def get
-        logger.trace { "Get position" }
+        logger.trace(tag: :position_store) { "Get position" }
 
         position = super
 
-        logger.info { "Get position done (Position: #{position || '(none)'})" }
+        logger.info(tag: :position_store) { "Get position done (Position: #{position || '(none)'})" }
 
         telemetry.record(:get, Telemetry::Get.new(position))
 
@@ -74,11 +74,11 @@ module Consumer
       end
 
       def put(position)
-        logger.trace { "Put position (Position: #{position})" }
+        logger.trace(tag: :position_store) { "Put position (Position: #{position})" }
 
         super
 
-        logger.info { "Put position done (Position: #{position})" }
+        logger.info(tag: :position_store) { "Put position done (Position: #{position})" }
 
         telemetry.record(:put, Telemetry::Put.new(position))
 
