@@ -4,8 +4,6 @@ module Consumer
 
     def tag!(tags)
       tags << :consumer
-      tags << :library
-      tags << :verbose
     end
   end
 end
