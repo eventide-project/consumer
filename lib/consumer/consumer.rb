@@ -74,6 +74,8 @@ module Consumer
       probe.(self, [actor_thread, subscription_thread], [actor_address, subscription_address])
     end
 
+    logger.info(tag: :*) { "Consumer started (Stream: #{stream_name}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+
     AsyncInvocation::Incorrect
   end
 
