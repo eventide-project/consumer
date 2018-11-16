@@ -19,12 +19,16 @@ module Consumer
           new(frequency_milliseconds)
         end
 
+        def batch_size
+          Defaults.batch_size
+        end
+
         def call(stream_name, position: nil)
           position ||= 0
 
           sleep(frequency_seconds)
 
-          3.times.map do |offset|
+          batch_size.times.map do |offset|
             MessageData.get(
               stream_name,
               position + offset,
@@ -36,6 +40,10 @@ module Consumer
         module Defaults
           def self.frequency_milliseconds
             100
+          end
+
+          def self.batch_size
+            3
           end
         end
 
