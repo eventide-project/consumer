@@ -64,6 +64,8 @@ module Consumer
   end
 
   def start(&probe)
+    logger.info(tag: :*) { "Starting consumer: #{self.class.name} (Stream: #{stream_name}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+
     _, subscription_thread = ::Actor::Start.(subscription)
 
     actor_address, actor_thread = Actor.start(self, subscription, include: :thread)
@@ -74,7 +76,7 @@ module Consumer
       probe.(self, [actor_thread, subscription_thread], [actor_address, subscription_address])
     end
 
-    logger.info(tag: :*) { "Consumer started (Stream: #{stream_name}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    logger.info(tag: :*) { "Started consumer: #{self.class.name} (Stream: #{stream_name}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
     AsyncInvocation::Incorrect
   end
