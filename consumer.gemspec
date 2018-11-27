@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name = 'evt-consumer'
-  s.version = '1.0.1.0'
+  s.version = '1.0.1.1'
   s.summary = 'Continuous subscription to a stream and message dispatching to handlers'
   s.description = ' '
 
