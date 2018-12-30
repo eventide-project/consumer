@@ -66,6 +66,8 @@ module Consumer
   def start(&probe)
     logger.info(tag: :*) { "Starting consumer: #{self.class.name} (Stream: #{stream_name}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
+    starting() if respond_to?(:starting)
+
     self.class.handler_registry.each do |handler|
       logger.info(tag: :*) { "Handler: #{handler.name} (Stream Name: #{stream_name}, Consumer: #{self.class.name})" }
     end
