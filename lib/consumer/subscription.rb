@@ -8,7 +8,7 @@ module Consumer
 
     configure :subscription
 
-    initializer :stream_name, :get
+    initializer :get
 
     attr_accessor :next_batch
 
@@ -23,11 +23,11 @@ module Consumer
 
     dependency :poll, Poll
 
-    def self.build(stream_name, get, position: nil, poll_interval_milliseconds: nil)
+    def self.build(get, position: nil, poll_interval_milliseconds: nil)
       poll_interval_milliseconds ||= Defaults.poll_interval_milliseconds
       poll_timeout_milliseconds = Defaults.poll_timeout_milliseconds
 
-      instance = new(stream_name, get)
+      instance = new(get)
 
       instance.position = position
 
@@ -46,20 +46,20 @@ module Consumer
     end
 
     handle :resupply do
-      logger.trace { "Resupplying (StreamName: #{stream_name}, Position: #{position})" }
+      logger.trace { "Resupplying (Stream Name: #{get.stream_name}, Position: #{position})" }
 
       batch = poll.() do
-        get.(stream_name, position: position)
+        get.(position)
       end
 
       if batch.nil? || batch.empty?
-        logger.debug { "Did not resupply; no events available (StreamName: #{stream_name}, Position: #{position})" }
+        logger.debug { "Did not resupply; no events available (Stream Name: #{get.stream_name}, Position: #{position})" }
 
         :resupply
       else
         self.next_batch = batch
 
-        logger.debug { "Resupplied (StreamName: #{stream_name}, Position: #{position}, Batch Size: #{batch.count})" }
+        logger.debug { "Resupplied (Stream Name: #{get.stream_name}, Position: #{position}, Batch Size: #{batch.count})" }
       end
     end
 

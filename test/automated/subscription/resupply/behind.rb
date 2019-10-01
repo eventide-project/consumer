@@ -3,10 +3,10 @@ require_relative '../../automated_init'
 context "Subscription" do
   context "Resupply" do
     context "Behind" do
-      batch = Controls::MessageData::Batch.example
-
       position = Controls::Position::Global.example
-      subscription = Controls::Subscription.example(batch: batch, position: position)
+      subscription = Controls::Subscription.example(position: position, count: position + 1)
+
+      batch = subscription.get.items[position..-1]
 
       subscription.handle(:resupply)
 
