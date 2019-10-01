@@ -34,7 +34,7 @@ module Consumer
 
           Get::Incrementing.configure(self, stream_name, sleep_duration)
 
-          PositionStore::LocalFile.configure(self, identifier: identifier)
+          PositionStore::File.configure(self, identifier: identifier)
         end
       end
     end

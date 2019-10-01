@@ -14,7 +14,7 @@ require 'consumer/controls/session'
 require 'consumer/controls/stream_name'
 
 require 'consumer/controls/position_store'
-require 'consumer/controls/position_store/local_file'
+require 'consumer/controls/position_store/file'
 require 'consumer/controls/subscription'
 
 require 'consumer/controls/handle'

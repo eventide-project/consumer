@@ -1,7 +1,7 @@
 module Consumer
   module Controls
     module PositionStore
-      class LocalFile
+      class File
         include Consumer::PositionStore
         include Initializer
 
@@ -14,18 +14,18 @@ module Consumer
         end
 
         def get
-          return 0 unless File.exist?(path)
+          return 0 unless ::File.exist?(path)
 
-          text = File.read(path)
+          text = ::File.read(path)
           text.to_i
         end
 
         def put(position)
-          File.write(path, position)
+          ::File.write(path, position)
         end
 
         def path
-          path = File.join('tmp', 'local_file_position_store')
+          path = ::File.join('tmp', 'local_file_position_store')
 
           unless identifier.nil?
             path << "-#{identifier}"
