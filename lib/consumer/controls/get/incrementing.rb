@@ -7,23 +7,23 @@ module Consumer
 
         configure :get
 
-        initializer :frequency_milliseconds
+        initializer :stream_name, :frequency_milliseconds
 
         def frequency_seconds
           frequency_milliseconds.to_f / 1000
         end
 
-        def self.build(frequency_milliseconds=nil)
+        def self.build(stream_name, frequency_milliseconds=nil)
           frequency_milliseconds ||= Defaults.frequency_milliseconds
 
-          new(frequency_milliseconds)
+          new(stream_name, frequency_milliseconds)
         end
 
         def batch_size
           Defaults.batch_size
         end
 
-        def call(stream_name, position: nil)
+        def call(position)
           position ||= 0
 
           sleep(frequency_seconds)
