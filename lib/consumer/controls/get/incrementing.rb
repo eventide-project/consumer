@@ -29,7 +29,7 @@ module Consumer
           sleep(frequency_seconds)
 
           batch_size.times.map do |offset|
-            MessageData.get(
+            MessageData.example(
               stream_name,
               position + offset,
               offset
@@ -48,7 +48,7 @@ module Consumer
         end
 
         class MessageData
-          def self.get(stream_name, global_position, position)
+          def self.example(stream_name, global_position, position)
             data = {
               :position => position,
               :global_position => global_position
