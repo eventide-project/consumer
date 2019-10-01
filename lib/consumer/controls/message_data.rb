@@ -13,6 +13,8 @@ module Consumer
 
         message_data
       end
+
+      Write = MessageStore::Controls::MessageData::Write
     end
   end
 end
