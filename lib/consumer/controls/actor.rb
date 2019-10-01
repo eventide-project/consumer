@@ -10,7 +10,7 @@ module Consumer
 
       module DelayThreshold
         def self.example
-          Get.default_batch_size
+          11
         end
       end
 
