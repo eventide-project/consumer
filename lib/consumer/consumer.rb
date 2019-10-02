@@ -119,7 +119,6 @@ module Consumer
 
       Subscription.configure(
         self,
-        stream_name,
         get,
         position: starting_position,
         poll_interval_milliseconds: poll_interval_milliseconds

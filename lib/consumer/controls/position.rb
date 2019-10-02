@@ -11,9 +11,11 @@ module Consumer
         def self.example(offset: nil)
           offset ||= 0
 
-          position = MessageStore::Controls::MessageData::Read.global_position
+          start + offset
+        end
 
-          position + offset
+        def self.start
+          11
         end
       end
     end

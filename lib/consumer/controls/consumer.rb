@@ -39,7 +39,8 @@ module Consumer
           def configure(settings: nil, **)
             Controls::Session::Example.configure(self, settings)
 
-            Get::Example.configure(self)
+            self.get = Get.example
+
             PositionStore::Example.configure(self)
           end
 

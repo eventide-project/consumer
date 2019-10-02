@@ -32,9 +32,9 @@ module Consumer
           sleep_duration = ENV['SLEEP_DURATION'] || 100
           sleep_duration = sleep_duration.to_i
 
-          Get::Incrementing.configure(self, sleep_duration)
+          Get::Incrementing.configure(self, stream_name, sleep_duration)
 
-          PositionStore::LocalFile.configure(self, identifier: identifier)
+          PositionStore::File.configure(self, identifier: identifier)
         end
       end
     end
