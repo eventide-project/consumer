@@ -14,9 +14,7 @@ context "Consumer Actor" do
       test "Subscription is sent get batch message" do
         get_batch = Consumer::Subscription::GetBatch.new(actor.address)
 
-        assert(actor.send) do
-          sent?(get_batch, address: actor.subscription_address)
-        end
+        assert(actor.send.sent?(get_batch, address: actor.subscription_address))
       end
     end
   end

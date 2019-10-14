@@ -53,17 +53,13 @@ context "Consumer" do
 
           context "Block returns true" do
             test "Predicate returns true" do
-              assert(substitute) do
-                dispatched? { true }
-              end
+              assert(substitute.dispatched? { true })
             end
           end
 
           context "Block returns false" do
             test "Predicate returns false" do
-              refute(substitute) do
-                dispatched? { false }
-              end
+              refute(substitute.dispatched? { false })
             end
           end
         end

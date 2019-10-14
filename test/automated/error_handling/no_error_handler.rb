@@ -10,8 +10,8 @@ context "Error Handling" do
       ])
 
       test "Error is raised" do
-        assert proc { consumer.dispatch(message_data) } do
-          raises_error? Controls::Error::Example
+        assert_raises Controls::Error::Example do
+          consumer.dispatch(message_data)
         end
       end
     end
@@ -20,8 +20,8 @@ context "Error Handling" do
       consumer = Controls::Consumer.example
 
       test "Error is not raised" do
-        refute proc { consumer.dispatch(message_data) } do
-          raises_error? Controls::Error::Example
+        refute_raises Controls::Error::Example do
+          consumer.dispatch(message_data)
         end
       end
     end

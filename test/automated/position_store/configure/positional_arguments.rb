@@ -36,8 +36,8 @@ context "Position Store" do
         position_store_class = Controls::PositionStore::Example
 
         test "Raises argument error" do
-          assert proc { position_store_class.configure(receiver, :some_value) } do
-            raises_error?(ArgumentError)
+          assert_raises ArgumentError do
+            position_store_class.configure(receiver, :some_value)
           end
         end
       end

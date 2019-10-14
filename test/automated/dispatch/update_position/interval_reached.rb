@@ -14,9 +14,7 @@ context "Dispatch" do
       consumer.dispatch(message_data)
 
       test "Position is updated" do
-        assert(consumer.position_store) do
-          put?(global_position)
-        end
+        assert(consumer.position_store.put?(global_position))
       end
 
       test "Counter is reset" do
@@ -34,9 +32,7 @@ context "Dispatch" do
       consumer.dispatch(message_data)
 
       test "Position is updated" do
-        assert(consumer.position_store) do
-          put?(global_position)
-        end
+        assert(consumer.position_store.put?(global_position))
       end
 
       test "Counter is reset" do

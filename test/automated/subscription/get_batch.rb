@@ -15,9 +15,7 @@ context "Subscription" do
     end
 
     test "Subscription resends itself resupply message" do
-      assert(subscription.send) do
-        sent?(:resupply, address: subscription.address)
-      end
+      assert(subscription.send.sent?(:resupply, address: subscription.address))
     end
 
     context "Position" do

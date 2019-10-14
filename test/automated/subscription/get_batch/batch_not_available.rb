@@ -12,9 +12,7 @@ context "Subscription" do
       subscription.handle(get_batch)
 
       test "Subscription resends get batch message" do
-        assert(subscription.send) do
-          sent?(get_batch, address: subscription.address)
-        end
+        assert(subscription.send.sent?(get_batch, address: subscription.address))
       end
 
       test "Position is unchanged" do

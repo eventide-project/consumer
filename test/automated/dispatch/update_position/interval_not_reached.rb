@@ -13,9 +13,7 @@ context "Dispatch" do
     consumer.dispatch(message_data)
 
     test "Position is not updated" do
-      refute(consumer.position_store) do
-        put?
-      end
+      refute(consumer.position_store.put?)
     end
   end
 end

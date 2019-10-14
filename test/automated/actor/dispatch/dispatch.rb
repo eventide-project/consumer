@@ -13,9 +13,7 @@ context "Consumer Actor" do
     consumer = actor.consumer
 
     test "Oldest message is dispatched by consumer" do
-      assert(consumer) do
-        dispatched?(oldest_message)
-      end
+      assert(consumer.dispatched?(oldest_message))
     end
 
     test "Dispatched message is removed from prefetch queue" do

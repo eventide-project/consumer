@@ -15,9 +15,7 @@ context "Subscription" do
       end
 
       test "Subscription does not send itself a proceeding message" do
-        refute(subscription.send) do
-          sent?
-        end
+        refute(subscription.send.sent?)
       end
 
       test "Position is not changed" do

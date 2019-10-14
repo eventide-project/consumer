@@ -7,9 +7,7 @@ context "Subscription" do
     subscription.handle(:start)
 
     test "Subscription sends itself resupply message" do
-      assert(subscription.send) do
-        sent?(:resupply, address: subscription.address)
-      end
+      assert(subscription.send.sent?(:resupply, address: subscription.address))
     end
   end
 end

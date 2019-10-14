@@ -15,9 +15,7 @@ context "Consumer Actor" do
       actor.handle(reply_message)
 
       test "Subscription is not sent any message" do
-        refute(actor.send) do
-          sent?(address: actor.subscription_address)
-        end
+        refute(actor.send.sent?(address: actor.subscription_address))
       end
     end
   end
