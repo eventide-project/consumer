@@ -8,7 +8,7 @@ context "Error Handling" do
 
     context "Dispatch fails" do
       test "Error is not raised" do
-        refute_raises Controls::Error::Example do
+        refute_raises(Controls::Error::Example) do
           consumer.dispatch(message_data)
         end
       end

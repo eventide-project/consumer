@@ -11,7 +11,7 @@ context "Position Store" do
     test "Abstract method error not raised" do
       position = Controls::Position::Global.example
 
-      refute_raises Virtual::PureMethod::Error do
+      refute_raises(Virtual::PureMethod::Error) do
         position_store.put(position)
       end
     end

@@ -9,7 +9,7 @@ context "Handler Registry" do
     registry.register(handler_class)
 
     test "Is error" do
-      assert_raises Consumer::HandlerRegistry::Error do
+      assert_raises(Consumer::HandlerRegistry::Error) do
         registry.register(handler_class)
       end
     end

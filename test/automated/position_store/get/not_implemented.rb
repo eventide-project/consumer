@@ -9,7 +9,7 @@ context "Position Store" do
     position_store = position_store.new
 
     test "Abstract method error" do
-      assert_raises Virtual::PureMethod::Error do
+      assert_raises(Virtual::PureMethod::Error) do
         position_store.get
       end
     end
