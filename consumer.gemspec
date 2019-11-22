@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.name = 'evt-consumer'
   s.version = '1.1.0.0'
-  s.summary = 'Continuous subscription to a stream and message dispatching to handlers'
+  s.summary = 'Continuous subscription to a category and message dispatching to handlers'
   s.description = ' '
 
   s.authors = ['The Eventide Project']
