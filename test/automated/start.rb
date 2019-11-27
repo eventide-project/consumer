@@ -20,7 +20,7 @@ context "Consumer" do
       assert(return_value == AsyncInvocation::Incorrect)
     end
 
-    test "Stream is set" do
+    test "Category is set" do
       assert(consumer.category == category)
     end
   end

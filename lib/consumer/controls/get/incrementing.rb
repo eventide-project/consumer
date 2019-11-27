@@ -7,16 +7,19 @@ module Consumer
 
         configure :get
 
-        initializer :stream_name, :frequency_milliseconds
+        def frequency_milliseconds
+          @frequency_milliseconds ||= Defaults.frequency_milliseconds
+        end
+        attr_writer :frequency_milliseconds
 
         def frequency_seconds
           frequency_milliseconds.to_f / 1000
         end
 
-        def self.build(stream_name, frequency_milliseconds=nil)
-          frequency_milliseconds ||= Defaults.frequency_milliseconds
-
-          new(stream_name, frequency_milliseconds)
+        def self.build(frequency_milliseconds=nil)
+          instance = new
+          instance.frequency_milliseconds = frequency_milliseconds
+          instance
         end
 
         def batch_size
@@ -30,7 +33,6 @@ module Consumer
 
           batch_size.times.map do |offset|
             MessageData.example(
-              stream_name,
               position + offset,
               offset
             )
@@ -48,14 +50,13 @@ module Consumer
         end
 
         class MessageData
-          def self.example(stream_name, global_position, position)
+          def self.example(global_position, position)
             data = {
               :position => position,
               :global_position => global_position
             }
 
             Controls::MessageData.example(
-              stream_name: stream_name,
               data: data,
               global_position: global_position,
               position: position

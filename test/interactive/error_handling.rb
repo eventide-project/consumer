@@ -74,14 +74,14 @@ class ExampleConsumer
         f: fail (process will terminate)
         i: ignore (consumer will proceed to next message
 
-      > 
+      >
     TEXT
     $stdout.flush
   end
 end
 
 Actor::Supervisor.start do
-  stream_name = Controls::StreamName.example
+  category = Controls::Category.example
 
-  ExampleConsumer.start(stream_name)
+  ExampleConsumer.start(category)
 end

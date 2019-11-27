@@ -2,10 +2,10 @@ module Consumer
   module Controls
     module Consumer
       module ErrorHandler
-        def self.example(stream_name=nil)
-          stream_name ||= StreamName.example
+        def self.example(category=nil)
+          category ||= Category.example
 
-          Example.new(stream_name)
+          Example.new(category)
         end
 
         class Example
