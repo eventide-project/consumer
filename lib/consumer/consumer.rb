@@ -14,7 +14,7 @@ module Consumer
 
       prepend Configure
 
-      initializer :stream_name
+      initializer :category
 
       attr_writer :identifier
       def identifier
@@ -64,12 +64,12 @@ module Consumer
   end
 
   def start(&probe)
-    logger.info(tag: :*) { "Starting consumer: #{self.class.name} (Stream: #{stream_name}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    logger.info(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
     starting() if respond_to?(:starting)
 
     self.class.handler_registry.each do |handler|
-      logger.info(tag: :*) { "Handler: #{handler.name} (Stream Name: #{stream_name}, Consumer: #{self.class.name})" }
+      logger.info(tag: :*) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
     end
 
     _, subscription_thread = ::Actor::Start.(subscription)
@@ -82,7 +82,7 @@ module Consumer
       probe.(self, [actor_thread, subscription_thread], [actor_address, subscription_address])
     end
 
-    logger.info(tag: :*) { "Started consumer: #{self.class.name} (Stream: #{stream_name}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    logger.info(tag: :*) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
     AsyncInvocation::Incorrect
   end
@@ -105,13 +105,13 @@ module Consumer
 
   module LogText
     def self.message_data(message_data)
-      "Type: #{message_data.type}, Stream: #{message_data.stream_name}, Position: #{message_data.position}, GlobalPosition: #{message_data.global_position}"
+      "Type: #{message_data.type}, Stream Name: #{message_data.stream_name}, Position: #{message_data.position}, GlobalPosition: #{message_data.global_position}"
     end
   end
 
   module Configure
     def configure(**kwargs)
-      logger.trace { "Configuring (Stream Name: #{stream_name})" }
+      logger.trace { "Configuring (Category: #{category})" }
 
       super(**kwargs)
 
@@ -124,13 +124,13 @@ module Consumer
         poll_interval_milliseconds: poll_interval_milliseconds
       )
 
-      logger.debug { "Done configuring (Stream Name: #{stream_name}, Starting Position: #{starting_position})" }
+      logger.debug { "Done configuring (Category: #{category}, Starting Position: #{starting_position})" }
     end
   end
 
   module Build
-    def build(stream_name, position_update_interval: nil, poll_interval_milliseconds: nil, identifier: nil, **arguments)
-      instance = new(stream_name)
+    def build(category, position_update_interval: nil, poll_interval_milliseconds: nil, identifier: nil, **arguments)
+      instance = new(category)
 
       unless identifier.nil?
         instance.identifier = identifier
@@ -146,8 +146,8 @@ module Consumer
   end
 
   module Start
-    def start(stream_name, **arguments, &probe)
-      instance = build stream_name, **arguments
+    def start(category, **arguments, &probe)
+      instance = build category, **arguments
       instance.start(&probe)
     end
   end

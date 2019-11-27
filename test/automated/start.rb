@@ -5,10 +5,10 @@ context "Consumer" do
     return_value = nil
     consumer = nil
 
-    stream_name = Controls::StreamName.example
+    category = Controls::Category.example
 
     Actor::Supervisor.start do |supervisor|
-      return_value = Controls::Consumer::Example.start(stream_name) do |_consumer, _, (consumer_address, subscription_address)|
+      return_value = Controls::Consumer::Example.start(category) do |_consumer, _, (consumer_address, subscription_address)|
         consumer = _consumer
 
         Actor::Messaging::Send.(:stop, consumer_address)
@@ -21,7 +21,7 @@ context "Consumer" do
     end
 
     test "Stream is set" do
-      assert(consumer.stream_name == stream_name)
+      assert(consumer.category == category)
     end
   end
 end
