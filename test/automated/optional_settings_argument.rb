@@ -1,12 +1,12 @@
 require_relative './automated_init'
 
 context "Optional Settings Argument" do
-  stream_name = Controls::StreamName.example
+  category = Controls::Category.example
 
   context "Given" do
     settings = Controls::Session::Settings.example
 
-    consumer = Controls::Consumer::Example.build(stream_name, settings: settings)
+    consumer = Controls::Consumer::Example.build(category, settings: settings)
 
     session = consumer.session
 
@@ -16,7 +16,7 @@ context "Optional Settings Argument" do
   end
 
   context "Omitted" do
-    consumer = Controls::Consumer::Example.build(stream_name)
+    consumer = Controls::Consumer::Example.build(category)
 
     session = consumer.session
 

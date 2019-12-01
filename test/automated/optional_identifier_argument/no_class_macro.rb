@@ -5,12 +5,12 @@ context "Optional Identifier Argument" do
     cls = Controls::Consumer.example_class(identifier: :none)
     assert(cls.identifier.nil?)
 
-    stream_name = Controls::StreamName.example
+    category = Controls::Category.example
 
     context "Given" do
       identifier = Controls::Identifier.random
 
-      consumer = cls.build(stream_name, identifier: identifier)
+      consumer = cls.build(category, identifier: identifier)
 
       test "Consumer is assigned given identifier" do
         assert(consumer.identifier == identifier)
@@ -18,7 +18,7 @@ context "Optional Identifier Argument" do
     end
 
     context "Omitted" do
-      consumer = cls.build(stream_name)
+      consumer = cls.build(category)
 
       test "Consumer is not assigned an identifier" do
         assert(consumer.identifier.nil?)
