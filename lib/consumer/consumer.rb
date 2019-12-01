@@ -68,10 +68,6 @@ module Consumer
   def start(&probe)
     logger.info(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
-    if not MessageStore::StreamName.category?(category)
-      raise Error, "Consumer's stream name must be a category (Stream Name: #{category})"
-    end
-
     starting() if respond_to?(:starting)
 
     self.class.handler_registry.each do |handler|
@@ -136,6 +132,10 @@ module Consumer
 
   module Build
     def build(category, position_update_interval: nil, poll_interval_milliseconds: nil, identifier: nil, **arguments)
+      if not MessageStore::StreamName.category?(category)
+        raise Error, "Consumer's stream name must be a category (Stream Name: #{category})"
+      end
+
       instance = new(category)
 
       unless identifier.nil?
