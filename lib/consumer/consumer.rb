@@ -1,4 +1,6 @@
 module Consumer
+  Error = Class.new(RuntimeError)
+
   def self.included(cls)
     cls.class_exec do
       include Dependency
@@ -66,7 +68,9 @@ module Consumer
   def start(&probe)
     logger.info(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
-
+    if not MessageStore::StreamName.category?(category)
+      raise Error, "Consumer's stream name must be a category (Stream Name: #{category})"
+    end
 
     starting() if respond_to?(:starting)
 
