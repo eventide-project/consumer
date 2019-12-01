@@ -37,7 +37,7 @@ module Consumer
 
       attr_accessor :poll_interval_milliseconds
 
-      dependency :get
+      dependency :get, MessageStore::Get
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
 
