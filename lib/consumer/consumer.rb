@@ -59,7 +59,6 @@ module Consumer
     update_position(message_data.global_position)
 
     logger.info { "Message dispatched (#{LogText.message_data(message_data)})" }
-
   rescue => error
     logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data(message_data)})" }
     error_raised(error, message_data)
