@@ -6,9 +6,9 @@ context "Identifier Macro" do
       include Consumer
     end
 
-    stream_name = Controls::StreamName.example
+    category = Controls::Category.example
 
-    consumer = cls.new(stream_name)
+    consumer = cls.new(category)
 
     context "Identifier" do
       identifier = consumer.identifier

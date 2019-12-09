@@ -1,10 +1,10 @@
 require_relative './automated_init'
 
 context "Poll Configuration" do
-  stream_name = Controls::StreamName.example
+  category = Controls::Category.example
 
   context "Not set" do
-    consumer = Controls::Consumer::Example.build(stream_name)
+    consumer = Controls::Consumer::Example.build(category)
 
     context "Subscription dependency" do
       subscription = consumer.subscription
@@ -24,7 +24,7 @@ context "Poll Configuration" do
   end
 
   context "Interval milliseconds" do
-    consumer = Controls::Consumer::Example.build(stream_name, poll_interval_milliseconds: 11)
+    consumer = Controls::Consumer::Example.build(category, poll_interval_milliseconds: 11)
 
     context "Subscription dependency" do
       subscription = consumer.subscription

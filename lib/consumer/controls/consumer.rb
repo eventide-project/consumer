@@ -1,12 +1,12 @@
 module Consumer
   module Controls
     module Consumer
-      def self.example(stream_name=nil, identifier: nil, handlers: nil)
-        stream_name ||= StreamName.example
+      def self.example(category=nil, identifier: nil, handlers: nil)
+        category ||= Category.example
 
         cls = example_class(identifier: identifier, handlers: handlers)
 
-        cls.new(stream_name)
+        cls.new(category)
       end
 
       def self.example_class(identifier: nil, handlers: nil)
