@@ -49,31 +49,12 @@ module Consumer
     end
   end
 
-  def dispatch(message_data)
-    logger.trace { "Dispatching message (#{LogText.message_data(message_data)})" }
-
-    self.class.handler_registry.each do |handler|
-      handler.(message_data, session: session)
-    end
-
-    update_position(message_data.global_position)
-
-    logger.info { "Message dispatched (#{LogText.message_data(message_data)})" }
-  rescue => error
-    logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data(message_data)})" }
-    error_raised(error, message_data)
-  end
-
   def start(&probe)
-    ## logger.info(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
-    logger.trace(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    logger.debug(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
-##
     print_info()
     log_info()
     starting() if respond_to?(:starting)
-##
-
 
     if not MessageStore::StreamName.category?(category)
       raise Error, "Consumer's stream name must be a category (Stream Name: #{category})"
@@ -89,61 +70,57 @@ module Consumer
       probe.(self, [actor_thread, subscription_thread], [actor_address, subscription_address])
     end
 
-    ## logger.info(tag: :*) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
     logger.debug(tag: :*) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
     AsyncInvocation::Incorrect
   end
 
   def print_info
-    # Starting consumer: TaxonomyDataComponent::Consumers::Taxonomy::Events
-    #   Category: taxonomy
-    #   Identifier: (none)
-    #   Position: 0
-
-    #     Handler: TaxonomyDataComponent::Handlers::Taxonomy::Events
-    #        Messages: Taxonomize, DataGenerated, Taxonomized
-
     STDOUT.puts
     STDOUT.puts "    Consumer: TaxonomyDataComponent::Consumers::Taxonomy::Events"
+    STDOUT.puts "      Category: #{category}"
+    STDOUT.puts "      Identifier: #{identifier || '(none)'}"
+    STDOUT.puts "      Position: #{subscription.position}"
+
+    print_startup_info() if respond_to?(:print_startup_info)
+
+    STDOUT.puts "      Position Stream: #{position_store.stream_name}"
+
     STDOUT.puts
 
     self.class.handler_registry.each do |handler|
       STDOUT.puts "      Handler: #{handler.name}"
-      STDOUT.puts "      Category: #{category}"
       STDOUT.puts "      Messages: #{handler.message_registry.message_types.join(', ')}"
     end
-
-
-    print_startup_info() if respond_to?(:print_startup_info)
   end
 
   def log_info
-    # unless identifier.nil?
-      # logger.info(tag: :*) { "Identifier: #{identifier.inspect}" }
-    # end
-    logger.debug(tag: :*) { "Identifier: #{identifier.inspect}" }
+    logger.debug(tag: :*) { "Identifier: #{identifier}" }
 
-
-##
     log_startup_info() if respond_to?(:log_startup_info)
-##
 
-
-    # unless poll_interval_milliseconds.nil?
-      # logger.info(tag: :*) { "Poll Interval Milliseconds: #{poll_interval_milliseconds.inspect}" }
-    # end
     logger.debug(tag: :*) { "Poll Interval Milliseconds: #{poll_interval_milliseconds.inspect}" }
 
-    # unless position_update_interval.nil?
-      # logger.info(tag: :*) { "Position Update Interval: #{position_update_interval.inspect}" }
-    # end
     logger.debug(tag: :*) { "Position Update Interval: #{position_update_interval.inspect}" }
 
     self.class.handler_registry.each do |handler|
-      ## logger.info(tag: :*) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
       logger.debug(tag: :*) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
     end
+  end
+
+  def dispatch(message_data)
+    logger.trace { "Dispatching message (#{LogText.message_data(message_data)})" }
+
+    self.class.handler_registry.each do |handler|
+      handler.(message_data, session: session)
+    end
+
+    update_position(message_data.global_position)
+
+    logger.info { "Message dispatched (#{LogText.message_data(message_data)})" }
+  rescue => error
+    logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data(message_data)})" }
+    error_raised(error, message_data)
   end
 
   def update_position(position)
