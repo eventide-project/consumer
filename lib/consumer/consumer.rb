@@ -77,7 +77,7 @@ module Consumer
 
   def print_info
     STDOUT.puts
-    STDOUT.puts "    Consumer: TaxonomyDataComponent::Consumers::Taxonomy::Events"
+    STDOUT.puts "    Consumer: #{self.class.name}"
     STDOUT.puts "      Category: #{category}"
     STDOUT.puts "      Identifier: #{identifier || '(none)'}"
     STDOUT.puts "      Position: #{subscription.position}"
