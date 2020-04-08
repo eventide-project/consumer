@@ -79,11 +79,11 @@ module Consumer
     STDOUT.puts
     STDOUT.puts "    Consumer: #{self.class.name}"
     STDOUT.puts "      Category: #{category}"
-    STDOUT.puts "      Identifier: #{identifier || '(none)'}"
     STDOUT.puts "      Position: #{subscription.position}"
 
     print_startup_info() if respond_to?(:print_startup_info)
 
+    STDOUT.puts "      Identifier: #{identifier || '(none)'}"
     STDOUT.puts "      Position Stream: #{position_store.stream_name}"
 
     STDOUT.puts
