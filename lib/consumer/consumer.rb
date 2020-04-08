@@ -68,15 +68,15 @@ module Consumer
     ## logger.info(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
     logger.trace(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
+##
+    print_info()
+    log_info()
+    starting() if respond_to?(:starting)
+##
+
+
     if not MessageStore::StreamName.category?(category)
       raise Error, "Consumer's stream name must be a category (Stream Name: #{category})"
-    end
-
-    start!
-
-    self.class.handler_registry.each do |handler|
-      ## logger.info(tag: :*) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
-      logger.debug(tag: :*) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
     end
 
     _, subscription_thread = ::Actor::Start.(subscription)
@@ -95,13 +95,39 @@ module Consumer
     AsyncInvocation::Incorrect
   end
 
-  def start!
+  def print_info
+    # Starting consumer: TaxonomyDataComponent::Consumers::Taxonomy::Events
+    #   Category: taxonomy
+    #   Identifier: (none)
+    #   Position: 0
+
+    #     Handler: TaxonomyDataComponent::Handlers::Taxonomy::Events
+    #        Messages: Taxonomize, DataGenerated, Taxonomized
+
+    STDOUT.puts
+    STDOUT.puts "    Consumer: TaxonomyDataComponent::Consumers::Taxonomy::Events"
+    STDOUT.puts
+
+    self.class.handler_registry.each do |handler|
+      STDOUT.puts "      Handler: #{handler.name}"
+      STDOUT.puts "      Category: #{category}"
+      STDOUT.puts "      Messages: #{handler.message_registry.message_types.join(', ')}"
+    end
+
+
+    print_startup_info() if respond_to?(:print_startup_info)
+  end
+
+  def log_info
     # unless identifier.nil?
       # logger.info(tag: :*) { "Identifier: #{identifier.inspect}" }
     # end
     logger.debug(tag: :*) { "Identifier: #{identifier.inspect}" }
 
-    starting() if respond_to?(:starting)
+
+##
+    log_startup_info() if respond_to?(:log_startup_info)
+##
 
 
     # unless poll_interval_milliseconds.nil?
@@ -113,6 +139,11 @@ module Consumer
       # logger.info(tag: :*) { "Position Update Interval: #{position_update_interval.inspect}" }
     # end
     logger.debug(tag: :*) { "Position Update Interval: #{position_update_interval.inspect}" }
+
+    self.class.handler_registry.each do |handler|
+      ## logger.info(tag: :*) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
+      logger.debug(tag: :*) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
+    end
   end
 
   def update_position(position)
