@@ -33,9 +33,9 @@ module Consumer
         @position_update_counter ||= 0
       end
 
-      attr_accessor :session
-
       attr_accessor :poll_interval_milliseconds
+
+      attr_accessor :session
 
       dependency :get, MessageStore::Get
       dependency :position_store, PositionStore
@@ -65,16 +65,18 @@ module Consumer
   end
 
   def start(&probe)
-    logger.info(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    ## logger.info(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    logger.trace(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
     if not MessageStore::StreamName.category?(category)
       raise Error, "Consumer's stream name must be a category (Stream Name: #{category})"
     end
 
-    starting() if respond_to?(:starting)
+    start!
 
     self.class.handler_registry.each do |handler|
-      logger.info(tag: :*) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
+      ## logger.info(tag: :*) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
+      logger.debug(tag: :*) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
     end
 
     _, subscription_thread = ::Actor::Start.(subscription)
@@ -87,9 +89,30 @@ module Consumer
       probe.(self, [actor_thread, subscription_thread], [actor_address, subscription_address])
     end
 
-    logger.info(tag: :*) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    ## logger.info(tag: :*) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    logger.debug(tag: :*) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
     AsyncInvocation::Incorrect
+  end
+
+  def start!
+    # unless identifier.nil?
+      # logger.info(tag: :*) { "Identifier: #{identifier.inspect}" }
+    # end
+    logger.debug(tag: :*) { "Identifier: #{identifier.inspect}" }
+
+    starting() if respond_to?(:starting)
+
+
+    # unless poll_interval_milliseconds.nil?
+      # logger.info(tag: :*) { "Poll Interval Milliseconds: #{poll_interval_milliseconds.inspect}" }
+    # end
+    logger.debug(tag: :*) { "Poll Interval Milliseconds: #{poll_interval_milliseconds.inspect}" }
+
+    # unless position_update_interval.nil?
+      # logger.info(tag: :*) { "Position Update Interval: #{position_update_interval.inspect}" }
+    # end
+    logger.debug(tag: :*) { "Position Update Interval: #{position_update_interval.inspect}" }
   end
 
   def update_position(position)
