@@ -33,9 +33,9 @@ module Consumer
         @position_update_counter ||= 0
       end
 
-      attr_accessor :session
-
       attr_accessor :poll_interval_milliseconds
+
+      attr_accessor :session
 
       dependency :get, MessageStore::Get
       dependency :position_store, PositionStore
@@ -49,32 +49,18 @@ module Consumer
     end
   end
 
-  def dispatch(message_data)
-    logger.trace { "Dispatching message (#{LogText.message_data(message_data)})" }
+  def start(&probe)
+    logger.info(tags: [:consumer, :start]) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
-    self.class.handler_registry.each do |handler|
-      handler.(message_data, session: session)
+    if Defaults.startup_info?
+      print_info
     end
 
-    update_position(message_data.global_position)
-
-    logger.info { "Message dispatched (#{LogText.message_data(message_data)})" }
-  rescue => error
-    logger.error { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data(message_data)})" }
-    error_raised(error, message_data)
-  end
-
-  def start(&probe)
-    logger.info(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    log_info
+    starting if respond_to?(:starting)
 
     if not MessageStore::StreamName.category?(category)
       raise Error, "Consumer's stream name must be a category (Stream Name: #{category})"
-    end
-
-    starting() if respond_to?(:starting)
-
-    self.class.handler_registry.each do |handler|
-      logger.info(tag: :*) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
     end
 
     _, subscription_thread = ::Actor::Start.(subscription)
@@ -87,24 +73,76 @@ module Consumer
       probe.(self, [actor_thread, subscription_thread], [actor_address, subscription_address])
     end
 
-    logger.info(tag: :*) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    logger.info(tags: [:consumer, :start]) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
     AsyncInvocation::Incorrect
   end
 
+  def print_info
+    STDOUT.puts
+    STDOUT.puts "    Consumer: #{self.class.name}"
+    STDOUT.puts "      Category: #{category}"
+    STDOUT.puts "      Position: #{subscription.position}"
+    STDOUT.puts "      Identifier: #{identifier || '(none)'}"
+
+    print_startup_info if respond_to?(:print_startup_info)
+
+    STDOUT.puts "      Position Stream: #{position_store.stream_name}"
+
+    STDOUT.puts
+
+    STDOUT.puts "      Handlers:"
+    self.class.handler_registry.each do |handler|
+      STDOUT.puts "        Handler: #{handler.name}"
+      STDOUT.puts "          Messages: #{handler.message_registry.message_types.join(', ')}"
+    end
+  end
+
+  def log_info
+    logger.info(tags: [:consumer, :start]) { "Category: #{category} (Consumer: #{self.class.name})" }
+    logger.info(tags: [:consumer, :start]) { "Position: #{subscription.position} (Consumer: #{self.class.name})" }
+    logger.info(tags: [:consumer, :start]) { "Identifier: #{identifier || 'nil'} (Consumer: #{self.class.name})" }
+
+    log_startup_info if respond_to?(:log_startup_info)
+
+    logger.info(tags: [:consumer, :start]) { "Position Update Interval: #{position_update_interval.inspect} (Consumer: #{self.class.name})" }
+
+    logger.info(tags: [:consumer, :start]) { "Poll Interval Milliseconds: #{poll_interval_milliseconds.inspect} (Consumer: #{self.class.name})" }
+
+    self.class.handler_registry.each do |handler|
+      logger.info(tags: [:consumer, :start]) { "Handler: #{handler.name} (Consumer: #{self.class.name})" }
+      logger.info(tags: [:consumer, :start]) { "Messages: #{handler.message_registry.message_types.join(', ')} (Handler: #{handler.name}, Consumer: #{self.class.name})" }
+    end
+  end
+
+  def dispatch(message_data)
+    logger.trace(tags: [:consumer, :dispatch, :message]) { "Dispatching message (#{LogText.message_data(message_data)})" }
+
+    self.class.handler_registry.each do |handler|
+      handler.(message_data, session: session)
+    end
+
+    update_position(message_data.global_position)
+
+    logger.debug(tags: [:consumer, :dispatch, :message]) { "Message dispatched (#{LogText.message_data(message_data)})" }
+  rescue => error
+    logger.error(tag: :*) { "Error raised (Error Class: #{error.class}, Error Message: #{error.message}, #{LogText.message_data(message_data)})" }
+    error_raised(error, message_data)
+  end
+
   def update_position(position)
-    logger.trace { "Updating position (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
+    logger.trace(tags: [:consumer, :position]) { "Updating position (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
 
     self.position_update_counter += 1
 
     if position_update_counter >= position_update_interval
       position_store.put(position)
 
-      logger.debug { "Updated position (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
+      logger.debug(tags: [:consumer, :position]) { "Updated position (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
 
       self.position_update_counter = 0
     else
-      logger.debug { "Interval not reached; position not updated (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
+      logger.debug(tags: [:consumer, :position]) { "Interval not reached; position not updated (Global Position: #{position}, Counter: #{position_update_counter}/#{position_update_interval})" }
     end
   end
 
@@ -116,7 +154,7 @@ module Consumer
 
   module Configure
     def configure(**kwargs)
-      logger.trace { "Configuring (Category: #{category})" }
+      logger.trace(tag: :consumer) { "Configuring (Category: #{category})" }
 
       super(**kwargs)
 
@@ -129,7 +167,7 @@ module Consumer
         poll_interval_milliseconds: poll_interval_milliseconds
       )
 
-      logger.debug { "Done configuring (Category: #{category}, Starting Position: #{starting_position})" }
+      logger.debug(tag: :consumer) { "Done configuring (Category: #{category}, Starting Position: #{starting_position})" }
     end
   end
 
@@ -182,6 +220,26 @@ module Consumer
         @identifier
       else
         identifier_macro(identifier)
+      end
+    end
+  end
+
+  module Defaults
+    def self.startup_info?
+      StartupInfo.get == 'on'
+    end
+
+    module StartupInfo
+      def self.get
+        ENV.fetch(env_var, default)
+      end
+
+      def self.env_var
+        'STARTUP_INFO'
+      end
+
+      def self.default
+        'on'
       end
     end
   end

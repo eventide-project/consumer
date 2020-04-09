@@ -60,7 +60,7 @@ module Consumer
 
         position = super
 
-        logger.info(tags: [:position_store, :get]) { "Get position done (Position: #{position || '(none)'})" }
+        logger.debug(tags: [:position_store, :get]) { "Get position done (Position: #{position || '(none)'})" }
 
         telemetry.record(:get, Telemetry::Get.new(position))
 

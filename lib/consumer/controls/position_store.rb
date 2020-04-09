@@ -10,6 +10,10 @@ module Consumer
 
         attr_accessor :telemetry_sink
 
+        def stream_name
+          'somePositionStream'
+        end
+
         def self.build
           instance = new
           instance.configure
