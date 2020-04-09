@@ -53,10 +53,10 @@ module Consumer
     logger.info(tags: [:consumer, :start]) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
     if Defaults.startup_info?
-      print_info if respond_to?(:print_info)
+      print_info
     end
 
-    log_info if respond_to?(:log_info)
+    log_info
     starting if respond_to?(:starting)
 
     if not MessageStore::StreamName.category?(category)
@@ -85,7 +85,7 @@ module Consumer
     STDOUT.puts "      Position: #{subscription.position}"
     STDOUT.puts "      Identifier: #{identifier || '(none)'}"
 
-    print_startup_info
+    print_startup_info if respond_to?(:print_startup_info)
 
     STDOUT.puts "      Position Stream: #{position_store.stream_name}"
 
@@ -103,7 +103,7 @@ module Consumer
     logger.info(tags: [:consumer, :start]) { "Position: #{subscription.position} (Consumer: #{self.class.name})" }
     logger.info(tags: [:consumer, :start]) { "Identifier: #{identifier || 'nil'} (Consumer: #{self.class.name})" }
 
-    log_startup_info
+    log_startup_info if respond_to?(:log_startup_info)
 
     logger.info(tags: [:consumer, :start]) { "Position Update Interval: #{position_update_interval.inspect} (Consumer: #{self.class.name})" }
 
