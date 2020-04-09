@@ -55,7 +55,10 @@ module Consumer
   def start(&probe)
     logger.info(tags: [:consumer, :start]) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
-    print_info
+    if Defaults.startup_info?
+      print_info
+    end
+
     log_info
     starting
 
@@ -216,6 +219,26 @@ module Consumer
         @identifier
       else
         identifier_macro(identifier)
+      end
+    end
+  end
+
+  module Defaults
+    def self.startup_info?
+      StartupInfo.get == 'on'
+    end
+
+    module StartupInfo
+      def self.get
+        ENV.fetch(env_var, default)
+      end
+
+      def self.env_var
+        'STARTUP_INFO'
+      end
+
+      def self.default
+        'on'
       end
     end
   end
