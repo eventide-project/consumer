@@ -44,9 +44,6 @@ module Consumer
       virtual :error_raised do |error, message_data|
         raise error
       end
-      virtual :print_startup_info
-      virtual :log_startup_info
-      virtual :starting
 
       alias_method :call, :dispatch
     end
@@ -56,11 +53,11 @@ module Consumer
     logger.info(tags: [:consumer, :start]) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
     if Defaults.startup_info?
-      print_info
+      print_info if respond_to?(:print_info)
     end
 
-    log_info
-    starting
+    log_info if respond_to?(:log_info)
+    starting if respond_to?(:starting)
 
     if not MessageStore::StreamName.category?(category)
       raise Error, "Consumer's stream name must be a category (Stream Name: #{category})"
@@ -86,31 +83,35 @@ module Consumer
     STDOUT.puts "    Consumer: #{self.class.name}"
     STDOUT.puts "      Category: #{category}"
     STDOUT.puts "      Position: #{subscription.position}"
+    STDOUT.puts "      Identifier: #{identifier || '(none)'}"
 
     print_startup_info
 
-    STDOUT.puts "      Identifier: #{identifier || '(none)'}"
     STDOUT.puts "      Position Stream: #{position_store.stream_name}"
 
     STDOUT.puts
 
+    STDOUT.puts "      Handlers:"
     self.class.handler_registry.each do |handler|
-      STDOUT.puts "      Handler: #{handler.name}"
-      STDOUT.puts "      Messages: #{handler.message_registry.message_types.join(', ')}"
+      STDOUT.puts "        Handler: #{handler.name}"
+      STDOUT.puts "          Messages: #{handler.message_registry.message_types.join(', ')}"
     end
   end
 
   def log_info
-    logger.info(tags: [:consumer, :start]) { "Identifier: #{identifier || 'nil'}" }
+    logger.info(tags: [:consumer, :start]) { "Category: #{category} (Consumer: #{self.class.name})" }
+    logger.info(tags: [:consumer, :start]) { "Position: #{subscription.position} (Consumer: #{self.class.name})" }
+    logger.info(tags: [:consumer, :start]) { "Identifier: #{identifier || 'nil'} (Consumer: #{self.class.name})" }
 
     log_startup_info
 
-    logger.info(tags: [:consumer, :start]) { "Position Update Interval: #{position_update_interval.inspect}" }
+    logger.info(tags: [:consumer, :start]) { "Position Update Interval: #{position_update_interval.inspect} (Consumer: #{self.class.name})" }
 
-    logger.info(tags: [:consumer, :start]) { "Poll Interval Milliseconds: #{poll_interval_milliseconds.inspect}" }
+    logger.info(tags: [:consumer, :start]) { "Poll Interval Milliseconds: #{poll_interval_milliseconds.inspect} (Consumer: #{self.class.name})" }
 
     self.class.handler_registry.each do |handler|
-      logger.info(tags: [:consumer, :start]) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
+      logger.info(tags: [:consumer, :start]) { "Handler: #{handler.name} (Consumer: #{self.class.name})" }
+      logger.info(tags: [:consumer, :start]) { "Messages: #{handler.message_registry.message_types.join(', ')} (Handler: #{handler.name}, Consumer: #{self.class.name})" }
     end
   end
 
