@@ -98,11 +98,11 @@ module Consumer
   def log_info
     logger.info(tags: [:consumer, :start]) { "Identifier: #{identifier || 'nil'}" }
 
-    log_startup_info() if respond_to?(:log_startup_info)
-
-    logger.info(tags: [:consumer, :start]) { "Poll Interval Milliseconds: #{poll_interval_milliseconds.inspect}" }
+    log_startup_info if respond_to?(:log_startup_info)
 
     logger.info(tags: [:consumer, :start]) { "Position Update Interval: #{position_update_interval.inspect}" }
+
+    logger.info(tags: [:consumer, :start]) { "Poll Interval Milliseconds: #{poll_interval_milliseconds.inspect}" }
 
     self.class.handler_registry.each do |handler|
       logger.info(tags: [:consumer, :start]) { "Handler: #{handler.name} (Category: #{category}, Consumer: #{self.class.name})" }
