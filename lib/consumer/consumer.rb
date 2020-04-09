@@ -52,9 +52,9 @@ module Consumer
   def start(&probe)
     logger.debug(tag: :*) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
 
-    print_info()
-    log_info()
-    starting() if respond_to?(:starting)
+    print_info
+    log_info
+    starting if respond_to?(:starting)
 
     if not MessageStore::StreamName.category?(category)
       raise Error, "Consumer's stream name must be a category (Stream Name: #{category})"
@@ -81,7 +81,8 @@ module Consumer
     STDOUT.puts "      Category: #{category}"
     STDOUT.puts "      Position: #{subscription.position}"
 
-    print_startup_info() if respond_to?(:print_startup_info)
+## try using virtual here
+    print_startup_info if respond_to?(:print_startup_info)
 
     STDOUT.puts "      Identifier: #{identifier || '(none)'}"
     STDOUT.puts "      Position Stream: #{position_store.stream_name}"
