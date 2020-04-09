@@ -44,6 +44,9 @@ module Consumer
       virtual :error_raised do |error, message_data|
         raise error
       end
+      virtual :print_startup_info
+      virtual :log_startup_info
+      virtual :starting
 
       alias_method :call, :dispatch
     end
@@ -54,7 +57,7 @@ module Consumer
 
     print_info
     log_info
-    starting if respond_to?(:starting)
+    starting
 
     if not MessageStore::StreamName.category?(category)
       raise Error, "Consumer's stream name must be a category (Stream Name: #{category})"
@@ -81,8 +84,7 @@ module Consumer
     STDOUT.puts "      Category: #{category}"
     STDOUT.puts "      Position: #{subscription.position}"
 
-## try using virtual here
-    print_startup_info if respond_to?(:print_startup_info)
+    print_startup_info
 
     STDOUT.puts "      Identifier: #{identifier || '(none)'}"
     STDOUT.puts "      Position Stream: #{position_store.stream_name}"
@@ -98,7 +100,7 @@ module Consumer
   def log_info
     logger.info(tags: [:consumer, :start]) { "Identifier: #{identifier || 'nil'}" }
 
-    log_startup_info if respond_to?(:log_startup_info)
+    log_startup_info
 
     logger.info(tags: [:consumer, :start]) { "Position Update Interval: #{position_update_interval.inspect}" }
 
