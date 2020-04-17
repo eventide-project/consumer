@@ -11,9 +11,16 @@ Gem::Specification.new do |s|
   s.licenses = ['MIT']
 
   s.require_paths = ['lib']
-  s.files = Dir.glob('{lib}/**/*')
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.4.0'
+
+  files = Dir.glob('{lib}/**/*')
+
+  files.reject! do |file|
+    file.match?(/postgres/)
+  end
+
+  s.files = files
 
   s.bindir = 'bin'
 
