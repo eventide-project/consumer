@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   files = Dir.glob('{lib}/**/*')
 
   files.reject! do |file|
-    file.include?('lib/consumer/postgres') || file.include?('lib/consumer/_postgres')
+    File.symlink?(file)
   end
 
   s.files = files
