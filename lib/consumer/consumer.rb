@@ -87,7 +87,9 @@ module Consumer
 
     print_startup_info if respond_to?(:print_startup_info)
 
-    STDOUT.puts "      Position Stream: #{position_store.stream_name}"
+    if position_store.respond_to?(:stream_name)
+      STDOUT.puts "      Position Stream: #{position_store.stream_name}"
+    end
 
     STDOUT.puts
 
