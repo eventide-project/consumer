@@ -1,24 +1,35 @@
 module Consumer
   module Controls
     module PositionStore
-      def self.example
-        Example.build
+      def self.example(&block)
+        if block.nil?
+          cls = Example
+        else
+          cls = example_class(&block)
+        end
+
+        cls.build
       end
 
-      class Example
-        include ::Consumer::PositionStore
+      def self.example_class(&block)
+        Class.new do
+          include ::Consumer::PositionStore
 
+          def self.build
+            instance = new
+            instance.configure
+            instance
+          end
+
+          def configure
+          end
+
+          class_exec(&block) unless block.nil?
+        end
+      end
+
+      Example = example_class do
         attr_accessor :telemetry_sink
-
-        def stream_name
-          'somePositionStream'
-        end
-
-        def self.build
-          instance = new
-          instance.configure
-          instance
-        end
 
         def configure
           self.telemetry_sink = ::Consumer::PositionStore::Telemetry::Sink.new
@@ -31,6 +42,12 @@ module Consumer
         end
 
         def put(_)
+        end
+      end
+
+      module Location
+        def self.example
+          'somePositionStream'
         end
       end
     end
