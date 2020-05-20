@@ -3,6 +3,7 @@ module Consumer
     def self.included(cls)
       cls.class_exec do
         include Dependency
+        include Virtual
         include Log::Dependency
 
         extend Build
@@ -13,6 +14,8 @@ module Consumer
         prepend Put
 
         dependency :telemetry, ::Telemetry
+
+        virtual :location
       end
     end
 

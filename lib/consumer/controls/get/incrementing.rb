@@ -22,6 +22,10 @@ module Consumer
           instance
         end
 
+        def stream_name
+          Category.example
+        end
+
         def batch_size
           Defaults.batch_size
         end
