@@ -15,7 +15,7 @@ module Consumer
           attr_accessor :failed_message
 
           handler Handle::Example
-          handler Handle::RaiseError
+          handler Handle::RaiseError::Example
 
           def error_raised(error, message)
             self.handled_error = error
