@@ -46,7 +46,7 @@ module Consumer
     end
 
     handle :resupply do
-      logger.trace { "Resupplying (Stream: #{get.stream_name}, Position: #{position})" }
+      logger.trace { "Resupplying (Category: #{get.category}, Position: #{position})" }
 
       batch = poll.() do
         get.(position)
@@ -59,7 +59,7 @@ module Consumer
       else
         self.next_batch = batch
 
-        logger.debug { "Resupplied (Stream: #{get.stream_name}, Position: #{position}, Batch Size: #{batch.count})" }
+        logger.debug { "Resupplied (Category: #{get.category}, Position: #{position}, Batch Size: #{batch.count})" }
       end
     end
 

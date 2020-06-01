@@ -22,7 +22,7 @@ module Consumer
           instance
         end
 
-        def stream_name
+        def category
           Category.example
         end
 
