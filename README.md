@@ -6,7 +6,9 @@ This library provides generalizations that are used by platform-specific impleme
 
 ## Documentation
 
-See the [consumers user guide at the Eventide documentation site](http://docs.eventide-project.org/user-guide/consumers) for more information.
+See the consumers user guide at the Eventide documentation site for more:
+
+[http://docs.eventide-project.org/user-guide/consumers.html](http://docs.eventide-project.org/user-guide/consumers.html)
 
 ## License
 
