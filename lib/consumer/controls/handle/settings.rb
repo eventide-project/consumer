@@ -18,6 +18,10 @@ module Consumer
               instance.strict = strict
 
               unless settings.nil?
+                unless settings.instance_of?(::Settings)
+                  settings = ::Settings.build(settings)
+                end
+
                 settings.set(instance, strict: false)
               end
 
