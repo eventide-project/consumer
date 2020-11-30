@@ -37,6 +37,8 @@ module Consumer
 
       attr_accessor :session
 
+      attr_accessor :supplemental_settings
+
       dependency :get, MessageStore::Get
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
@@ -119,7 +121,20 @@ module Consumer
     logger.trace(tags: [:consumer, :dispatch, :message]) { "Dispatching message (#{LogText.message_data(message_data)})" }
 
     self.class.handler_registry.each do |handler|
-      handler.(message_data, session: session)
+      # TODO: Stop guarding against a call method that doesn't accept settings when the handler implementation adds a settings argument (Nathan Ladd: Mon Nov 30 2020)
+      call_method_parameters = handler.method(:call).parameters
+
+      accepts_settings = call_method_parameters.any? do |type, name|
+        keyword_argument = type == :keyopt || type == :key
+
+        keyword_argument && name == :settings
+      end
+
+      if accepts_settings && !supplemental_settings.nil?
+        handler.(message_data, session: session, settings: supplemental_settings)
+      else
+        handler.(message_data, session: session)
+      end
     end
 
     update_position(message_data.global_position)
@@ -172,11 +187,15 @@ module Consumer
   end
 
   module Build
-    def build(category, position_update_interval: nil, poll_interval_milliseconds: nil, identifier: nil, **arguments)
+    def build(category, position_update_interval: nil, poll_interval_milliseconds: nil, identifier: nil, supplemental_settings: nil, **arguments)
       instance = new(category)
 
       unless identifier.nil?
         instance.identifier = identifier
+      end
+
+      unless supplemental_settings.nil?
+        instance.supplemental_settings = supplemental_settings
       end
 
       instance.position_update_interval = position_update_interval

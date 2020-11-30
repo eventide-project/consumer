@@ -1,3 +1,4 @@
+require 'settings/controls'
 require 'messaging/controls'
 
 require 'consumer/controls/category'
@@ -11,6 +12,7 @@ require 'consumer/controls/id'
 require 'consumer/controls/identifier'
 require 'consumer/controls/position'
 require 'consumer/controls/session'
+require 'consumer/controls/settings'
 require 'consumer/controls/stream_name'
 
 require 'consumer/controls/position_store'
@@ -19,6 +21,7 @@ require 'consumer/controls/subscription'
 
 require 'consumer/controls/handle'
 require 'consumer/controls/handle/raise_error'
+require 'consumer/controls/handle/settings'
 
 require 'consumer/controls/actor'
 
