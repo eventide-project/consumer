@@ -1,3 +1,5 @@
+ENV['LOG_LEVEL'] ||= 'info'
+
 require 'io/console'
 
 require_relative './interactive_init'
