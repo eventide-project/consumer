@@ -59,6 +59,14 @@ module Consumer
       end
 
       Example = self.example_class
+
+      module Settings
+        def self.example_class
+          Consumer.example_class(handlers: [Handle::Settings::Example])
+        end
+
+        Example = self.example_class
+      end
     end
   end
 end

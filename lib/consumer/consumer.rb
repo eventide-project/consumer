@@ -37,6 +37,8 @@ module Consumer
 
       attr_accessor :session
 
+      attr_accessor :supplemental_settings
+
       dependency :get, MessageStore::Get
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
@@ -119,7 +121,7 @@ module Consumer
     logger.trace(tags: [:consumer, :dispatch, :message]) { "Dispatching message (#{LogText.message_data(message_data)})" }
 
     self.class.handler_registry.each do |handler|
-      handler.(message_data, session: session)
+      handler.(message_data, session: session, settings: supplemental_settings)
     end
 
     update_position(message_data.global_position)
@@ -172,11 +174,19 @@ module Consumer
   end
 
   module Build
-    def build(category, position_update_interval: nil, poll_interval_milliseconds: nil, identifier: nil, **arguments)
+    def build(category, position_update_interval: nil, poll_interval_milliseconds: nil, identifier: nil, supplemental_settings: nil, **arguments)
       instance = new(category)
 
-      unless identifier.nil?
+      if not identifier.nil?
         instance.identifier = identifier
+      end
+
+      if not supplemental_settings.nil?
+        if not supplemental_settings.is_a?(::Settings)
+          supplemental_settings = ::Settings.build(supplemental_settings)
+        end
+
+        instance.supplemental_settings = supplemental_settings
       end
 
       instance.position_update_interval = position_update_interval

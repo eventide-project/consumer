@@ -6,6 +6,8 @@ module Consumer
       end
 
       class PositionStore
+        include Consumer::PositionStore
+
         attr_accessor :get_position
         attr_accessor :put_position
 
