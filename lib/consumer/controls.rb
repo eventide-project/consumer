@@ -13,7 +13,6 @@ require 'consumer/controls/identifier'
 require 'consumer/controls/position'
 require 'consumer/controls/session'
 require 'consumer/controls/settings'
-require 'consumer/controls/stream_name'
 
 require 'consumer/controls/position_store'
 require 'consumer/controls/position_store/file'
