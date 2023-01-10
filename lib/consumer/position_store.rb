@@ -19,7 +19,7 @@ module Consumer
       end
     end
 
-    Virtual::Method.define(self, :configure)
+    Virtual::VirtualMethod.define(self, :configure)
 
     module Build
       def self.extended(cls)
@@ -73,7 +73,7 @@ module Consumer
 
     module Put
       def self.prepended(cls)
-        Virtual::Method.define(cls, :put)
+        Virtual::VirtualMethod.define(cls, :put)
       end
 
       def put(position)
