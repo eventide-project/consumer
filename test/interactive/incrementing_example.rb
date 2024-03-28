@@ -9,5 +9,3 @@ Actor::Supervisor.start do
 
   Controls::Consumer::Incrementing.start(category, identifier: identifier, position_update_interval: position_update_interval)
 end
-
-test/interactive/incrementing_example.rb
