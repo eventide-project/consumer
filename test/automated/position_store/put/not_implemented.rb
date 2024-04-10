@@ -8,10 +8,10 @@ context "Position Store" do
 
     position_store = position_store.new
 
-    test "Abstract method error not raised" do
+    test "Template method error not raised" do
       position = Controls::Position::Global.example
 
-      refute_raises(Virtual::PureMethod::Error) do
+      refute_raises(TemplateMethod::Error) do
         position_store.put(position)
       end
     end
