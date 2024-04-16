@@ -10,11 +10,6 @@ module Consumer
     dependency :consumer, Consumer
     dependency :poll, Poll
 
-    attr_writer :prefetch_queue
-    def prefetch_queue
-      @prefetch_queue ||= []
-    end
-
     def batch_size
       get.batch_size
     end
@@ -67,7 +62,7 @@ module Consumer
       end
 
       if batch.nil? || batch.empty?
-        logger.debug { "No batch retrieved (Position: #{position}, Category: #{category}, Batch Size: #{batch_size})" }
+        logger.debug(tag: :actor) { "No batch retrieved (Position: #{position}, Category: #{category}, Batch Size: #{batch_size})" }
       else
         logger.debug(tag: :actor) { "Batch retrieved (Position: #{position}, Category: #{category}, Batch Size: #{batch_size})" }
 
