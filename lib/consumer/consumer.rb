@@ -23,6 +23,11 @@ module Consumer
         @identifier ||= self.class.identifier
       end
 
+      def starting_position
+        @starting_position ||= position_store.get
+      end
+      attr_writer :starting_position
+
       attr_writer :position_update_interval
       def position_update_interval
         @position_update_interval ||= Defaults.position_update_interval
@@ -52,7 +57,7 @@ module Consumer
   end
 
   def start(&probe)
-    logger.info(tags: [:consumer, :start]) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    logger.info(tags: [:consumer, :start]) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{starting_position})" }
 
     if Defaults.startup_info?
       print_info
@@ -67,15 +72,12 @@ module Consumer
 
     _, subscription_thread = ::Actor::Start.(subscription)
 
-    actor_address, actor_thread = Actor.start(self, subscription, include: :thread)
-
     if probe
       subscription_address = subscription.address
-
-      probe.(self, [actor_thread, subscription_thread], [actor_address, subscription_address])
+      probe.(self, subscription_address, subscription_thread)
     end
 
-    logger.info(tags: [:consumer, :start]) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{subscription.position})" }
+    logger.info(tags: [:consumer, :start]) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{starting_position})" }
 
     AsyncInvocation::Incorrect
   end
@@ -84,7 +86,7 @@ module Consumer
     STDOUT.puts
     STDOUT.puts "    Consumer: #{self.class.name}"
     STDOUT.puts "      Category: #{category}"
-    STDOUT.puts "      Position: #{subscription.position}"
+    STDOUT.puts "      Position: #{starting_position}"
     STDOUT.puts "      Identifier: #{identifier || '(none)'}"
 
     print_startup_info if respond_to?(:print_startup_info)
@@ -102,7 +104,7 @@ module Consumer
 
   def log_info
     logger.info(tags: [:consumer, :start]) { "Category: #{category} (Consumer: #{self.class.name})" }
-    logger.info(tags: [:consumer, :start]) { "Position: #{subscription.position} (Consumer: #{self.class.name})" }
+    logger.info(tags: [:consumer, :start]) { "Position: #{starting_position} (Consumer: #{self.class.name})" }
     logger.info(tags: [:consumer, :start]) { "Identifier: #{identifier || 'nil'} (Consumer: #{self.class.name})" }
 
     log_startup_info if respond_to?(:log_startup_info)
@@ -160,14 +162,9 @@ module Consumer
 
       super(**kwargs)
 
-      starting_position = self.position_store.get
-
-      Subscription.configure(
-        self,
-        get,
-        position: starting_position,
-        poll_interval_milliseconds: poll_interval_milliseconds
-      )
+      get = self.get
+      position = self.starting_position
+      Subscription.configure(self, get, position: position, poll_interval_milliseconds: poll_interval_milliseconds)
 
       logger.debug(tag: :consumer) { "Done configuring (Category: #{category}, Starting Position: #{starting_position})" }
     end

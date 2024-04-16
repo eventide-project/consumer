@@ -8,10 +8,9 @@ context "Consumer" do
     category = Controls::Category.example
 
     Actor::Supervisor.start do |supervisor|
-      return_value = Controls::Consumer::Example.start(category) do |_consumer, _, (consumer_address, subscription_address)|
+      return_value = Controls::Consumer::Example.start(category) do |_consumer, subscription_address|
         consumer = _consumer
 
-        Actor::Messaging::Send.(:stop, consumer_address)
         Actor::Messaging::Send.(:stop, subscription_address)
       end
     end

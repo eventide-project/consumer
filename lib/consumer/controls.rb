@@ -16,13 +16,12 @@ require 'consumer/controls/settings'
 
 require 'consumer/controls/position_store'
 require 'consumer/controls/position_store/file'
-require 'consumer/controls/subscription'
 
 require 'consumer/controls/handle'
 require 'consumer/controls/handle/raise_error'
 require 'consumer/controls/handle/settings'
 
-require 'consumer/controls/actor'
+require 'consumer/controls/subscription'
 
 require 'consumer/controls/consumer'
 require 'consumer/controls/consumer/incrementing'

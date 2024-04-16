@@ -1,6 +1,10 @@
 module Consumer
   module Controls
     module Position
+      def self.example
+        Global.example
+      end
+
       module Stream
         def self.example
           MessageStore::Controls::MessageData.position

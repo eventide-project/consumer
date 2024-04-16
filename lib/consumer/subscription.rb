@@ -1,35 +1,39 @@
 module Consumer
   class Subscription
     include ::Actor
-    include ::Configure
     include Dependency
     include Initializer
     include Log::Dependency
 
-    configure :subscription
+    initializer :get, a(:position)
 
-    initializer :get
+    dependency :consumer, Consumer
+    dependency :poll, Poll
 
-    attr_accessor :next_batch
-
-    attr_writer :position
-    def position
-      @position ||= 0
+    attr_writer :prefetch_queue
+    def prefetch_queue
+      @prefetch_queue ||= []
     end
 
     def batch_size
       get.batch_size
     end
 
-    dependency :poll, Poll
+    def category
+      get.category
+    end
 
-    def self.build(get, position: nil, poll_interval_milliseconds: nil)
+    def position
+      @position ||= 0
+    end
+
+    def self.build(consumer, get, position: nil, poll_interval_milliseconds: nil)
       poll_interval_milliseconds ||= Defaults.poll_interval_milliseconds
       poll_timeout_milliseconds = Defaults.poll_timeout_milliseconds
 
-      instance = new(get)
+      instance = new(get, position)
 
-      instance.position = position
+      instance.consumer = consumer
 
       Poll.configure(
         instance,
@@ -41,56 +45,48 @@ module Consumer
       instance
     end
 
-    handle :start do
-      :resupply
+    def self.configure(receiver, get, consumer: nil, position: nil, poll_interval_milliseconds: nil, attr_name: nil)
+      attr_name ||= :subscription
+
+      consumer ||= receiver
+
+      instance = build(consumer, get, position: position, poll_interval_milliseconds: poll_interval_milliseconds)
+      receiver.public_send(:"#{attr_name}=", instance)
+      instance
     end
 
-    handle :resupply do
-      logger.trace { "Resupplying (Category: #{get.category}, Position: #{position})" }
+    handle :start do
+      :next_batch
+    end
+
+    handle :next_batch do
+      logger.trace(tag: :actor) { "Getting batch (Position: #{position}, Category: #{category}, Batch Size: #{batch_size})" }
 
       batch = poll.() do
         get.(position)
       end
 
       if batch.nil? || batch.empty?
-        logger.debug { "Did not resupply; no events available (Stream: #{get.stream_name}, Position: #{position})" }
-
-        :resupply
+        logger.debug { "No batch retrieved (Position: #{position}, Category: #{category}, Batch Size: #{batch_size})" }
       else
-        self.next_batch = batch
+        logger.debug(tag: :actor) { "Batch retrieved (Position: #{position}, Category: #{category}, Batch Size: #{batch_size})" }
 
-        logger.debug { "Resupplied (Category: #{get.category}, Position: #{position}, Batch Size: #{batch.count})" }
-      end
-    end
-
-    handle :get_batch do |get_batch|
-      logger.trace { "Batch request received" }
-
-      if next_batch.nil?
-        logger.debug { "Could not fulfill batch request; deferring" }
-
-        return get_batch
+        batch.each do |message|
+          dispatch(message)
+        end
       end
 
-      batch = reset_next_batch
-
-      reply_message = get_batch.reply_message(batch)
-
-      send.(reply_message, get_batch.reply_address)
-
-      logger.debug { "Batch request fulfilled; resupplying (Batch Size: #{batch.count})" }
-
-      :resupply
+      :next_batch
     end
 
-    def reset_next_batch
-      batch = next_batch
+    def dispatch(message)
+      logger.trace(tag: :actor) { "Dispatching message (Position: #{position}, Category: #{category})" }
 
-      self.next_batch = nil
+      consumer.dispatch(message)
 
-      self.position = batch.last.global_position + 1
+      self.position = message.global_position + 1
 
-      batch
+      logger.debug(tag: :actor) { "Dispatched message (Position: #{position}, Category: #{category})" }
     end
   end
 end
