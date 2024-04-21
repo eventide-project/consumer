@@ -5,7 +5,7 @@ module Consumer
     cls.class_exec do
       include Dependency
       include Initializer
-      include Virtual
+      include TemplateMethod
       include Log::Dependency
 
       extend Build
@@ -43,7 +43,7 @@ module Consumer
       dependency :position_store, PositionStore
       dependency :subscription, Subscription
 
-      virtual :error_raised do |error, message_data|
+      template_method :error_raised do |error, message_data|
         raise error
       end
 

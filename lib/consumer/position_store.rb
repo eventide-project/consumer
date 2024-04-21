@@ -3,7 +3,8 @@ module Consumer
     def self.included(cls)
       cls.class_exec do
         include Dependency
-        include Virtual
+        include TemplateMethod
+
         include Log::Dependency
 
         extend Build
@@ -15,16 +16,17 @@ module Consumer
 
         dependency :telemetry, ::Telemetry
 
-        virtual :location
+        template_method :configure
+        template_method :location
       end
     end
-
-    Virtual::VirtualMethod.define(self, :configure)
 
     module Build
       def self.extended(cls)
         cls.singleton_class.class_exec do
-          Virtual::PureMethod.define(self, :build)
+          include TemplateMethod
+
+          template_method! :build
         end
       end
     end
@@ -55,7 +57,9 @@ module Consumer
 
     module Get
       def self.prepended(cls)
-        Virtual::PureMethod.define(cls, :get)
+        cls.class_exec do
+          template_method! :get
+        end
       end
 
       def get
@@ -73,7 +77,9 @@ module Consumer
 
     module Put
       def self.prepended(cls)
-        Virtual::VirtualMethod.define(cls, :put)
+        cls.class_exec do
+          template_method :put
+        end
       end
 
       def put(position)
