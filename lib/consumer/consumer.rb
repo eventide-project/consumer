@@ -24,7 +24,11 @@ module Consumer
       end
 
       def starting_position
-        @starting_position ||= position_store.get
+        if not defined?(@starting_position)
+          @starting_position = position_store.get
+        end
+
+        @starting_position
       end
       attr_writer :starting_position
 
