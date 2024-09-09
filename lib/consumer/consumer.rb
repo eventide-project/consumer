@@ -23,8 +23,12 @@ module Consumer
         @identifier ||= self.class.identifier
       end
 
+      ## Remove need for irregular memoization - Nathan, Mon Sep 9 2024
       def starting_position
-        @starting_position ||= position_store.get
+        if not instance_variable_defined?(:@starting_position)
+          @starting_position = position_store.get
+        end
+        @starting_position
       end
       attr_writer :starting_position
 
