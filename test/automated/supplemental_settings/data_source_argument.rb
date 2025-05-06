@@ -1,4 +1,4 @@
-require_relative '../automated_init'
+require_relative "../automated_init"
 
 context "Supplemental Settings" do
   context "Data Source Argument" do

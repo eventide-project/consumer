@@ -1,4 +1,4 @@
-require_relative '../automated_init'
+require_relative "../automated_init"
 
 context "Optional Identifier Argument" do
   context "No Class Macro Specifies an Identifier" do

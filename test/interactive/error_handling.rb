@@ -1,8 +1,8 @@
-ENV['LOG_LEVEL'] ||= 'info'
+ENV["LOG_LEVEL"] ||= "info"
 
-require 'io/console'
+require "io/console"
 
-require_relative './interactive_init'
+require_relative "./interactive_init"
 
 class ExampleConsumer
   include Consumer
@@ -51,14 +51,14 @@ class ExampleConsumer
       puts choice
 
       case choice
-      when 'r'
+      when "r"
         self.(message_data)
         break
 
-      when 'i'
+      when "i"
         break
 
-      when 'f'
+      when "f"
         raise error
       end
     end

@@ -25,7 +25,7 @@ module Consumer
         end
 
         def path
-          path = ::File.join('tmp', 'local_file_position_store')
+          path = ::File.join("tmp", "local_file_position_store")
 
           unless identifier.nil?
             path << "-#{identifier}"

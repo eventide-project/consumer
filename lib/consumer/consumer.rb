@@ -61,7 +61,7 @@ module Consumer
   end
 
   def start(&probe)
-    logger.info(tags: [:consumer, :start]) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{starting_position})" }
+    logger.info(tags: [:consumer, :start]) { "Starting consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || "(none)"}, Position: #{starting_position})" }
 
     if Defaults.startup_info?
       print_info
@@ -81,7 +81,7 @@ module Consumer
       probe.(self, subscription_address, subscription_thread)
     end
 
-    logger.info(tags: [:consumer, :start]) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || '(none)'}, Position: #{starting_position})" }
+    logger.info(tags: [:consumer, :start]) { "Started consumer: #{self.class.name} (Category: #{category}, Identifier: #{identifier || "(none)"}, Position: #{starting_position})" }
 
     AsyncInvocation::Incorrect
   end
@@ -91,25 +91,25 @@ module Consumer
     STDOUT.puts "    Consumer: #{self.class.name}"
     STDOUT.puts "      Category: #{category}"
     STDOUT.puts "      Position: #{starting_position}"
-    STDOUT.puts "      Identifier: #{identifier || '(none)'}"
+    STDOUT.puts "      Identifier: #{identifier || "(none)"}"
 
     print_startup_info if respond_to?(:print_startup_info)
 
-    STDOUT.puts "      Position Location: #{position_store.location || '(none)'}"
+    STDOUT.puts "      Position Location: #{position_store.location || "(none)"}"
 
     STDOUT.puts
 
     STDOUT.puts "      Handlers:"
     self.class.handler_registry.each do |handler|
       STDOUT.puts "        Handler: #{handler.name}"
-      STDOUT.puts "          Messages: #{handler.message_registry.message_types.join(', ')}"
+      STDOUT.puts "          Messages: #{handler.message_registry.message_types.join(", ")}"
     end
   end
 
   def log_info
     logger.info(tags: [:consumer, :start]) { "Category: #{category} (Consumer: #{self.class.name})" }
     logger.info(tags: [:consumer, :start]) { "Position: #{starting_position} (Consumer: #{self.class.name})" }
-    logger.info(tags: [:consumer, :start]) { "Identifier: #{identifier || 'nil'} (Consumer: #{self.class.name})" }
+    logger.info(tags: [:consumer, :start]) { "Identifier: #{identifier || "nil"} (Consumer: #{self.class.name})" }
 
     log_startup_info if respond_to?(:log_startup_info)
 
@@ -119,7 +119,7 @@ module Consumer
 
     self.class.handler_registry.each do |handler|
       logger.info(tags: [:consumer, :start]) { "Handler: #{handler.name} (Consumer: #{self.class.name})" }
-      logger.info(tags: [:consumer, :start]) { "Messages: #{handler.message_registry.message_types.join(', ')} (Handler: #{handler.name}, Consumer: #{self.class.name})" }
+      logger.info(tags: [:consumer, :start]) { "Messages: #{handler.message_registry.message_types.join(", ")} (Handler: #{handler.name}, Consumer: #{self.class.name})" }
     end
   end
 
@@ -237,7 +237,7 @@ module Consumer
 
   module Defaults
     def self.startup_info?
-      StartupInfo.get == 'on'
+      StartupInfo.get == "on"
     end
 
     module StartupInfo
@@ -246,11 +246,11 @@ module Consumer
       end
 
       def self.env_var
-        'STARTUP_INFO'
+        "STARTUP_INFO"
       end
 
       def self.default
-        'on'
+        "on"
       end
     end
   end

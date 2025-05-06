@@ -47,7 +47,7 @@ module Consumer
 
       module Location
         def self.example
-          'somePositionStream'
+          "somePositionStream"
         end
       end
     end

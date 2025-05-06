@@ -5,7 +5,7 @@ module Consumer
         random ||= false
 
         unless random
-          'some-consumer'
+          "some-consumer"
         else
           "some-consumer-#{SecureRandom.hex(8)}"
         end

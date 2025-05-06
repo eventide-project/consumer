@@ -1,4 +1,4 @@
-ENV['LOG_TAGS'] ||= '_untagged,consumer'
-ENV['LOG_LEVEL'] ||= 'trace'
+ENV["LOG_TAGS"] ||= "_untagged,consumer"
+ENV["LOG_LEVEL"] ||= "trace"
 
-require_relative '../test_init'
+require_relative "../test_init"

@@ -1,8 +1,8 @@
-require_relative './interactive_init'
+require_relative "./interactive_init"
 
-identifier = ENV['IDENTIFIER']
+identifier = ENV["IDENTIFIER"]
 
-position_update_interval = ENV['POSITION_UPDATE_INTERVAL']&.to_i
+position_update_interval = ENV["POSITION_UPDATE_INTERVAL"]&.to_i
 
 Actor::Supervisor.start do
   category = Controls::Category.example
