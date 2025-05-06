@@ -1,4 +1,4 @@
-require_relative '../automated_init'
+require_relative "../automated_init"
 
 context "Stream Error" do
   context "Consumed Stream is a Stream Rather than a Category" do

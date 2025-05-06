@@ -29,7 +29,7 @@ module Consumer
         handler Handlers::PrintData
 
         def configure
-          sleep_duration = ENV['SLEEP_DURATION'] || 100
+          sleep_duration = ENV["SLEEP_DURATION"] || 100
           sleep_duration = sleep_duration.to_i
 
           Get::Incrementing.configure(self, sleep_duration)

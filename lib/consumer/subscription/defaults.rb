@@ -2,7 +2,7 @@ module Consumer
   class Subscription
     module Defaults
       def self.poll_interval_milliseconds
-        env_interval = ENV['POLL_INTERVAL_MILLISECONDS']
+        env_interval = ENV["POLL_INTERVAL_MILLISECONDS"]
         return env_interval.to_i if !env_interval.nil?
 
         100
